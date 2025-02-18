@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
 
 
 db = SQLAlchemy()
@@ -61,28 +63,54 @@ class Producto(db.Model):
                 'category': self.category}
 
 class Orders(db.Model):
-    OrderID = db.Column(db.Integer, primary_key=True)
-    Total_Amount = db.Column(db.Integer(120), unique=False, nullable=False)
-    Estado = db.Column(db.String(80), unique=False, nullable=False) # enum 
-    Fecha_Compra = db.Column(db.Int(), unique=False, nullable=False)
-    Payment_Options = db.Column(db.String(80), unique=False, nullable=False)
-    CompradorID = db.relationship("Comprador", foreign_keys=[comprador_id], backref=db.backref("CompradorID", lazy="select"))
+    __tablename__ = 'orders'
+    id = db.Column(db.Integer, primary_key=True)
+    total_Amount = db.Column(db.Integer(120), unique=False, nullable=False)
+    estado = db.Column(db.String(80), unique=False, nullable=False) # enum 
+    fecha_Compra = db.Column(db.Int(), unique=False, nullable=False)
+    payment_Options = db.Column(db.String(80), unique=False, nullable=False)
+    comprador_id = db.Column(db.Integer, db.ForeignKey('comprador.id'))
+    comprador_to = db.relationship('Comprador', foreign_keys=(comprador_id), backref=db.backref('comprador_to'), lazy='select')
+
+    def serialize(self):
+        return {'id': self.id,
+                'total_Amount': self.total_Amount,
+                'estado': self.estado,
+                'fecha_Compra': self.fecha_Compra,
+                'payment_Options': self.payment_Options}
     
 
 class Order_Item(db.Model):
-    Order_itemID = db.Column(db.Integer, primary_key=True)
-    Total_Amount = db.Column(db.Integer(120), unique=False, nullable=False)
-    Quantity = db.Column(db.Integer(120), unique=False, nullable=False)
-    Stock = db.Column(db.String(80), unique=False, nullable=False)
-    Fecha_Llegada = db.Column(db.Int(), unique=False, nullable=False)
-    OrderID = db.relationship("Orders", foreign_keys=[order_id], backref=db.backref("OrderID", lazy="select"))
-    ProductoID = db.Column(db.Integer, primary_key=True)
+    __tablename__ = 'orders_item'
+    id = db.Column(db.Integer, primary_key=True)
+    total_Amount = db.Column(db.Integer(120), unique=False, nullable=False)
+    quantity = db.Column(db.Integer(120), unique=False, nullable=False)
+    stock = db.Column(db.String(80), unique=False, nullable=False)
+    fecha_Llegada = db.Column(db.Int(), unique=False, nullable=False)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
+    order_to = db.relationship('Orders', foreign_keys=(order_id), backref=db.backref('order_to'), lazy='select')
+    producto_id = db.Column(db.Integer, db.ForeignKey('producto.id'))
+    producto_to = db.relationship('Producto', foreign_keys=(producto_id), backref=db.backref('producto_to'), lazy='select')
+
+    def serialize(self):
+        return {'id': self.id,
+                'total_Amount': self.total_Amount,
+                'quantity': self.quantity,
+                'stock': self.stock,
+                'paymentfecha_Llegada_Options': self.fecha_Llegada}
 
 class Comprador(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(), unique=True, nullable=False)
     direccion_envio = db.Column(db.String(), unique=False, nullable=False)
     historial_compras = db.Column(db.String(), unique=False, nullable=False)
+
+    def serialize(self):
+        return {'id': self.id,
+                'total_Amount': self.total_Amount,
+                'quantity': self.quantity,
+                'stock': self.stock,
+                'paymentfecha_Llegada_Options': self.fecha_Llegada}
    
 
 class Vendedor(db.Model):
@@ -90,9 +118,18 @@ class Vendedor(db.Model):
     username = db.Column(db.String(), unique=True, nullable=False)
     reputation= db.Column(db.String(), unique=False, nullable=False)
     historial_ventas = db.Column(db.String(), unique=False, nullable=False)
-    Productos_En_Venta = db.Column(db.String(), unique=False, nullable=False)
-    Publicar_Producto = db.Column(db.String(), unique=False, nullable=False)
-    Ingresos_Totales = db.Column(db.String(), unique=False, nullable=False)
+    productos_en_venta = db.Column(db.String(), unique=False, nullable=False)
+    publicar_producto = db.Column(db.String(), unique=False, nullable=False)
+    ingresos_totales = db.Column(db.String(), unique=False, nullable=False)
+
+    def serialize(self):
+        return {'id': self.id,
+                'username': self.username,
+                'reputation': self.reputation,
+                'historial_ventas': self.historial_ventas,
+                'productos_en_venta': self.productos_en_venta,
+                'publicar_producto': self.publicar_producto,
+                'ingresos_totales': self.ingresos_totales}
     
 
 
