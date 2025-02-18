@@ -78,6 +78,21 @@ class Order_Item(db.Model):
     OrderID = db.relationship("Orders", foreign_keys=[order_id], backref=db.backref("OrderID", lazy="select"))
     ProductoID = db.Column(db.Integer, primary_key=True)
 
+class Comprador(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(), unique=True, nullable=False)
+    direccion_envio = db.Column(db.String(), unique=False, nullable=False)
+    historial_compras = db.Column(db.String(), unique=False, nullable=False)
+   
 
+class Vendedor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(), unique=True, nullable=False)
+    reputation= db.Column(db.String(), unique=False, nullable=False)
+    historial_ventas = db.Column(db.String(), unique=False, nullable=False)
+    Productos_En_Venta = db.Column(db.String(), unique=False, nullable=False)
+    Publicar_Producto = db.Column(db.String(), unique=False, nullable=False)
+    Ingresos_Totales = db.Column(db.String(), unique=False, nullable=False)
+    
 
 
