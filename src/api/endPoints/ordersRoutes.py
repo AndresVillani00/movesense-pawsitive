@@ -23,9 +23,9 @@ def orders():
     if request.method == 'POST':
         data = request.json
         row = Orders(total_amount=data.get('total_amount'),
-                    estado=data.get('estado'),
-                    fecha_Compra=datetime.now(timezone.utc),
-                    payment_Options=data.get('payment_Options'))
+                     order_status=data.get('order_status'),
+                     buy_date=datetime.now(timezone.utc),
+                     payment_Options=data.get('payment_Options'))
         db.session.add(row)
         db.session.commit()
         response_body['message'] = f'Agregar nueva orden'
@@ -48,8 +48,8 @@ def order(id):
          if request.method == 'PUT':
             data = request.json
             row.total_amount = data['total_amount']
-            row.estado = data['estado']
-            row.fecha_Compra = data['fecha_Compra']
+            row.order_status = data['order_status']
+            row.buy_date = data['buy_date']
             row.payment_Options = data['payment_Options']
             db.session.commit()
             response_body['message'] = f'La orden con el id {id} se ha actualizado correctamente.'
@@ -62,3 +62,15 @@ def order(id):
             response_body['message'] = f'La orden para el id {id} se ha eliminado correctamente.'
             response_body['results'] = row.serialize() 
             return response_body, 200 
+
+# Para ver las ordenes del comprador
+@orders_api.route('/buyer/<int:buyer_id>/order', methods=['GET'])
+def orders(buyer_id):
+    response_body = {}
+    row = db.session.execute(db.select(Orders).where(Orders.buyer_id == buyer_id)).scalars()
+    if not row:
+        response_body['message'] = f'Órdenes del comprador con id: {buyer_id}'
+    if request.method == 'GET':
+        response_body['message'] = f'Órdenes del comprador con id: {buyer_id}'
+        response_body["results"] = row.serialize()
+
