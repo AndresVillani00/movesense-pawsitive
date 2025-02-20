@@ -16,10 +16,10 @@ class Users(db.Model):
     phone = db.Column(db.String(), unique=False, nullable=False)
     gender = db.Column(db.String(), unique=False, nullable=False)
     is_rol = db.Column(db.Boolean(), unique=False, nullable=False)
-    buyer_id = db.Column(db.Integer, db.ForeignKey('buyer.id'))
-    buyer_to = db.relationship('Buyer', foreign_keys=[buyer_id], backref=db.backref('buyers_to'), lazy='select')
-    seller_id = db.Column(db.Integer, db.ForeignKey('seller.id'))
-    seller_to = db.relationship('Seller', foreign_keys=[seller_id], backref=db.backref('sellers_to'), lazy='select')
+    buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id'))
+    buyer_to = db.relationship('Buyers', foreign_keys=[buyer_id], backref=db.backref('buyers_to'), lazy='select')
+    seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
+    seller_to = db.relationship('Sellers', foreign_keys=[seller_id], backref=db.backref('sellers_to'), lazy='select')
 
     def serialize(self):
         return {'id': self.id,
@@ -46,8 +46,8 @@ class Products(db.Model):
     final_price = db.Column(db.Integer(), unique=False, nullable=False)
     description = db.Column(db.String(), unique=False, nullable=False)
     category = db.Column(db.Enum('tipo1', 'tipo2', 'tipo3', name='category'), unique=False, nullable=False)  # ARREGLAR, QUE CATEGORIAS PONER? 
-    seller_id = db.Column(db.Integer, db.ForeignKey('seller.id'))
-    seller_to = db.relationship('Seller', foreign_keys=[seller_id], backref=db.backref('seller_to'), lazy='select')
+    seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
+    seller_to = db.relationship('Sellers', foreign_keys=[seller_id], backref=db.backref('seller_to'), lazy='select')
 
     def serialize(self):
         return {'id': self.id,
@@ -71,9 +71,8 @@ class Orders(db.Model):
     order_status = db.Column(db.Enum('pendiente', 'completado', 'cancelado', name='estado_enum'), nullable=False)    
     buy_date = db.Column(db.DateTime(), unique=False, nullable=False)
     payment_Options = db.Column(db.String(80), unique=False, nullable=False)
-    orderItem = db.relationship('Order_Item', backref='Orders', lazy='select')
-    buyer_id = db.Column(db.Integer, db.ForeignKey('buyer.id'))
-    buyer_to = db.relationship('Buyer', foreign_keys=[buyer_id], backref=db.backref('buyer_to'), lazy='select')
+    buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id'))
+    buyer_to = db.relationship('Buyers', foreign_keys=[buyer_id], backref=db.backref('buyer_to'), lazy='select')
 
     def serialize(self):
         return {'id': self.id,
@@ -92,8 +91,8 @@ class Order_Items(db.Model):
     arrival_date = db.Column(db.DateTime(), unique=False, nullable=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
     order_to = db.relationship('Orders', foreign_keys=[order_id], backref=db.backref('order_to'), lazy='select')
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
-    product_to = db.relationship('Product', foreign_keys=[product_id], backref=db.backref('product_to'), lazy='select')
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'))
+    product_to = db.relationship('Products', foreign_keys=[product_id], backref=db.backref('product_to'), lazy='select')
 
     def serialize(self):
         return {'id': self.id,
