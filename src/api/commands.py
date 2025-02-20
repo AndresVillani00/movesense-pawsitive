@@ -4,28 +4,28 @@ Flask commands are usefull to run cronjobs or tasks outside of the API but sill 
 with youy database, for example: Import the price of bitcoin every night as 12am
 """
 import click
-from api.models import db, Users
+from api.models import db, Usuarios
 
 
 def setup_commands(app):
     """ 
-    This is an example command "insert-test-users" that you can run from the command line
-    by typing: $ flask insert-test-users 5
-    Note: 5 is the number of users to add
+    This is an example command "insert-test-usuarios" that you can run from the command line
+    by typing: $ flask insert-test-usuarios 5
+    Note: 5 is the number of usuarios to add
     """
-    @app.cli.command("insert-test-users")  # Name of our command
+    @app.cli.command("insert-test-usuarios")  # Name of our command
     @click.argument("count")  # Argument of out command
-    def insert_test_users(count):
-        print("Creating test users")
+    def insert_test_usuarios(count):
+        print("Creating test usuarios")
         for x in range(1, int(count) + 1):
-            user = Users()
-            user.email = "test_user" + str(x) + "@test.com"
-            user.password = "123456"
-            user.is_active = True
-            db.session.add(user)
+            usuario = Usuarios()
+            usuario.email = "test_usuario" + str(x) + "@test.com"
+            usuario.password = "123456"
+            usuario.is_active = True
+            db.session.add(usuario)
             db.session.commit()
-            print("User: ", user.email, " created.")
-        print("All test users created")
+            print("usuario: ", usuario.email, " created.")
+        print("All test usuarios created")
 
     @app.cli.command("insert-test-data")
     def insert_test_data():
