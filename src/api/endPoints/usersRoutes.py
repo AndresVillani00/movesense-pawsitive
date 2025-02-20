@@ -6,11 +6,11 @@ from flask_cors import CORS
 from api.models import db, Usuario
 
 
-usuario_api = Blueprint('usuarioApi', __name__)
-CORS(usuario_api)  # Allow CORS requests to this API
+user_api = Blueprint('userApi', __name__)
+CORS(user_api)  # Allow CORS requests to this API
 
 
-@usuario_api.route('/users', methods=['GET'])
+@user_api.route('/users', methods=['GET'])
 def usuario():
     response_body = {}
     if request.method == 'GET':
