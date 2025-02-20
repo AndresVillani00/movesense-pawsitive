@@ -7,11 +7,11 @@ from datetime import datetime, timezone
 from api.models import db, Orders_Item
 
 
-orders_Item_api = Blueprint('ordersItemApi', __name__)
-CORS(orders_Item_api)  # Allow CORS requests to this API
+orders_item_api = Blueprint('ordersItemApi', __name__)
+CORS(orders_item_api)  # Allow CORS requests to this API
 
 
-@orders_Item_api.route('/orders_item', methods=['GET', 'POST'])
+@orders_item_api.route('/orders_item', methods=['GET', 'POST'])
 def orders_Item():
     response_body = {}
     if request.method == 'GET':
