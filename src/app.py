@@ -8,10 +8,10 @@ from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
 from api.models import db
 from api.routes import api
-from api.endPoints.usersRoutes import user_api
+from api.endPoints.usersRoutes import users_api
 from api.endPoints.productsRoutes import products_api
 from api.endPoints.ordersRoutes import orders_api
-from api.endPoints.ordersItemRoutes import orders_item_api
+from api.endPoints.ordersItemRoutes import order_items_api
 from api.admin import setup_admin
 from api.commands import setup_commands
 
@@ -33,10 +33,10 @@ db.init_app(app)
 setup_admin(app)  # Add the admin
 setup_commands(app)  # Add the admin
 app.register_blueprint(api, url_prefix='/api')  # Add all endpoints form the API with a "api" prefix
-app.register_blueprint(user_api, url_prefix='/userApi')
-app.register_blueprint(products_api, url_prefix='/productApi')
+app.register_blueprint(users_api, url_prefix='/usersApi')
+app.register_blueprint(products_api, url_prefix='/productsApi')
 app.register_blueprint(orders_api, url_prefix='/ordersApi')
-app.register_blueprint(orders_item_api, url_prefix='/ordersItemApi')
+app.register_blueprint(order_items_api, url_prefix='/ordersItemApi')
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)

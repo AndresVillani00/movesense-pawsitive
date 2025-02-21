@@ -12,7 +12,7 @@ CORS(order_items_api)  # Allow CORS requests to this API
 
 
 @order_items_api.route('/ordersItem', methods=['GET', 'POST'])
-def orders_Item():
+def orders_item():
     response_body = {}
     if request.method == 'GET':
         rows = db.session.execute(db.select(Order_Items)).scalars()
@@ -66,7 +66,7 @@ def order_items(id):
 
 # Para que se vean los articulos de la orden
 @order_items_api.route('/order/<int:order_id>/orderItem', methods=['GET'])
-def order_items(order_id):
+def order_items_order(order_id):
     response_body = {}
     row = db.session.execute(db.select(Order_Items).where(Order_Items.order_id == order_id)).scalars()
     if not row:
