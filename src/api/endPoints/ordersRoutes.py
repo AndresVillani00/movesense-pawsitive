@@ -65,7 +65,7 @@ def order(id):
 
 # Para ver las ordenes del comprador
 @orders_api.route('/buyer/<int:buyer_id>/order', methods=['GET'])
-def orders(buyer_id):
+def orders_buyer(buyer_id):
     response_body = {}
     row = db.session.execute(db.select(Orders).where(Orders.buyer_id == buyer_id)).scalars()
     if not row:
