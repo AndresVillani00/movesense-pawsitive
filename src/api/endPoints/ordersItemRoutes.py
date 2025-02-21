@@ -11,6 +11,7 @@ order_items_api = Blueprint('orderItemsApi', __name__)
 CORS(order_items_api)  # Allow CORS requests to this API
 
 
+
 @order_items_api.route('/order-items', methods=['GET', 'POST'])
 def order_items():
     response_body = {}
