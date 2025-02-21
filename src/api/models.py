@@ -59,7 +59,7 @@ class Products(db.Model):
                 'weight': self.weight,
                 'quantity': self.quantity,
                 'price': self.price,
-                'final_price': self.final_price,
+                'final_price': self.final_price, # quitar para primera version 
                 'description': self.description,
                 'category': self.category}
 
@@ -67,27 +67,26 @@ class Products(db.Model):
 class Orders(db.Model):
     __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)
-    total_Amount = db.Column(db.Integer(), unique=False, nullable=False)
-    order_status = db.Column(db.Enum('pendiente', 'completado', 'cancelado', name='estado_enum'), nullable=False)    
+    total_amount = db.Column(db.Integer(), unique=False, nullable=False)
+    order_status = db.Column(db.Enum('en proceso', 'pendiente', 'completado', 'cancelado', name='estado_enum'), nullable=False)    
     buy_date = db.Column(db.DateTime(), unique=False, nullable=False)
-    payment_Options = db.Column(db.String(80), unique=False, nullable=False)
+    payment_options = db.Column(db.String(80), unique=False, nullable=False)
     buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id'))
     buyer_to = db.relationship('Buyers', foreign_keys=[buyer_id], backref=db.backref('buyer_to'), lazy='select')
 
     def serialize(self):
         return {'id': self.id,
-                'total_Amount': self.total_Amount,
+                'total_Amount': self.total_amount,
                 'order_status': self.order_status,
                 'buy_date': self.buy_date,
-                'payment_Options': self.payment_Options}
+                'payment_options': self.payment_options}
     
 
-class Order_Items(db.Model):
+class OrderItems(db.Model):
     __tablename__ = 'order_items'
     id = db.Column(db.Integer, primary_key=True)
-    total_Amount = db.Column(db.Integer(), unique=False, nullable=False)
+    total_amount = db.Column(db.Integer(), unique=False, nullable=False)
     quantity = db.Column(db.Integer(), unique=False, nullable=False)
-    stock = db.Column(db.Integer(), unique=False, nullable=False)
     arrival_date = db.Column(db.DateTime(), unique=False, nullable=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.id'))
     order_to = db.relationship('Orders', foreign_keys=[order_id], backref=db.backref('order_to'), lazy='select')
@@ -96,7 +95,7 @@ class Order_Items(db.Model):
 
     def serialize(self):
         return {'id': self.id,
-                'total_Amount': self.total_Amount,
+                'total_amount': self.total_amount,
                 'quantity': self.quantity,
                 'stock': self.stock,
                 'arrival_date': self.arrival_date}

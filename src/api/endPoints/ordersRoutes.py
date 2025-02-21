@@ -21,6 +21,8 @@ def orders():
         response_body['results'] = list_orders
         return response_body, 200
     if request.method == 'POST':
+        # No deberiamos tener el post una orden
+        # Una orden se deberia crear cuando se da de alta el primer item de la órden. 
         data = request.json
         row = Orders(total_amount=data.get('total_amount'),
                      order_status=data.get('order_status'),
@@ -65,7 +67,7 @@ def order(id):
 
 # Para ver las ordenes del comprador
 @orders_api.route('/buyer/<int:buyer_id>/order', methods=['GET'])
-def orders(buyer_id):
+def buyers_orders(buyer_id):
     response_body = {}
     row = db.session.execute(db.select(Orders).where(Orders.buyer_id == buyer_id)).scalars()
     if not row:
