@@ -18,3 +18,5 @@ def usuario():
         response_body['results'] = datos_comprador
         return response_body, 200
    
+   
+   
