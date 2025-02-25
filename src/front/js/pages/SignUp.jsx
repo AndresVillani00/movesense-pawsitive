@@ -1,7 +1,7 @@
 import React from "react";
 
 
-export const Signup = () => {
+export const SignUp = () => {
     return (
         <div className="container-fluid">
             <div className="row">
