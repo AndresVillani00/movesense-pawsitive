@@ -8,6 +8,8 @@ import ScrollToTop from "./component/ScrollToTop.jsx";
 import { BackendURL } from "./component/BackendURL.jsx";
 // Custom pages or views
 import { Home } from "./pages/Home.jsx";
+// import { SignupPage } from "./pages/SignUP.jsx"; 
+
 
 
 // Create your first component
@@ -24,6 +26,7 @@ const Layout = () => {
                     <Navbar />
                     <Routes>
                         <Route element={<Home />} path="/" />
+                        {/* <Route element={<SignupPage />} path="/sign-up" />  */}
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
                         <Route element={<h1>Not found!</h1>} path='*'/>

@@ -71,8 +71,8 @@ def buyers_orders(buyer_id):
     response_body = {}
     row = db.session.execute(db.select(Orders).where(Orders.buyer_id == buyer_id)).scalars()
     if not row:
-        response_body['message'] = f'Órdenes del comprador con id: {buyer_id}'
+        response_body['message'] = f'Ordenes del comprador con id: {buyer_id}'
     if request.method == 'GET':
-        response_body['message'] = f'Órdenes del comprador con id: {buyer_id}'
+        response_body['message'] = f'Ordenes del comprador con id: {buyer_id}'
         response_body["results"] = row.serialize()
 
