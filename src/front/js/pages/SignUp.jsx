@@ -2,7 +2,7 @@ import React from "react";
 
 
 
-export const SignupPage = () => {
+export const SignUp = () => {
   return (
 
       <div className="container-fluid">
