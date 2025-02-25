@@ -1,7 +1,7 @@
 import React from "react";
 
 
-export const Signup = () => {
+export const SignUp = () => {
     return (
         <div className="container-fluid">
             <div className="row">
@@ -9,15 +9,16 @@ export const Signup = () => {
                 <div className="col-md-6 d-flex flex-column justify-content-center align-items-center text-white p-5 rounded text-center"
                     style={{
                         background: "linear-gradient(to bottom right, #5A189A, #E03E94)",
-                        minHeight: "100vh"
+                        minHeight: "100vh",
+                        fontFamily: "'Poppins', sans-serif"
                     }}>
 
                     {/* login button  */}
-                    <div className="position-absolute top-0 start-0 m-3" style={{ zIndex: 1 }}>
+                    {/* <div className="position-absolute top-100 start-0 m-3" style={{ zIndex: 1 }}>
                         <a href="/login" className="btn btn-outline-light">
                             Already a member? Log In
                         </a>
-                    </div>
+                    </div> */}
                     {/* Resto del texto izquierda  */}
                     <div>
                         <h1 className="fw-bold display-5">¡Convierte tu arte en éxito!</h1>
@@ -29,14 +30,14 @@ export const Signup = () => {
                             <li> 📅  Publica y descubre eventos artísticos</li>
                             <li> 💰  Conéctate con compradores y galerías</li>
                         </ul>
-                        <button className="btn btn-lg btn-light text-dark mt-4 px-5 py-3 fw-bold rounded-pill shadow-lg">
-                            <em>¡EMPIEZA HOY!</em>
+                        <button className="btn btn-lg btn-light text-dark mt-4 px-5 py-3 fw-bold rounded-pill shadow-lg"  style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                           ¡EMPIEZA HOY!
                         </button>
                     </div>
                 </div>
 
                 {/* Sección Derecha: Carrusel y Formulario */}
-                <div className="col-md-6 d-flex flex-column justify-content-center align-items-center">
+                <div className="col-md-6 d-flex flex-column justify-content-center align-items-center"  style={{ fontFamily: "'Raleway', sans-serif" }}>
                     {/* Carrusel */}
                     <div id="carouselExample" className="carousel slide mb-4 w-100" style={{ maxWidth: "400px" }}>
                         <div className="carousel-inner text-center">
@@ -79,7 +80,7 @@ export const Signup = () => {
 
                     {/* Formulario */}
                     <div className="card p-4 shadow-lg" style={{ maxWidth: "350px", width: "100%" }}>
-                        <h4 className="mb-3 g-3 text-center">SIGN UP</h4>
+                        <h4 className="mb-3 g-3 text-center" style={{ fontFamily: "'Montserrat', sans-serif" }}>SIGN UP</h4>
                         <form className="row g-3">
                             <div className="col-md-6">
                                 <label className="form-label text-center">Name</label>
@@ -91,13 +92,6 @@ export const Signup = () => {
                                 <input type="text" className="form-control" placeholder="Doe" required />
                             </div>
 
-                            {/* <div className="mb-3 col-md-6">
-                              <label className="form-label">Username</label>
-                              <div className="input-group">
-                                  <span className="input-group-text">@</span>
-                                  <input type="text" className="form-control" placeholder="Choose a unique username" required />
-                              </div>
-                          </div> */}
 
                             <div className="col-md-6">
                                 <label className="form-label">Phone Number</label>
@@ -116,6 +110,13 @@ export const Signup = () => {
                                 </div>
                             </div>
 
+                            <div className="col-md-12">
+                                <label className="form-label">Username</label>
+                                <div className="input-group">
+                                    <span className="input-group-text">@</span>
+                                    <input type="text" className="form-control" placeholder="Choose a unique username" required />
+                                </div>
+                            </div>
                             <div className="">
                                 <label className="form-label">Email address</label>
                                 <input type="email" className="form-control" placeholder="name@example.com" required />
