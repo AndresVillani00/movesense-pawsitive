@@ -63,10 +63,10 @@ def order_item(id):
          response_body = {}
          row = db.session.execute(db.select(OrderItems).where(OrderItems.id == id)).scalar()
          if not row:
-            response_body['message'] = f'El artículo con el id: {id} no existe en nuestros registros'
+            response_body['message'] = f'El articulo con el id: {id} no existe en nuestros registros'
             return response_body, 400
          if request.method == 'GET':
-            response_body['message'] = f'Artículo para el id {id}'
+            response_body['message'] = f'Articulo para el id {id}'
             response_body['results'] = row.serialize()    
             return response_body, 200
          if request.method == 'PUT':
@@ -76,13 +76,13 @@ def order_item(id):
             row.arrival_date = data['arrival_date']
             row.payment_Options = data['payment_Options']
             db.session.commit()
-            response_body['message'] = f'El artículo con el id {id} se ha actualizado correctamente.'
+            response_body['message'] = f'El articulo con el id {id} se ha actualizado correctamente.'
             response_body['results'] = row.serialize() 
             return response_body, 201
          if request.method == 'DELETE':
             db.session.delete(row)
             db.session.commit()
-            response_body['message'] = f'El artículo con el id {id} se ha eliminado correctamente.'
+            response_body['message'] = f'El articulo con el id {id} se ha eliminado correctamente.'
             response_body['results'] = row.serialize() 
             return response_body, 200 
     
@@ -93,7 +93,7 @@ def order_order_items(order_id):
     response_body = {}
     row = db.session.execute(db.select(OrderItems).where(OrderItems.order_id == order_id)).scalars()
     if not row:
-        response_body['message'] = f'El artículo con el id{order_id} NO EXISTE'
+        response_body['message'] = f'El articulo con el id{order_id} NO EXISTE'
     if request.method == 'GET':
-        response_body['message'] = f'El artículo con el id {order_id}'
+        response_body['message'] = f'El articulo con el id {order_id}'
         response_body["results"] = row.serialize()
