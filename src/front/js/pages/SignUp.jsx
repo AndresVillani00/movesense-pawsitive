@@ -14,11 +14,11 @@ export const SignUp = () => {
                     }}>
 
                     {/* login button  */}
-                    <div className="position-absolute top-0 start-0 m-3" style={{ zIndex: 1 }}>
+                    {/* <div className="position-absolute top-100 start-0 m-3" style={{ zIndex: 1 }}>
                         <a href="/login" className="btn btn-outline-light">
                             Already a member? Log In
                         </a>
-                    </div>
+                    </div> */}
                     {/* Resto del texto izquierda  */}
                     <div>
                         <h1 className="fw-bold display-5">¡Convierte tu arte en éxito!</h1>
