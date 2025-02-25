@@ -5,8 +5,8 @@ export const login = () => {
     <div>
         <form action="">
            <div className="mb-3">
-             <label for="LoginEmail" className="form-label">Email</label>
-             <input type="text" className="form-control" id="LoginEmail" placeholder="type your email to log in"/>
+             <label for="LoginUsername" className="form-label">Username</label>
+             <input type="text" className="form-control" id="LoginUsername" placeholder="type your email to log in"/>
            </div>
            <div className="mb-3">
              <label for="LoginPassword" className="form-label">Password</label>
