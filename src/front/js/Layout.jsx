@@ -11,6 +11,7 @@ import { Home } from "./pages/Home.jsx";
 import { SignUp } from "./pages/SignUp.jsx";
 import { Login } from "./component/Login.jsx";
 import { Product } from "./pages/Product.jsx";
+import { Blog } from "./pages/Blogs.jsx";
 
 
 
@@ -32,6 +33,7 @@ const Layout = () => {
                         <Route element={<SignUp />} path="/sign-up" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Product />} path="/product" />
+                        <Route element={<Blog />} path="/blogs" />
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
                         <Route element={<h1>Not found!</h1>} path='*'/>
