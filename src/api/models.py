@@ -9,13 +9,17 @@ db = SQLAlchemy()
 class Users(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(), unique=True, nullable=False)
+    password = db.Column(db.String(), unique=False, nullable=False)
     name = db.Column(db.String(120), unique=False, nullable=False)
     last_name = db.Column(db.String(), unique=False, nullable=False)
+    email = db.Column(db.String(), unique=True, nullable=False)
     country = db.Column(db.String(), unique=False, nullable=False)
     address = db.Column(db.String(), unique=False, nullable=False)
     phone = db.Column(db.String(), unique=False, nullable=False)
     gender = db.Column(db.String(), unique=False, nullable=False)
-    is_rol = db.Column(db.Boolean(), unique=False, nullable=False)
+    is_buyer = db.Column(db.Boolean(), unique=False, nullable=False)
+    is_seller = db.Column(db.Boolean(), unique=False, nullable=False)
     buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id'))
     buyer_to = db.relationship('Buyers', foreign_keys=[buyer_id], backref=db.backref('buyers_to'), lazy='select')
     seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
@@ -104,7 +108,6 @@ class OrderItems(db.Model):
 class Buyers(db.Model):
     __tablename__ = 'buyers'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(), unique=True, nullable=False)
     sending_address_buyer = db.Column(db.String(), unique=False, nullable=False)
     purchase_history = db.Column(db.String(), unique=False, nullable=False)
 
@@ -119,7 +122,6 @@ class Buyers(db.Model):
 class Sellers(db.Model):
     __tablename__ = 'sellers'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(), unique=True, nullable=False)
     reputation= db.Column(db.String(), unique=False, nullable=False)
     sell_history = db.Column(db.String(), unique=False, nullable=False)
     product_for_sell = db.Column(db.String(), unique=False, nullable=False)

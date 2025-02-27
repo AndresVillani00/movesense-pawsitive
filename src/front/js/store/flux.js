@@ -1,9 +1,42 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			isLogged: false,
+			usuario: {},
+			alert: {text:'', background:'primary', visible: false},
 			message: null,
 		},
 		actions: {
+			login: async(dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/api/login`;
+				const options = {
+					method:'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					if(response.status == 401){
+						setStore({alert: {text:'Usuario o contraseña incorrecto', background:'danger', visible:true}})
+					}
+					return
+				}
+				const datos = await response.json();
+				setStore({
+					isLogged: true,
+					usuario: datos.results
+				})
+				localStorage.setItem('token', datos.access_token)
+			}, 
+			logout: () => {
+				setStore({
+					isLogged: false,
+					usuario: {}
+				})
+				localStorage.removeItem('token')
+			},
 			exampleFunction: () => {getActions().changeColor(0, "green");},
 			getMessage: async () => {
 				const uri = `${process.env.BACKEND_URL}/api/hello`;
