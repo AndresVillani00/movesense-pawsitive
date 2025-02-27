@@ -4,9 +4,8 @@ import React from "react";
 export const Footer = () => {
     return (
         <footer className="bg-dark text-light py-4 mt-5" style={{
-			background: "linear-gradient(135deg, #5A189A, #E03E94)",
-			fontFamily: "'Poppins', sans-serif"
-		}}>
+            background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",  
+            fontFamily: "'Montserrat', sans-serif"}}>
             <div className="container text-center">
                 <p className="mb-0">&copy; {new Date().getFullYear()} ArtVibe. All Rights Reserved.</p>
                 <div className="mt-3">

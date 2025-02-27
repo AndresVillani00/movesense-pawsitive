@@ -12,6 +12,8 @@ import { SignUp } from "./pages/SignUp.jsx";
 import { Login } from "./component/Login.jsx";
 import { Product } from "./pages/Product.jsx";
 import { Blog } from "./pages/Blogs.jsx";
+import { NewBlogPost } from "./pages/NewBlogPost.jsx";
+import { Explore } from "./pages/Explore.jsx";
 
 
 
@@ -29,11 +31,13 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar />
                     <Routes>
-                        <Route element={<Home />} path="/" />
+                        <Route element={<Home />} path="/home" />
                         <Route element={<SignUp />} path="/sign-up" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<Product />} path="/product" />
                         <Route element={<Blog />} path="/blogs" />
+                        <Route element={<NewBlogPost />} path="/new-blog-post" />
+                        <Route element={<Explore />} path="/explore" />
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
                         <Route element={<h1>Not found!</h1>} path='*'/>

@@ -2,68 +2,53 @@ import React from "react";
 
 export const Login = () => {
     return (
-        <div className="d-flex justify-content-center align-items-center vh-100"
-            style={{
-                background: "linear-gradient(135deg, #5A189A, #E03E94)",
-                fontFamily: "'Poppins', sans-serif"
+        <div className="container-fluid d-flex justify-content-center align-items-center vh-100" style={{
+            background: "#F4F4F7", // Fondo claro y limpio
+            color: "#333" // Texto oscuro para contraste
+        }}>
+            <div className="card p-5 shadow-lg border-0" style={{
+                maxWidth: "420px",
+                width: "100%",
+                background: "#FFFFFF", // Card blanca para elegancia
+                borderRadius: "12px",
+                border: "1px solid #DDD" // Borde sutil
             }}>
-            <div className="card p-5 shadow-lg text-center"
-                style={{
-                    width: "350px",
-                    backdropFilter: "blur(10px)",
-                    background: "rgba(255, 255, 255, 0.1)",
-                    borderRadius: "15px",
-                    border: "1px solid rgba(255, 255, 255, 0.3)",
-                    color: "white"
-                }}>
-
-                <h2 className="fw-bold" style={{ fontFamily: "'Bebas Neue', sans-serif" }}>Welcome Back!</h2>
-                <p className="mb-4">Log in to your account</p>
+                <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1E3A5F" }}>Welcome Back</h2>
+                <p className="text-center text-muted">Log in to continue</p>
 
                 <form>
-                    <div className="mb-3 text-start">
-                        <label className="form-label">Email Address</label>
-                        <input type="email" className="form-control"
-                            placeholder="Enter your email"
-                            style={{
-                                background: "rgba(255, 255, 255, 0.3)",
-                                border: "none",
-                                color: "white"
-                            }} />
+                    <div className="mb-3">
+                        <label className="form-label">Email</label>
+                        <input type="email" className="form-control border-0 shadow-sm" placeholder="Enter your email" required />
                     </div>
 
-                    <div className="mb-3 text-start">
+                    <div className="mb-3">
                         <label className="form-label">Password</label>
-                        <input type="password" className="form-control"
-                            placeholder="Enter your password"
-                            style={{
-                                background: "rgba(255, 255, 255, 0.3)",
-                                border: "none",
-                                color: "white"
-                            }} />
+                        <input type="password" className="form-control border-0 shadow-sm" placeholder="Enter your password" required />
                     </div>
 
-                    <button className="btn btn-light w-100 fw-bold mt-3"
-                        style={{
-                            borderRadius: "50px",
-                            fontFamily: "'Montserrat', sans-serif",
-                            transition: "0.3s"
-                        }}
-                        onMouseOver={(e) => e.target.style.backgroundColor = "#ffdde1"}
-                        onMouseOut={(e) => e.target.style.backgroundColor = "white"}>
-                        Login
-                    </button>
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div className="form-check">
+                            <input className="form-check-input" type="checkbox" id="rememberMe" />
+                            <label className="form-check-label text-muted" htmlFor="rememberMe">Remember me</label>
+                        </div>
+                        <a href="#" className="text-decoration-none" style={{ color: "#5A189A" }}>Forgot password?</a>
+                    </div>
 
-                    <button className="btn btn-outline-light w-100 mt-3 d-flex justify-content-center align-items-center"
-                        style={{ borderRadius: '50px' }}>
-                        <i className="fab fa-google me-2"></i>
-                        Or sign in with Google
-                    </button>
+                    <button className="btn w-100 mt-4" style={{
+                        background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)", // Azul oscuro + Morado elegante
+                        color: "#fff",
+                        fontWeight: "bold",
+                        padding: "10px",
+                        borderRadius: "8px",
+                        border: "none",
+                        transition: "0.3s"
+                    }}>Sign In</button>
+
+                    <div className="text-center mt-3">
+                        <p className="text-muted">Don't have an account? <a href="#" className="text-decoration-none" style={{ color: "#1E1E50" }}>Sign Up</a></p>
+                    </div>
                 </form>
-
-                <p className="mt-3">
-                    Don't have an account? <a href="/sign-up" className="text-white fw-bold">Sign up</a>
-                </p>
             </div>
         </div>
     );
