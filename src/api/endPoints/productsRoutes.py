@@ -11,7 +11,7 @@ CORS(products_api)  # Allow CORS requests to this API
 
 
 @products_api.route('/products', methods=['GET'])
-def usuario():
+def products():
     response_body = {}
     if request.method == 'GET':
         rows = db.session.execute(db.select(Products)).scalars()
@@ -37,8 +37,8 @@ def usuario():
         return response_body, 200  
     
 
-@products_api.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-def user(id):
+@products_api.route('/products/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+def product(id):
     response_body = {}
     row = db.session.execute(db.select(Products).where(Products.id == id)).scalars()
     if not row:
@@ -71,7 +71,7 @@ def user(id):
 
 
 @products_api.route('/sellers/<int:seller_id>/products', methods=['GET'])
-def user_posts(seller_id):
+def seller_products(seller_id):
     response_body = {}
     row = db.session.execute(db.select(Products).where(Products.seller_id == seller_id)).scalars()
     if not row:
