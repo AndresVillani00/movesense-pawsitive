@@ -31,7 +31,6 @@ def buyer(id):
         return response_body, 200
     if request.method == 'PUT':
         data = request.json
-        row.username=data.get('username'),
         row.sending_address_buyer=data.get('sending_address_buyer'),
         row.sell_history=data.get('sell_history'),
         row.purchase_history=data.get('purchase_history')

@@ -1,7 +1,4 @@
-from flask import Flask, request, jsonify, url_for, Blueprint
-from api.utils import generate_sitemap, APIException
-from flask_jwt_extended import jwt_required
-from flask_jwt_extended import get_jwt
+from flask import request, Blueprint
 from flask_cors import CORS
 from api.models import db, Users
 
@@ -10,7 +7,7 @@ users_api = Blueprint('usersApi', __name__)
 CORS(users_api)  # Allow CORS requests to this API
 
 
-@users_api.route('/users', methods=['GET'])
+@users_api.route('/users', methods=['GET', 'POST'])
 def users():
     response_body = {}
     if request.method == 'GET':
@@ -21,17 +18,21 @@ def users():
         return response_body, 200
     if request.method == 'POST':
         data = request.json
-        row = Users(name=data.get('name'),
+        row = Users(username=data.get('username'),
+                    password=data.get('password'),
+                    name=data.get('name'),
                     last_name=data.get('last_name'),
+                    email=data.get('email'),
                     country=data.get('country'),
                     address=data.get('address'),
                     phone=data.get('phone'),
                     gender=data.get('gender'),
-                    is_rol=data.get('is_rol'))
+                    is_buyer=data.get('is_buyer'),
+                    is_seller=data.get('is_seller'))
         response_body['message'] = f'Agregar nuevo Usuario'
         response_body['results'] = row.serialize()
         return response_body, 200  
-    
+
 
 @users_api.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def user(id):
@@ -45,13 +46,17 @@ def user(id):
         return response_body, 200
     if request.method == 'PUT':
         data = request.json
+        row.username=data.get('username'),
+        row.password=data.get('password'),
         row.name=data.get('name'),
         row.last_name=data.get('last_name'),
+        row.email=data.get('email'),
         row.country=data.get('country'),
         row.address=data.get('address'),
         row.phone=data.get('phone'),
         row.gender=data.get('gender'),
-        row.is_rol=data.get('is_rol')
+        row.is_buyer=data.get('is_buyer'),
+        row.is_seller=data.get('is_seller')
         response_body['message'] = f'Usuario con id: {id}. Actualizado'
         response_body["results"] = row.serialize()
         return response_body, 200
@@ -65,7 +70,7 @@ def user(id):
 @users_api.route('/buyers/<int:buyer_id>/users', methods=['GET'])
 def user_buyer(buyer_id):
     response_body = {}
-    row = db.session.execute(db.select(Users).where(Users.buyer_id == buyer_id)).scalars()
+    row = db.session.execute(db.select(Users).where(Users.buyer_id == buyer_id, Users.is_buyer == True)).scalars()
     if not row:
         response_body['message'] = f'No hay comprador en los usuarios con id: {buyer_id}'
     if request.method == 'GET':
@@ -76,7 +81,7 @@ def user_buyer(buyer_id):
 @users_api.route('/sellers/<int:seller_id>/users', methods=['GET'])
 def user_seller(seller_id):
     response_body = {}
-    row = db.session.execute(db.select(Users).where(Users.seller_id == seller_id)).scalars()
+    row = db.session.execute(db.select(Users).where(Users.seller_id == seller_id, Users.is_seller == True)).scalars()
     if not row:
         response_body['message'] = f'No hay vendedor en los usuarios con id: {seller_id}'
     if request.method == 'GET':

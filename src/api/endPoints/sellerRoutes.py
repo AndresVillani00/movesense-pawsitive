@@ -31,7 +31,6 @@ def seller(id):
         return response_body, 200
     if request.method == 'PUT':
         data = request.json
-        row.username=data.get('username'),
         row.reputation=data.get('reputation'),
         row.sell_history=data.get('sell_history'),
         row.product_for_sell=data.get('product_for_sell'),
