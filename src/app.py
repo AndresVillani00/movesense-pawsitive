@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 from flask_swagger import swagger
 from api.utils import APIException, generate_sitemap
 from api.models import db
-from api.routes import api
+from api.endPoints.routes import api
 from api.endPoints.usersRoutes import users_api
 from api.endPoints.productsRoutes import products_api
 from api.endPoints.ordersRoutes import orders_api
@@ -16,6 +16,7 @@ from api.endPoints.buyerRoutes import buyer_api
 from api.endPoints.sellerRoutes import seller_api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 
 
@@ -45,6 +46,9 @@ app.register_blueprint(orders_api, url_prefix='/ordersApi')
 app.register_blueprint(order_items_api, url_prefix='/ordersItemApi')
 app.register_blueprint(buyer_api, url_prefix='/buyerApi')
 app.register_blueprint(seller_api, url_prefix='/sellerApi')
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY') # Change this!
+jwt = JWTManager(app)
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)

@@ -29,12 +29,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 					usuario: datos.results
 				})
 				localStorage.setItem('token', datos.access_token)
+				console.log(localStorage.setItem('token', datos.access_token))
+				console.log(setStore({usuario: datos.results}))
 			}, 
 			logout: () => {
 				setStore({
 					isLogged: false,
 					usuario: {}
 				})
+				console.log(setStore({usuario: datos.results}))
+				console.log(localStorage.setItem('token', datos.access_token))
 				localStorage.removeItem('token')
 			},
 			exampleFunction: () => {getActions().changeColor(0, "green");},

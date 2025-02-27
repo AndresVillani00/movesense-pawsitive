@@ -27,13 +27,17 @@ class Users(db.Model):
 
     def serialize(self):
         return {'id': self.id,
+                'username': self.username,
+                'password': self.password,
                 'name': self.name,
                 'last_name': self.last_name,
+                'email': self.email,
                 'country': self.country,
                 'address': self.address,
                 'phone': self.phone,
                 'gender': self.gender,
-                'is_rol': self.is_rol}
+                'is_buyer': self.is_buyer,
+                'is_seller': self.is_seller}
 
 
 class Products(db.Model):
@@ -114,7 +118,6 @@ class Buyers(db.Model):
     def serialize(self):
         return {
                 'id': self.id,
-                'username': self.username,
                 'sending_address_buyer': self.sending_address_buyer,
                 'purchase_history': self.purchase_history}
 
@@ -130,7 +133,6 @@ class Sellers(db.Model):
 
     def serialize(self):
         return {'id': self.id,
-                'username': self.username,
                 'reputation': self.reputation,
                 'sell_history': self.sell_history,
                 'product_for_sell': self.product_for_sell,
