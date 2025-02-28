@@ -7,6 +7,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 			message: null,
 		},
 		actions: {
+			signup: async(dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
+				const options = {
+					method:'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					if(response.status == 401){
+						setStore({alert: {text:'Usuario que intenta registrar ya existe', background:'danger', visible:true}})
+					}
+					return
+				}
+				const datos = await response.json();
+				setStore({
+					isLogged: true,
+					usuario: datos.results
+				})
+				localStorage.setItem('token', datos.access_token)
+			},
 			login: async(dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/login`;
 				const options = {
@@ -29,17 +52,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 					usuario: datos.results
 				})
 				localStorage.setItem('token', datos.access_token)
-				console.log(localStorage.setItem('token', datos.access_token))
-				console.log(setStore({usuario: datos.results}))
 			}, 
 			logout: () => {
 				setStore({
 					isLogged: false,
 					usuario: {}
 				})
-				console.log(setStore({usuario: datos.results}))
-				console.log(localStorage.setItem('token', datos.access_token))
 				localStorage.removeItem('token')
+			},
+			setIsLogged: (value) => {
+				setStore({ isLogged: value })
 			},
 			exampleFunction: () => {getActions().changeColor(0, "green");},
 			getMessage: async () => {

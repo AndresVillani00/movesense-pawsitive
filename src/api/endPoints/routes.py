@@ -24,7 +24,6 @@ def login():
     user = row.serialize()
     claims = {'user_id': user['id'],
               'user_username': user['username'],
-              'user_email': user['email'],
               'is_buyer': user['is_buyer'],
               'is_seller': user['is_seller']}
     access_token = create_access_token(identity=username, additional_claims=claims)
