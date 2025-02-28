@@ -1,4 +1,5 @@
 from flask import request, Blueprint
+from flask_jwt_extended import create_access_token
 from flask_cors import CORS
 from api.models import db, Users
 
@@ -29,6 +30,17 @@ def users():
                     gender=data.get('gender'),
                     is_buyer=data.get('is_buyer'),
                     is_seller=data.get('is_seller'))
+        rowdb = db.session.execute(db.select(Users).where(Users.username == data.get('username'), Users.password == data.get('password'))).scalar()
+        if rowdb:
+            response_body['message'] = f'El usuario ya existe'
+            return response_body, 401
+        user = row.serialize()
+        claims = {'user_id': user['id'],
+              'user_username': user['username'],
+              'is_buyer': user['is_buyer'],
+              'is_seller': user['is_seller']}
+        access_token = create_access_token(identity=data.get('username'), additional_claims=claims)
+        response_body['access_token'] = access_token
         response_body['message'] = f'Agregar nuevo Usuario'
         response_body['results'] = row.serialize()
         return response_body, 200  

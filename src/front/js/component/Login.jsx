@@ -4,8 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 
 
 export const Login = () => {
-    const { store } = useContext(Context);
-    const { actions } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
     const [ username, setUsername ] = useState('');

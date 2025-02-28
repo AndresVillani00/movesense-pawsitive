@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { Context } from "../store/appContext.js";
 
 export const Navbar = () => {
+    const { store, actions } = useContext(Context); 
+
     return (
         <nav className="navbar navbar-expand-lg shadow-sm" style={{
             background: "#FFFFFF",
@@ -50,21 +53,33 @@ export const Navbar = () => {
                     </ul>
 
                     {/* Botones de Login y Signup */}
-                    <div className="d-flex ms-3">
-                    <Link to="/new-blog-post">
-                        <button className="btn btn-outline-primary me-2 fw-bold p-2">New Post </button> 
-                        </Link>
-                        <Link to="/login">
-                            <button className="btn btn-outline-primary me-2 fw-bold p-2">Log In</button>
-                        </Link>
-                        <Link to="/sign-up">
-                            <button className="btn text-white fw-bold" style={{
-                                background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",
-                                borderRadius: "8px",
-                                padding: "8px 16px"
-                            }}>Sign Up</button>
-                        </Link>
-                    </div>
+                    { store.isLogged ?
+                        <div className="d-flex ms-3">
+                            <Link to="/new-blog-post">
+                                <button className="btn btn-outline-primary me-2 fw-bold p-2">New Post </button> 
+                            </Link>
+                            <Link to={'/home'}>
+                                <button onClick={() => actions.logout()} className="btn btn-outline-primary me-2 fw-bold p-2">
+                                    Log Out
+                                </button>
+                            </Link>
+                        </div>
+                        :
+                        <div className="d-flex ms-3">
+                            <Link to={'/login'}>
+                                <button className="btn btn-outline-primary me-2 fw-bold p-2">
+                                    Log In
+                                </button>
+                            </Link>
+                            <Link to="/sign-up">
+                                <button className="btn text-white fw-bold" style={{
+                                    background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",
+                                    borderRadius: "8px",
+                                    padding: "8px 16px"
+                                }}>Sign Up</button>
+                            </Link>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
