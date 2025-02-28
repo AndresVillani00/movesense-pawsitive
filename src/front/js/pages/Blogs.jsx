@@ -19,7 +19,7 @@ export const Blog = () => {
       {/* Lista de publicaciones */}
       <h3 className="text-center mb-4">Últimos Blogs</h3>
       <div className="row">
-        {[1, 2, 3, 4].map((index) => (
+        {[1, 2 , 3 , 4 , 5 , 6].map((index) => (
           <div key={index} className="col-md-6 mb-4">
             <div className="card border-0 shadow-lg">
               <img src="https://i.imgur.com/yPRhTpS.png" className="card-img-top" alt="Blog" />

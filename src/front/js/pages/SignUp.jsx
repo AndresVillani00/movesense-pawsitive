@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 export const SignUp = () => {
+    const [selectedRole, setSelectedRole] = useState(null);
+
     return (
         <div className="container-fluid">
             <div className="row">
@@ -26,103 +28,61 @@ export const SignUp = () => {
                     </button>
                 </div>
 
-                {/* Sección Derecha - Carrusel y Formulario */}
+                {/* Sección Derecha - Formulario */}
                 <div className="col-md-6 d-flex flex-column justify-content-center align-items-center"
-                    style={{ 
-                        fontFamily: "'Montserrat', sans-serif", 
-                        background: "linear-gradient(135deg, #F8F9FA, #DEE2E6)", 
-                        minHeight: "100vh"
-                    }}>
-                    
-                    {/* Carrusel */}
-                    <div id="carouselExample" className="carousel slide mb-4 w-100" style={{ maxWidth: "400px" }}>
-                        <div className="carousel-inner text-center">
-                            <div className="carousel-item active">
-                                <img src="https://i.imgur.com/9V0Bs4W.png" className="d-block img-fluid mx-auto" alt="Slide 1" style={{ maxHeight: "200px" }} />
-                            </div>
-                            <div className="carousel-item">
-                                <img src="https://i.imgur.com/BStVloG.png" className="d-block img-fluid mx-auto" alt="Slide 2" style={{ maxHeight: "300px" }} />
-                            </div>
-                            <div className="carousel-item">
-                                <img src="https://i.imgur.com/jDvzxuO.png" className="d-block img-fluid mx-auto rounded" alt="Slide 3" style={{ maxHeight: "300px" }} />
-                            </div>
-                        </div>
-
-                        {/* Controles del carrusel */}
-                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Previous</span>
-                        </button>
-                        <button className="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Next</span>
-                        </button>
-                    </div>
+                    style={{ fontFamily: "'Montserrat', sans-serif", background: "#F8F9FA", minHeight: "100vh" }}>
 
                     {/* Formulario */}
-                    <div className="card p-4 shadow-lg border-0" style={{ maxWidth: "400px", width: "100%", borderRadius: "12px" }}>
-                        <h4 className="text-center mb-3">Crear Cuenta</h4>
+                    <div className="card p-5 shadow-lg border-0" style={{ maxWidth: "400px", width: "100%", borderRadius: "12px" }}>
+                        <h3 className="text-center fw-bold mb-4">Crea tu cuenta</h3>
                         <form className="row g-3">
-                            <div className="col-md-6">
-                                <label className="form-label">Nombre</label>
-                                <input type="text" className="form-control" placeholder="John" required />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Apellido</label>
-                                <input type="text" className="form-control" placeholder="Doe" required />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Teléfono</label>
-                                <input type="text" className="form-control" placeholder="+34 600 123 456" required />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Rol</label>
-                                <select className="form-select" required>
-                                    <option selected disabled value="">Seleccionar...</option>
-                                    <option>Comprador 🛒</option>
-                                    <option>Vendedor 🎨</option>
-                                </select>
-                            </div>
-                            <div className="col-md-12">
-                                <label className="form-label">Username</label>
+                            {/* Campo Username */}
+                            <div className="col-12">
+                                <label className="form-label fw-semibold">Username</label>
                                 <div className="input-group">
                                     <span className="input-group-text">@</span>
                                     <input type="text" className="form-control" placeholder="Tu usuario único" required />
                                 </div>
                             </div>
-                            <div className="col-md-12">
-                                <label className="form-label">Correo Electrónico</label>
+
+                            {/* Campo Email */}
+                            <div className="col-12">
+                                <label className="form-label fw-semibold">Correo Electrónico</label>
                                 <input type="email" className="form-control" placeholder="name@example.com" required />
                             </div>
-                            <div className="col-md-12">
-                                <label className="form-label">Contraseña</label>
+
+                            {/* Campo Password */}
+                            <div className="col-12">
+                                <label className="form-label fw-semibold">Contraseña</label>
                                 <input type="password" className="form-control" placeholder="Mínimo 8 caracteres" required />
                             </div>
-                            <div className="col-md-12">
-                                <label className="form-label">Dirección</label>
-                                <input type="text" className="form-control" placeholder="Calle, número, ciudad" required />
+
+                            {/* Selección de Rol con Botones */}
+                            <div className="col-12 text-center">
+                                <label className="form-label fw-semibold">Selecciona tu rol</label>
+                                <div className="d-flex justify-content-center gap-3">
+                                    <button 
+                                        className={`btn ${selectedRole === "buyer" ? "btn-primary" : "btn-outline-primary"}`}
+                                        onClick={(e) => { e.preventDefault(); setSelectedRole("buyer"); }}>
+                                        Comprador 🛒
+                                    </button>
+                                    <button 
+                                        className={`btn ${selectedRole === "seller" ? "btn-primary" : "btn-outline-primary"}`}
+                                        onClick={(e) => { e.preventDefault(); setSelectedRole("seller"); }}>
+                                        Vendedor 🎨
+                                    </button>
+                                </div>
                             </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Ciudad</label>
-                                <select className="form-select" required>
-                                    <option selected disabled value="">Seleccionar...</option>
-                                    <option>Madrid</option>
-                                    <option>Barcelona</option>
-                                    <option>Valencia</option>
-                                </select>
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Código Postal</label>
-                                <input type="text" className="form-control" placeholder="12345" required />
-                            </div>
-                            <div className="form-check mb-3">
-                                <input className="form-check-input" type="checkbox" required />
-                                <label className="form-check-label">Acepto los términos y condiciones</label>
-                            </div>
-                            <button className="btn btn-primary w-100 mt-3">Registrarse</button>
-                            <button className="btn btn-outline-danger w-100 mt-3 d-flex justify-content-center align-items-center rounded-pill" type="button">
-                                <i className="fab fa-google me-2"></i>
-                                Registrarse con Google
+
+                            {/* Botón de Registro */}
+                            <button className="btn btn-dark w-100 mt-3">Registrarse</button>
+
+                            {/* Línea Divisora */}
+                            <div className="text-center text-muted my-2">O</div>
+
+                            {/* Botón de Google */}
+                            <button className="btn btn-outline-danger w-100 d-flex justify-content-center align-items-center rounded-pill" type="button">
+                                <i className="fab fa-google me-2"></i> Registrarse con Google
                             </button>
                         </form>
                     </div>
