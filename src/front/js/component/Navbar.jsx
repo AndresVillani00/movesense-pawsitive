@@ -1,9 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext.js";
+import { Dropdown } from "react-bootstrap";
+
 
 export const Navbar = () => {
-    const { store, actions } = useContext(Context); 
+    const [user, setUser] = useState({
+        name: " Usuario",
+        profilePic: "https://i.imgur.com/24t1SYU.jpeg" 
+    });
+    const { store, actions } = useContext(Context);
 
     return (
         <nav className="navbar navbar-expand-lg shadow-sm" style={{
@@ -53,16 +59,30 @@ export const Navbar = () => {
                     </ul>
 
                     {/* Botones de Login y Signup */}
-                    { store.isLogged ?
+                    {store.isLogged ?
                         <div className="d-flex ms-3">
                             <Link to="/new-blog-post">
-                                <button className="btn btn-outline-primary me-2 fw-bold p-2">New Post </button> 
+                                <button className="btn btn-outline-primary me-2 fw-bold p-2">New Post </button>
                             </Link>
                             <Link to={'/home'}>
                                 <button onClick={() => actions.logout()} className="btn btn-outline-primary me-2 fw-bold p-2">
                                     Log Out
                                 </button>
                             </Link>
+
+                            <Dropdown className="ms-3">
+                                <Dropdown.Toggle variant="light" id="dropdown-user" className="d-flex align-items-center border-0">
+                                    <img src={user.profilePic} alt="Profile" className="rounded-circle m-1" width="30" height="30" />
+                                    <span className="fw-bold text-dark">{user.name}</span>
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu align="end">
+                                    <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
+                                    <Dropdown.Item as={Link} to="/purchases">Mis Compras</Dropdown.Item>
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item as={Link} to="/logout" className="text-danger">Cerrar Sesión</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
                         </div>
                         :
                         <div className="d-flex ms-3">

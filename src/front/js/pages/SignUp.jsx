@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
 import { useNavigate, Link } from "react-router-dom";
 
+
 export const SignUp = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
@@ -12,9 +13,16 @@ export const SignUp = () => {
     const [password, setPassword] = useState('');
     const [isBuyer, setBuyer] = useState(false);
     const [isSeller, setSeller] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
+        if (!selectedRole) {
+            alert("Por favor, selecciona tu rol antes de registrarte.");
+            return;
+        }
+
         const dataToSend = {
             username,
             email,
@@ -24,7 +32,7 @@ export const SignUp = () => {
         }
         await actions.signup(dataToSend);
         if (store.isLogged) {
-            navigate('/home')
+            navigate('/home');
         }
     }
 
@@ -45,7 +53,7 @@ export const SignUp = () => {
     return (
         <div className="container-fluid">
             <div className="row">
-                {/* Sección Izquierda - Información con Diseño Premium */}
+                {/* Sección Izquierda */}
                 <div className="col-md-6 d-flex flex-column justify-content-center align-items-center text-white p-5 text-center"
                     style={{
                         background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",
@@ -80,7 +88,7 @@ export const SignUp = () => {
                                 <label className="form-label fw-semibold">Username</label>
                                 <div className="input-group">
                                     <span className="input-group-text">@</span>
-                                    <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control" placeholder="Tu usuario único" required />
+                                    <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control" placeholder="Elige el username más original" required />
                                 </div>
                             </div>
 
@@ -93,31 +101,52 @@ export const SignUp = () => {
                             {/* Campo Password */}
                             <div className="col-12">
                                 <label className="form-label fw-semibold">Contraseña</label>
-                                <input onChange={(event) => setPassword(event.target.value)} value={password} type="password" className="form-control" placeholder="Mínimo 8 caracteres" required />
+                                <div className="input-group">
+                                    <input
+                                        onChange={(event) => setPassword(event.target.value)}
+                                        value={password}
+                                        type={showPassword ? "text" : "password"}
+                                        className="form-control"
+                                        placeholder="Mínimo 8 caracteres"
+                                        required
+                                    />
+                                    <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
+                                        {showPassword ? <i class="fas fa-eye-slash"></i> : <i class="fas fa-eye"></i>}
+                                    </span>
+                                </div>
                             </div>
 
-                            {/* Selección de Rol con Botones */}
+                            {/* Selección de Rol */}
                             <div className="col-12 text-center">
                                 <label className="form-label fw-semibold">Selecciona tu rol</label>
                                 <div className="d-flex justify-content-center gap-3">
                                     <button
-                                        className={`btn ${selectedRole === "buyer" ? "btn-primary" : "btn-outline-primary"}`}
+                                        className={`btn ${selectedRole === "buyer" ? "btn-primary active" : "btn-outline-primary"}`}
+                                        style={{
+                                            borderRadius: "30px",
+                                            padding: "10px 20px",
+                                            fontWeight: "bold"
+                                        }}
                                         onClick={(event) => handleBuyer(event)}>
-                                        Comprador 🛒
+                                        🛒 Comprador
                                     </button>
                                     <button
-                                        className={`btn ${selectedRole === "seller" ? "btn-primary" : "btn-outline-primary"}`}
+                                        className={`btn ${selectedRole === "seller" ? "btn-primary active" : "btn-outline-primary"}`}
+                                        style={{
+                                            borderRadius: "30px",
+                                            padding: "10px 20px",
+                                            fontWeight: "bold"
+                                        }}
                                         onClick={(event) => handleSeller(event)}>
-                                        Vendedor 🎨
+                                        🎨 Vendedor
                                     </button>
                                 </div>
                             </div>
 
                             {/* Botón de Registro */}
-                            <button className="btn btn-dark w-100 mt-3">Registrarse</button>
-
+                            <button className="btn btn-dark mt-3" type="submit">Registrarse</button>
                             {/* Botón de Google */}
-                            <button className="btn btn-outline-danger w-100 d-flex justify-content-center align-items-center rounded-pill" type="button">
+                            <button className="btn btn-outline-danger d-flex justify-content-center align-items-center rounded-pill mt-3" type="button">
                                 <i className="fab fa-google me-2"></i> Registrarse con Google
                             </button>
                         </form>
