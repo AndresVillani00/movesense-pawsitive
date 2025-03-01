@@ -2,6 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			isLogged: false,
+			isBuyer: false,
 			usuario: {},
 			alert: {text:'', background:'primary', visible: false},
 			message: null,
@@ -24,10 +25,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const datos = await response.json();
+				console.log(options);
+				console.log(datos);
 				setStore({
 					isLogged: true,
 					usuario: datos.results
 				})
+				if(dataToSend.is_buyer){
+					setStore({ isBuyer: true })
+				}
 				localStorage.setItem('token', datos.access_token)
 			},
 			login: async(dataToSend) => {
@@ -51,6 +57,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					isLogged: true,
 					usuario: datos.results
 				})
+				if(getStore().usuario.is_buyer) {
+					setStore({ isBuyer: true })
+				}
 				localStorage.setItem('token', datos.access_token)
 			}, 
 			logout: () => {

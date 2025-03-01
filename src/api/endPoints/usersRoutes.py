@@ -28,12 +28,14 @@ def users():
                     address=data.get('address'),
                     phone=data.get('phone'),
                     gender=data.get('gender'),
-                    is_buyer=data.get('is_buyer'),
-                    is_seller=data.get('is_seller'))
+                    is_buyer=data.get('is_buyer', False),
+                    is_seller=data.get('is_seller', False))
         rowdb = db.session.execute(db.select(Users).where(Users.username == data.get('username'), Users.password == data.get('password'))).scalar()
         if rowdb:
             response_body['message'] = f'El usuario ya existe'
             return response_body, 401
+        db.session.add(row)
+        db.session.commit()
         user = row.serialize()
         claims = {'user_id': user['id'],
               'user_username': user['username'],

@@ -64,11 +64,6 @@ export const Navbar = () => {
                             <Link to="/new-blog-post">
                                 <button className="btn btn-outline-primary me-2 fw-bold p-2">New Post </button>
                             </Link>
-                            <Link to={'/home'}>
-                                <button onClick={() => actions.logout()} className="btn btn-outline-primary me-2 fw-bold p-2">
-                                    Log Out
-                                </button>
-                            </Link>
 
                             <Dropdown className="ms-3">
                                 <Dropdown.Toggle variant="light" id="dropdown-user" className="d-flex align-items-center border-0">
@@ -78,9 +73,13 @@ export const Navbar = () => {
 
                                 <Dropdown.Menu align="end">
                                     <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
-                                    <Dropdown.Item as={Link} to="/purchases">Mis Compras</Dropdown.Item>
+                                    {store.isBuyer ?
+                                        <Dropdown.Item as={Link} to="/purchases">Mis Compras</Dropdown.Item>
+                                        :
+                                        <Dropdown.Item as={Link} to="/sells">Mis Ventas</Dropdown.Item>
+                                    }
                                     <Dropdown.Divider />
-                                    <Dropdown.Item as={Link} to="/logout" className="text-danger">Cerrar Sesión</Dropdown.Item>
+                                    <Dropdown.Item as={Link} to="/home" onClick={() => actions.logout()} className="text-danger">Cerrar Sesión</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>

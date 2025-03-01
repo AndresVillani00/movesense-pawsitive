@@ -11,8 +11,8 @@ export const SignUp = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isBuyer, setBuyer] = useState(false);
-    const [isSeller, setSeller] = useState(false);
+    const [is_buyer, setBuyer] = useState(false);
+    const [is_seller, setSeller] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (event) => {
@@ -27,8 +27,8 @@ export const SignUp = () => {
             username,
             email,
             password,
-            isBuyer,
-            isSeller
+            is_buyer,
+            is_seller
         }
         await actions.signup(dataToSend);
         if (store.isLogged) {
@@ -111,7 +111,7 @@ export const SignUp = () => {
                                         required
                                     />
                                     <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
-                                        {showPassword ? <i class="fas fa-eye-slash"></i> : <i class="fas fa-eye"></i>}
+                                        {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                                     </span>
                                 </div>
                             </div>
