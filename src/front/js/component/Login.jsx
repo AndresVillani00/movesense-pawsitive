@@ -7,17 +7,18 @@ export const Login = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
-    const [ username, setUsername ] = useState('');
-    const [ password, setPassword ] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const dataToSend = { username, password }
         await actions.login(dataToSend);
-        if(store.isLogged){
+        if (store.isLogged) {
             navigate('/home')
         }
-    } 
+    }
 
     return (
         <div className="container-fluid d-flex justify-content-center align-items-center vh-100" style={{
@@ -31,6 +32,7 @@ export const Login = () => {
                 borderRadius: "12px",
                 border: "1px solid #DDD" // Borde sutil
             }}>
+                 <Link to="/home" className="text-decoration-none text-muted mb-3">  <i class="fas fa-arrow-left"></i> go back home</Link>
                 <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1E3A5F" }}>Welcome Back</h2>
                 <p className="text-center text-muted">Log in to continue</p>
 
@@ -40,9 +42,12 @@ export const Login = () => {
                         <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control border-0 shadow-sm" placeholder="Enter your username" required />
                     </div>
 
-                    <div className="mb-3">
-                        <label className="form-label">Password</label>
-                        <input onChange={(event) => setPassword(event.target.value)} value={password} type="password" className="form-control border-0 shadow-sm" placeholder="Enter your password" required />
+                    <div className="mb-3 input-group">
+                        <label className="form-label col-12">Password</label>
+                        <input onChange={(event) => setPassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className="form-control border-0 shadow-sm" placeholder="Enter your password" required />
+                        <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
+                            {showPassword ? <i class="fas fa-eye-slash"></i> : <i class="fas fa-eye"></i>}
+                        </span>
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center">
@@ -61,7 +66,7 @@ export const Login = () => {
                             borderRadius: "8px",
                             border: "none",
                             transition: "0.3s"
-                        }}>Log In</button> 
+                        }}>Log In</button>
                         {/*<button type="reset" onClick={() => navigate('/home')} className="btn w-50 mt-4" style={{
                             background: "linear-gradient(135deg,rgb(55, 56, 56),rgb(93, 100, 119),rgb(204, 213, 231))", 
                             color: "#fff",
