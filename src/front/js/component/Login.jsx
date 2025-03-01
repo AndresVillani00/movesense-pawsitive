@@ -32,7 +32,7 @@ export const Login = () => {
                 borderRadius: "12px",
                 border: "1px solid #DDD" // Borde sutil
             }}>
-                 <Link to="/home" className="text-decoration-none text-muted mb-3">  <i class="fas fa-arrow-left"></i> go back home</Link>
+                 <Link to="/home" className="text-decoration-none text-muted mb-3">  <i className="fas fa-arrow-left"></i> go back home</Link>
                 <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1E3A5F" }}>Welcome Back</h2>
                 <p className="text-center text-muted">Log in to continue</p>
 
@@ -46,7 +46,7 @@ export const Login = () => {
                         <label className="form-label col-12">Password</label>
                         <input onChange={(event) => setPassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className="form-control border-0 shadow-sm" placeholder="Enter your password" required />
                         <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
-                            {showPassword ? <i class="fas fa-eye-slash"></i> : <i class="fas fa-eye"></i>}
+                            {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                         </span>
                     </div>
 
