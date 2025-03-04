@@ -1,15 +1,20 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext.js";
 import { Dropdown } from "react-bootstrap";
 
 
 export const Navbar = () => {
+    const { store, actions } = useContext(Context);
+
+    useEffect(() => {
+        actions.getUserProfile();
+    }, []);
+
     const [user, setUser] = useState({
         name: " Usuario",
         profilePic: "https://i.imgur.com/24t1SYU.jpeg" 
     });
-    const { store, actions } = useContext(Context);
 
     return (
         <nav className="navbar navbar-expand-lg shadow-sm" style={{
@@ -68,7 +73,7 @@ export const Navbar = () => {
                             <Dropdown className="ms-3">
                                 <Dropdown.Toggle variant="light" id="dropdown-user" className="d-flex align-items-center border-0">
                                     <img src={user.profilePic} alt="Profile" className="rounded-circle m-1" width="30" height="30" />
-                                    <span className="fw-bold text-dark">{user.name}</span>
+                                    <span className="fw-bold text-dark">{store.usuario.username}</span>
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu align="end">
