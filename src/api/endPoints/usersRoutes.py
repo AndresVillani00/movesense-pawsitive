@@ -8,6 +8,7 @@ users_api = Blueprint('usersApi', __name__)
 CORS(users_api)  # Allow CORS requests to this API
 
 
+
 @users_api.route('/users', methods=['GET', 'POST'])
 def users():
     response_body = {}
@@ -51,7 +52,7 @@ def user(id):
     response_body = {}
     row = db.session.execute(db.select(Users).where(Users.id == id)).scalars()
     if not row:
-        response_body['message'] = f'El Usuario de id: {id}, no existe'
+        response_body['message'] = f'El Usuario con id: {id}, no existe'
     if request.method == 'GET':
         response_body['message'] = f'Usuario con id: {id}'
         response_body["results"] = row.serialize()

@@ -7,6 +7,49 @@ const getState = ({ getStore, getActions, setStore }) => {
 			message: null,
 		},
 		actions: {
+			getUserProfile: async () => {
+                const token = localStorage.getItem("token");
+                if (!token) return;  // Si no hay token, no hace nada
+                
+                const uri = `${process.env.BACKEND_URL}/users/profile`;
+                const options = {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                };
+
+                const response = await fetch(uri, options);
+                if (!response.ok) {
+                    console.log("Error obteniendo datos del usuario");
+                    return;
+                }
+
+                const datos = await response.json();
+                setStore({ usuario: datos.results });
+            },
+
+            signup: async (dataToSend) => {
+                const uri = `${process.env.BACKEND_URL}/usersApi/users`;
+                const options = {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(dataToSend),
+                };
+                const response = await fetch(uri, options);
+                if (!response.ok) {
+                    if (response.status == 401) {
+                        setStore({ alert: { text: "Usuario ya existe", background: "danger", visible: true } });
+                    }
+                    return;
+                }
+                const datos = await response.json();
+                setStore({ isLogged: true, usuario: datos.results });
+                localStorage.setItem("token", datos.access_token);
+            },
+
+			
 			signup: async(dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
 				const options = {

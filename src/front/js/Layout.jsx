@@ -15,6 +15,8 @@ import { Blog } from "./pages/Blogs.jsx";
 import { NewBlogPost } from "./pages/NewBlogPost.jsx";
 import { Explore } from "./pages/Explore.jsx";
 import { UserProfile } from "./pages/UserProfile.jsx";
+import { Purchases } from "./pages/Purchases.jsx";
+import { Sales } from "./pages/Sales.jsx";
 
 
 
@@ -40,6 +42,8 @@ const Layout = () => {
                         <Route element={<NewBlogPost />} path="/new-blog-post" />
                         <Route element={<Explore />} path="/explore" />
                         <Route element={<UserProfile />} path="/user-profile" />
+                        <Route element={<Purchases />} path="/purchases" />
+                        <Route element={<Sales />} path="/sales" />
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
                         <Route element={<h1>Not found!</h1>} path='*'/>

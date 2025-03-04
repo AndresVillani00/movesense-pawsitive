@@ -5,6 +5,7 @@ from flask_jwt_extended import get_jwt
 from flask_jwt_extended import jwt_required
 from flask_cors import CORS
 from api.models import db, Users
+from flask import jsonify
 
 
 api = Blueprint('api', __name__)
@@ -42,3 +43,12 @@ def protected():
     response_body['message'] = f'Usuario logeado por: {current_user}'
     response_body['datos adicionales'] = additional_claims
     return response_body, 200
+
+@api.route('/users/profile', methods=['GET'])
+@jwt_required()
+def user_profile():
+    username = get_jwt_identity() 
+    user = db.session.execute(db.select(Users).where(Users.username == username)).scalar()
+    if not user:
+        return jsonify({"message": "Usuario no encontrado"}), 404
+    return jsonify({"message": "Perfil del usuario", "results": user.serialize()}), 200
