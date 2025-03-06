@@ -7,7 +7,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 			message: null,
 		},
 		actions: {
+			PostProduct: async(dataToSend) =>{
+				
+				const uri = `${process.env.BACKEND_URL}/productsApi/products`;
+				const options = {
+					method:'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					if(response.status == 401){
+						setStore({alert: {text:'No se ha podido hacer el post', background:'danger', visible:true}})
+					}
+					return
+				}
+				const datos = await response.json();
+				setStore({
+					isLogged: true,
+					usuario: datos.results
+				})
+
+			},
 			login: async(dataToSend) => {
+				
 				const uri = `${process.env.BACKEND_URL}/api/login`;
 				const options = {
 					method:'POST',

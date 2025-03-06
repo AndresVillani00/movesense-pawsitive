@@ -1,6 +1,19 @@
-import React from "react";
+import React, { useContext, useState } from "react"; 
+import { useNavigate } from "react-router-dom";
+import { Context } from "../store/appContext.js";
+
 
 export const Login = () => {
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        actions.setAlert({text: '', background: 'primary', visible: false})
+        const dataToSend = {username, password}
+         
+        await actions.login(dataToSend)
+        
+        
+      }
     return (
         <div className="container-fluid d-flex justify-content-center align-items-center vh-100" style={{
             background: "#F4F4F7", // Fondo claro y limpio
@@ -16,7 +29,7 @@ export const Login = () => {
                 <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1E3A5F" }}>Welcome Back</h2>
                 <p className="text-center text-muted">Log in to continue</p>
 
-                <form>
+                <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Email</label>
                         <input type="email" className="form-control border-0 shadow-sm" placeholder="Enter your email" required />
@@ -35,7 +48,7 @@ export const Login = () => {
                         <a href="#" className="text-decoration-none" style={{ color: "#5A189A" }}>Forgot password?</a>
                     </div>
 
-                    <button className="btn w-100 mt-4" style={{
+                    <button className="btn w-100 mt-4"  onClick={handleSubmit} style={{
                         background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)", // Azul oscuro + Morado elegante
                         color: "#fff",
                         fontWeight: "bold",
