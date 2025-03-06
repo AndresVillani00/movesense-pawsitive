@@ -2,20 +2,15 @@ import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext.js";
 import { Dropdown } from "react-bootstrap";
-
-
 export const Navbar = () => {
     const { store, actions } = useContext(Context);
-
     useEffect(() => {
         actions.getUserProfile();
     }, []);
-
     const [user, setUser] = useState({
         name: " Usuario",
-        profilePic: "https://i.imgur.com/24t1SYU.jpeg" 
+        profilePic: "https://i.imgur.com/24t1SYU.jpeg"
     });
-
     return (
         <nav className="navbar navbar-expand-lg shadow-sm" style={{
             background: "#FFFFFF",
@@ -27,12 +22,10 @@ export const Navbar = () => {
                 <Link to="/home" className="navbar-brand fw-bold" style={{ color: "#1E1E50", fontSize: "1.5rem" }}>
                     Art Vibes
                 </Link>
-
                 {/* Botón de menú en móviles */}
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span className="navbar-toggler-icon"></span>
                 </button>
-
                 {/* Links de navegación */}
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav mx-auto">
@@ -62,7 +55,6 @@ export const Navbar = () => {
                             </Link>
                         </li>
                     </ul>
-
                     {/* Botones de Login y Signup */}
                     {store.isLogged ?
                         <div className="d-flex ms-3">
@@ -71,7 +63,6 @@ export const Navbar = () => {
                                     <img src={user.profilePic} alt="Profile" className="rounded-circle m-1" width="30" height="30" />
                                     <span className="fw-bold text-dark">{store.usuario.username}</span>
                                 </Dropdown.Toggle>
-
                                 <Dropdown.Menu align="end">
                                     <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
                                     {store.isBuyer ?
@@ -81,7 +72,6 @@ export const Navbar = () => {
                                         <Dropdown.Item as={Link} to="/sales">Mis Ventas</Dropdown.Item>
                                         <Dropdown.Item as={Link} to="/publish-product">Publicar un producto</Dropdown.Item>
                                         <Dropdown.Item as={Link} to="/new-blog-post">Publicar un evento</Dropdown.Item>
-
                                         </div>
                                     }
                                     <Dropdown.Divider />

@@ -14,10 +14,12 @@ import { Product } from "./pages/Product.jsx";
 import { Blog } from "./pages/Blogs.jsx";
 import { NewBlogPost } from "./pages/NewBlogPost.jsx";
 import { Explore } from "./pages/Explore.jsx";
+import { PostProduct } from "./pages/PostProduct.jsx";
 import { UserProfile } from "./pages/UserProfile.jsx";
 import { Purchases } from "./pages/Purchases.jsx";
 import { Sales } from "./pages/Sales.jsx";
 import { Artists } from "./pages/Artists.jsx";
+
 
 
 
@@ -43,6 +45,7 @@ const Layout = () => {
                         <Route element={<NewBlogPost />} path="/new-blog-post" />
                         <Route element={<Explore />} path="/explore" />
                         <Route element={<Artists />} path="/artists" />
+                        <Route element={<PostProduct />} path="/PostProduct" />
                         <Route element={<UserProfile />} path="/user-profile" />
                         <Route element={<Purchases />} path="/purchases" />
                         <Route element={<Sales />} path="/sales" />

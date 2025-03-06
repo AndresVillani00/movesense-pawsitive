@@ -63,3 +63,4 @@ def get_artists():
     response_body['results'] = artists
     
     return response_body, 200
+
