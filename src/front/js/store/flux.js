@@ -8,6 +8,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			message: null,
 		},
 		actions: {
+			PostProduct: async(dataToSend) =>{
+				
+				const uri = `${process.env.BACKEND_URL}/productsApi/products`;
 			getUserProfile: async () => {
                 const token = localStorage.getItem("token");
                 if (!token) return;  // Si no hay token, no hace nada
@@ -63,6 +66,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await fetch(uri, options);
 				if(!response.ok){
 					if(response.status == 401){
+						setStore({alert: {text:'No se ha podido hacer el post', background:'danger', visible:true}})
 						setStore({alert: {text:'Usuario que intenta registrar ya existe', background:'danger', visible:true}})
 					}
 					return
@@ -74,12 +78,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					isLogged: true,
 					usuario: datos.results
 				})
+
 				if(dataToSend.is_buyer){
 					setStore({ isBuyer: true })
 				}
 				localStorage.setItem('token', datos.access_token)
 			},
 			login: async(dataToSend) => {
+				
 				const uri = `${process.env.BACKEND_URL}/api/login`;
 				const options = {
 					method:'POST',

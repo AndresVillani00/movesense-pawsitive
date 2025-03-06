@@ -1,3 +1,20 @@
+
+import React, { useContext, useState } from "react"; 
+import { useNavigate } from "react-router-dom";
+import { Context } from "../store/appContext.js";
+
+
+export const Login = () => {
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        actions.setAlert({text: '', background: 'primary', visible: false})
+        const dataToSend = {username, password}
+         
+        await actions.login(dataToSend)
+        
+        
+      }
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
 import { useNavigate, Link } from "react-router-dom";
@@ -77,6 +94,16 @@ export const Login = () => {
                             transition: "0.3s"
                         }}>Go Back</button>*/}
                     </div>
+
+                    <button className="btn w-100 mt-4"  onClick={handleSubmit} style={{
+                        background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)", // Azul oscuro + Morado elegante
+                        color: "#fff",
+                        fontWeight: "bold",
+                        padding: "10px",
+                        borderRadius: "8px",
+                        border: "none",
+                        transition: "0.3s"
+                    }}>Sign In</button>
 
                     <div className="text-center mt-3">
                         <p className="text-muted">Don't have an account? <Link to={"/sign-up"} className="text-decoration-none" style={{ color: "#1E1E50" }}>Sign Up</Link></p>
