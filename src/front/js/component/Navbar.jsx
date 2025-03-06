@@ -58,7 +58,7 @@ export const Navbar = () => {
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link text-dark mx-2 fs-5 fw-medium" to="/blogs">
-                                Blogs
+                                Events
                             </Link>
                         </li>
                     </ul>
@@ -66,10 +66,6 @@ export const Navbar = () => {
                     {/* Botones de Login y Signup */}
                     {store.isLogged ?
                         <div className="d-flex ms-3">
-                            <Link to="/new-blog-post">
-                                <button className="btn btn-outline-primary me-2 fw-bold p-2">New Post </button>
-                            </Link>
-
                             <Dropdown className="ms-3">
                                 <Dropdown.Toggle variant="light" id="dropdown-user" className="d-flex align-items-center border-0">
                                     <img src={user.profilePic} alt="Profile" className="rounded-circle m-1" width="30" height="30" />
@@ -81,7 +77,12 @@ export const Navbar = () => {
                                     {store.isBuyer ?
                                         <Dropdown.Item as={Link} to="/purchases">Mis Compras</Dropdown.Item>
                                         :
-                                        <Dropdown.Item as={Link} to="/sells">Mis Ventas</Dropdown.Item>
+                                        <div>
+                                        <Dropdown.Item as={Link} to="/sales">Mis Ventas</Dropdown.Item>
+                                        <Dropdown.Item as={Link} to="/publish-product">Publicar un producto</Dropdown.Item>
+                                        <Dropdown.Item as={Link} to="/new-blog-post">Publicar un evento</Dropdown.Item>
+
+                                        </div>
                                     }
                                     <Dropdown.Divider />
                                     <Dropdown.Item as={Link} to="/home" onClick={() => actions.logout()} className="text-danger">Cerrar Sesión</Dropdown.Item>

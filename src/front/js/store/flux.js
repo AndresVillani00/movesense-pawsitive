@@ -4,6 +4,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isLogged: false,
 			isBuyer: false,
 			usuario: {},
+			artists: [],
 			alert: {text:'', background:'primary', visible: false},
 			message: null,
 		},
@@ -30,6 +31,45 @@ const getState = ({ getStore, getActions, setStore }) => {
                 const datos = await response.json();
                 setStore({ usuario: datos.results });
             },
+
+			getArtists: async () => {
+				const uri = `${process.env.BACKEND_URL}/users/artists`;
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+			
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de artistas");
+						return;
+					}
+			
+					const data = await response.json();
+					setStore({ artists: data.results });
+				} catch (error) {
+					console.log("Error en getArtists:", error);
+				}
+			},		
+			
+			getProducts: async () => {
+				const uri = `${process.env.BACKEND_URL}/products`;
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: { "Content-Type": "application/json" }
+					});
+					if (!response.ok) throw new Error("Error obteniendo productos");
+			
+					const data = await response.json();
+					setStore({ products: data.results });
+				} catch (error) {
+					console.log("Error en getProducts:", error);
+				}
+			},
+			
 
             signup: async (dataToSend) => {
                 const uri = `${process.env.BACKEND_URL}/usersApi/users`;

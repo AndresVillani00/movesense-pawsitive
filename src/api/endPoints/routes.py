@@ -52,3 +52,14 @@ def user_profile():
     if not user:
         return jsonify({"message": "Usuario no encontrado"}), 404
     return jsonify({"message": "Perfil del usuario", "results": user.serialize()}), 200
+
+@api.route('/users/artists', methods=['GET'])
+def get_artists():
+    response_body = {}
+    rows = db.session.execute(db.select(Users).where(Users.is_seller == True)).scalars()
+    artists = [row.serialize() for row in rows]
+    
+    response_body['message'] = 'Lista de artistas obtenida con éxito'
+    response_body['results'] = artists
+    
+    return response_body, 200
