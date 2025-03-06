@@ -74,6 +74,7 @@ def user(id):
         row.gender=data.get('gender'),
         row.is_buyer=data.get('is_buyer'),
         row.is_seller=data.get('is_seller')
+        db.session.commit()  
         response_body['message'] = f'Usuario con id: {id}. Actualizado'
         response_body["results"] = row.serialize()
         return response_body, 200

@@ -35,7 +35,7 @@ export const Home = () => {
                     {[1, 2, 3, 4].map((product) => (
                         <div key={product} className="col-md-3">
                             <div className="card shadow-sm">
-                                <img src={`https://via.placeholder.com/150`} alt="Product" className="card-img-top" />
+                                <img src={`https://i.imgur.com/gsLEtHk.png`} alt="Product" className="card-img-top" />
                                 <div className="card-body">
                                     <h5 className="card-title">Artwork {product}</h5>
                                     <p className="card-text">Amazing piece of art.</p>
@@ -54,7 +54,7 @@ export const Home = () => {
                     {[1, 2, 3].map((artist) => (
                         <div key={artist} className="col-md-4">
                             <div className="card text-center p-3 shadow-sm">
-                                <h5>Artist {artist}</h5>
+                                <h5>ArtLover {artist}</h5>
                                 <Link to="/artists" className="btn btn-outline-primary mt-2">View Profile</Link>
                             </div>
                         </div>

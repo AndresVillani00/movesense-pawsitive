@@ -10,6 +10,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         },
         actions: {
             getUserProfile: async () => {
+
                 const token = localStorage.getItem("token");
                 if (!token) return;  // Si no hay token, no hace nada
                 const uri = `${process.env.BACKEND_URL}/users/profile`;

@@ -32,6 +32,7 @@ def products():
                     final_price=data.get('final_price'),
                     description=data.get('description'),
                     category=data.get('category'))
+        db.session.commit()
         response_body['message'] = f'Agregar nuevo Producto'
         response_body['results'] = row.serialize()
         return response_body, 200  
@@ -60,6 +61,7 @@ def product(id):
         row.final_price=data.get('final_price'),
         row.description=data.get('description'),
         row.category=data.get('category')
+        db.session.commit()
         response_body['message'] = f'Producto con id: {id}. Actualizado'
         response_body["results"] = row.serialize()
         return response_body, 200
