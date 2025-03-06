@@ -1,10 +1,12 @@
 from flask import request, Blueprint
+from flask_jwt_extended import create_access_token
 from flask_cors import CORS
 from api.models import db, Users
 
 
 users_api = Blueprint('usersApi', __name__)
 CORS(users_api)  # Allow CORS requests to this API
+
 
 
 @users_api.route('/users', methods=['GET', 'POST'])
@@ -27,8 +29,21 @@ def users():
                     address=data.get('address'),
                     phone=data.get('phone'),
                     gender=data.get('gender'),
-                    is_buyer=data.get('is_buyer'),
-                    is_seller=data.get('is_seller'))
+                    is_buyer=data.get('is_buyer', False),
+                    is_seller=data.get('is_seller', False))
+        rowdb = db.session.execute(db.select(Users).where(Users.username == data.get('username'), Users.password == data.get('password'))).scalar()
+        if rowdb:
+            response_body['message'] = f'El usuario ya existe'
+            return response_body, 401
+        db.session.add(row)
+        db.session.commit()
+        user = row.serialize()
+        claims = {'user_id': user['id'],
+              'user_username': user['username'],
+              'is_buyer': user['is_buyer'],
+              'is_seller': user['is_seller']}
+        access_token = create_access_token(identity=data.get('username'), additional_claims=claims)
+        response_body['access_token'] = access_token
         response_body['message'] = f'Agregar nuevo Usuario'
         response_body['results'] = row.serialize()
         return response_body, 200  
@@ -39,7 +54,7 @@ def user(id):
     response_body = {}
     row = db.session.execute(db.select(Users).where(Users.id == id)).scalars()
     if not row:
-        response_body['message'] = f'El Usuario de id: {id}, no existe'
+        response_body['message'] = f'El Usuario con id: {id}, no existe'
     if request.method == 'GET':
         response_body['message'] = f'Usuario con id: {id}'
         response_body["results"] = row.serialize()

@@ -1,17 +1,66 @@
-import React from "react";
+import React, { useContext, useState } from "react";
+import { Context } from "../store/appContext.js";
+import { useNavigate, Link } from "react-router-dom";
+
 
 export const SignUp = () => {
+    const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
+
+    const [selectedRole, setSelectedRole] = useState(null);
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [is_buyer, setBuyer] = useState(false);
+    const [is_seller, setSeller] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (!selectedRole) {
+            alert("Por favor, selecciona tu rol antes de registrarte.");
+            return;
+        }
+
+        const dataToSend = {
+            username,
+            email,
+            password,
+            is_buyer,
+            is_seller
+        }
+        await actions.signup(dataToSend);
+        if (store.isLogged) {
+            navigate('/home');
+        }
+    }
+
+    const handleBuyer = (event) => {
+        event.preventDefault();
+        setSelectedRole("buyer");
+        setBuyer(true);
+        setSeller(false);
+    }
+
+    const handleSeller = (event) => {
+        event.preventDefault();
+        setSelectedRole("seller");
+        setBuyer(false);
+        setSeller(true);
+    }
+
     return (
         <div className="container-fluid">
             <div className="row">
-                {/* Sección Izquierda - Información con Diseño Premium */}
+                {/* Sección Izquierda */}
                 <div className="col-md-6 d-flex flex-column justify-content-center align-items-center text-white p-5 text-center"
                     style={{
                         background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",
                         minHeight: "100vh",
                         fontFamily: "'Poppins', sans-serif"
                     }}>
-                    
+
                     <h1 className="fw-bold display-4">Únete a la comunidad de arte</h1>
                     <p className="fs-5 mt-3">
                         Vende, descubre y colecciona arte de todo el mundo.
@@ -26,103 +75,79 @@ export const SignUp = () => {
                     </button>
                 </div>
 
-                {/* Sección Derecha - Carrusel y Formulario */}
+                {/* Sección Derecha - Formulario */}
                 <div className="col-md-6 d-flex flex-column justify-content-center align-items-center"
-                    style={{ 
-                        fontFamily: "'Montserrat', sans-serif", 
-                        background: "linear-gradient(135deg, #F8F9FA, #DEE2E6)", 
-                        minHeight: "100vh"
-                    }}>
-                    
-                    {/* Carrusel */}
-                    <div id="carouselExample" className="carousel slide mb-4 w-100" style={{ maxWidth: "400px" }}>
-                        <div className="carousel-inner text-center">
-                            <div className="carousel-item active">
-                                <img src="https://i.imgur.com/9V0Bs4W.png" className="d-block img-fluid mx-auto" alt="Slide 1" style={{ maxHeight: "200px" }} />
-                            </div>
-                            <div className="carousel-item">
-                                <img src="https://i.imgur.com/BStVloG.png" className="d-block img-fluid mx-auto" alt="Slide 2" style={{ maxHeight: "300px" }} />
-                            </div>
-                            <div className="carousel-item">
-                                <img src="https://i.imgur.com/jDvzxuO.png" className="d-block img-fluid mx-auto rounded" alt="Slide 3" style={{ maxHeight: "300px" }} />
-                            </div>
-                        </div>
-
-                        {/* Controles del carrusel */}
-                        <button className="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-                            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Previous</span>
-                        </button>
-                        <button className="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-                            <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span className="visually-hidden">Next</span>
-                        </button>
-                    </div>
+                    style={{ fontFamily: "'Montserrat', sans-serif", background: "#F8F9FA", minHeight: "100vh" }}>
 
                     {/* Formulario */}
-                    <div className="card p-4 shadow-lg border-0" style={{ maxWidth: "400px", width: "100%", borderRadius: "12px" }}>
-                        <h4 className="text-center mb-3">Crear Cuenta</h4>
-                        <form className="row g-3">
-                            <div className="col-md-6">
-                                <label className="form-label">Nombre</label>
-                                <input type="text" className="form-control" placeholder="John" required />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Apellido</label>
-                                <input type="text" className="form-control" placeholder="Doe" required />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Teléfono</label>
-                                <input type="text" className="form-control" placeholder="+34 600 123 456" required />
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Rol</label>
-                                <select className="form-select" required>
-                                    <option selected disabled value="">Seleccionar...</option>
-                                    <option>Comprador 🛒</option>
-                                    <option>Vendedor 🎨</option>
-                                </select>
-                            </div>
-                            <div className="col-md-12">
-                                <label className="form-label">Username</label>
+                    <div className="card p-5 shadow-lg border-0" style={{ maxWidth: "400px", width: "100%", borderRadius: "12px" }}>
+                        <h3 className="text-center fw-bold mb-4">Crea tu cuenta</h3>
+                        <form onSubmit={handleSubmit} className="row g-3">
+                            {/* Campo Username */}
+                            <div className="col-12">
+                                <label className="form-label fw-semibold">Username</label>
                                 <div className="input-group">
                                     <span className="input-group-text">@</span>
-                                    <input type="text" className="form-control" placeholder="Tu usuario único" required />
+                                    <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control" placeholder="Elige el username más original" required />
                                 </div>
                             </div>
-                            <div className="col-md-12">
-                                <label className="form-label">Correo Electrónico</label>
-                                <input type="email" className="form-control" placeholder="name@example.com" required />
+
+                            {/* Campo Email */}
+                            <div className="col-12">
+                                <label className="form-label fw-semibold">Correo Electrónico</label>
+                                <input onChange={(event) => setEmail(event.target.value)} value={email} type="email" className="form-control" placeholder="name@example.com" required />
                             </div>
-                            <div className="col-md-12">
-                                <label className="form-label">Contraseña</label>
-                                <input type="password" className="form-control" placeholder="Mínimo 8 caracteres" required />
+
+                            {/* Campo Password */}
+                            <div className="col-12">
+                                <label className="form-label fw-semibold">Contraseña</label>
+                                <div className="input-group">
+                                    <input
+                                        onChange={(event) => setPassword(event.target.value)}
+                                        value={password}
+                                        type={showPassword ? "text" : "password"}
+                                        className="form-control"
+                                        placeholder="Mínimo 8 caracteres"
+                                        required
+                                    />
+                                    <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
+                                        {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+                                    </span>
+                                </div>
                             </div>
-                            <div className="col-md-12">
-                                <label className="form-label">Dirección</label>
-                                <input type="text" className="form-control" placeholder="Calle, número, ciudad" required />
+
+                            {/* Selección de Rol */}
+                            <div className="col-12 text-center">
+                                <label className="form-label fw-semibold">Selecciona tu rol</label>
+                                <div className="d-flex justify-content-center gap-3">
+                                    <button
+                                        className={`btn ${selectedRole === "buyer" ? "btn-primary active" : "btn-outline-primary"}`}
+                                        style={{
+                                            borderRadius: "30px",
+                                            padding: "10px 20px",
+                                            fontWeight: "bold"
+                                        }}
+                                        onClick={(event) => handleBuyer(event)}>
+                                        🛒 Comprador
+                                    </button>
+                                    <button
+                                        className={`btn ${selectedRole === "seller" ? "btn-primary active" : "btn-outline-primary"}`}
+                                        style={{
+                                            borderRadius: "30px",
+                                            padding: "10px 20px",
+                                            fontWeight: "bold"
+                                        }}
+                                        onClick={(event) => handleSeller(event)}>
+                                        🎨 Vendedor
+                                    </button>
+                                </div>
                             </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Ciudad</label>
-                                <select className="form-select" required>
-                                    <option selected disabled value="">Seleccionar...</option>
-                                    <option>Madrid</option>
-                                    <option>Barcelona</option>
-                                    <option>Valencia</option>
-                                </select>
-                            </div>
-                            <div className="col-md-6">
-                                <label className="form-label">Código Postal</label>
-                                <input type="text" className="form-control" placeholder="12345" required />
-                            </div>
-                            <div className="form-check mb-3">
-                                <input className="form-check-input" type="checkbox" required />
-                                <label className="form-check-label">Acepto los términos y condiciones</label>
-                            </div>
-                            <button className="btn btn-primary w-100 mt-3">Registrarse</button>
-                            <button className="btn btn-outline-danger w-100 mt-3 d-flex justify-content-center align-items-center rounded-pill" type="button">
-                                <i className="fab fa-google me-2"></i>
-                                Registrarse con Google
+
+                            {/* Botón de Registro */}
+                            <button className="btn btn-dark mt-3" type="submit">Registrarse</button>
+                            {/* Botón de Google */}
+                            <button className="btn btn-outline-danger d-flex justify-content-center align-items-center rounded-pill mt-3" type="button">
+                                <i className="fab fa-google me-2"></i> Registrarse con Google
                             </button>
                         </form>
                     </div>

@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { Context } from "../store/appContext.js";
+import { Dropdown } from "react-bootstrap";
+
 
 export const Navbar = () => {
+    const { store, actions } = useContext(Context);
+
+    useEffect(() => {
+        actions.getUserProfile();
+    }, []);
+
+    const [user, setUser] = useState({
+        name: " Usuario",
+        profilePic: "https://i.imgur.com/24t1SYU.jpeg" 
+    });
+
     return (
         <nav className="navbar navbar-expand-lg shadow-sm" style={{
             background: "#FFFFFF",
@@ -50,21 +64,46 @@ export const Navbar = () => {
                     </ul>
 
                     {/* Botones de Login y Signup */}
-                    <div className="d-flex ms-3">
-                    <Link to="/new-blog-post">
-                        <button className="btn btn-outline-primary me-2 fw-bold p-2">New Post </button> 
-                        </Link>
-                        <Link to="/login">
-                            <button className="btn btn-outline-primary me-2 fw-bold p-2">Log In</button>
-                        </Link>
-                        <Link to="/sign-up">
-                            <button className="btn text-white fw-bold" style={{
-                                background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",
-                                borderRadius: "8px",
-                                padding: "8px 16px"
-                            }}>Sign Up</button>
-                        </Link>
-                    </div>
+                    {store.isLogged ?
+                        <div className="d-flex ms-3">
+                            <Link to="/new-blog-post">
+                                <button className="btn btn-outline-primary me-2 fw-bold p-2">New Post </button>
+                            </Link>
+
+                            <Dropdown className="ms-3">
+                                <Dropdown.Toggle variant="light" id="dropdown-user" className="d-flex align-items-center border-0">
+                                    <img src={user.profilePic} alt="Profile" className="rounded-circle m-1" width="30" height="30" />
+                                    <span className="fw-bold text-dark">{store.usuario.username}</span>
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu align="end">
+                                    <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
+                                    {store.isBuyer ?
+                                        <Dropdown.Item as={Link} to="/purchases">Mis Compras</Dropdown.Item>
+                                        :
+                                        <Dropdown.Item as={Link} to="/sells">Mis Ventas</Dropdown.Item>
+                                    }
+                                    <Dropdown.Divider />
+                                    <Dropdown.Item as={Link} to="/home" onClick={() => actions.logout()} className="text-danger">Cerrar Sesión</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
+                        :
+                        <div className="d-flex ms-3">
+                            <Link to={'/login'}>
+                                <button className="btn btn-outline-primary me-2 fw-bold p-2">
+                                    Log In
+                                </button>
+                            </Link>
+                            <Link to="/sign-up">
+                                <button className="btn text-white fw-bold" style={{
+                                    background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",
+                                    borderRadius: "8px",
+                                    padding: "8px 16px"
+                                }}>Sign Up</button>
+                            </Link>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
