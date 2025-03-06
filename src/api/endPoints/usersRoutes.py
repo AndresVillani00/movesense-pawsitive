@@ -2,11 +2,13 @@ from flask import request, Blueprint
 from flask_jwt_extended import create_access_token
 from flask_cors import CORS
 from api.models import db, Users
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import get_jwt
+from flask_jwt_extended import jwt_required
 
 
 users_api = Blueprint('usersApi', __name__)
 CORS(users_api)  # Allow CORS requests to this API
-
 
 
 @users_api.route('/users', methods=['GET', 'POST'])
