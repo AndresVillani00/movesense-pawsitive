@@ -54,7 +54,7 @@ def users():
 @users_api.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def user(id):
     response_body = {}
-    row = db.session.execute(db.select(Users).where(Users.id == id)).scalars()
+    row = db.session.execute(db.select(Users).where(Users.id == id)).scalar()
     if not row:
         response_body['message'] = f'El Usuario con id: {id}, no existe'
     if request.method == 'GET':
@@ -64,16 +64,13 @@ def user(id):
     if request.method == 'PUT':
         data = request.json
         row.username=data.get('username'),
-        row.password=data.get('password'),
         row.name=data.get('name'),
         row.last_name=data.get('last_name'),
         row.email=data.get('email'),
         row.country=data.get('country'),
         row.address=data.get('address'),
-        row.phone=data.get('phone'),
-        row.gender=data.get('gender'),
-        row.is_buyer=data.get('is_buyer'),
-        row.is_seller=data.get('is_seller')
+        row.phone=data.get('phone')
+        db.session.add(row)
         db.session.commit()  
         response_body['message'] = f'Usuario con id: {id}. Actualizado'
         response_body["results"] = row.serialize()
