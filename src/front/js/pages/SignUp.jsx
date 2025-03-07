@@ -19,7 +19,7 @@ export const SignUp = () => {
         event.preventDefault();
 
         if (!selectedRole) {
-            alert("Por favor, selecciona tu rol antes de registrarte.");
+            store.alert = { text: "Seleccione un rol", background: "danger", visible: true };
             return;
         }
 
@@ -31,6 +31,7 @@ export const SignUp = () => {
             is_seller
         }
         await actions.signup(dataToSend);
+        store.alert = { text: "", background: "primary", visible: false };
         if (store.isLogged) {
             navigate('/home');
         }

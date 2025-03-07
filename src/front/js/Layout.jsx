@@ -19,6 +19,7 @@ import { UserProfile } from "./pages/UserProfile.jsx";
 import { Purchases } from "./pages/Purchases.jsx";
 import { Sales } from "./pages/Sales.jsx";
 import { Artists } from "./pages/Artists.jsx";
+import { Alert } from "./component/Alert.jsx";
 
 
 
@@ -36,6 +37,7 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
+                    <Alert />
                     <Routes>
                         <Route element={<Home />} path="/home" />
                         <Route element={<SignUp />} path="/sign-up" />

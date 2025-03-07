@@ -5,19 +5,18 @@ import { Link } from "react-router-dom";
 export const Artists = () => {
     const { store, actions } = useContext(Context);
     const [search, setSearch] = useState("");
-    const [filteredArtists, setFilteredArtists] = useState([]);
-
-    useEffect(() => {
-        actions.getArtists();
-    }, []);
-
-    useEffect(() => {
-        setFilteredArtists(
-            store.artists.filter(artist =>
-                artist.username.toLowerCase().includes(search.toLowerCase())
-            )
-        );
-    }, [search, store.artists]);
+    const imagenes = [
+        'https://randomuser.me/api/portraits/lego/0.jpg',
+        'https://randomuser.me/api/portraits/lego/1.jpg',
+        'https://randomuser.me/api/portraits/lego/2.jpg',
+        'https://randomuser.me/api/portraits/lego/3.jpg',
+        'https://randomuser.me/api/portraits/lego/4.jpg',
+        'https://randomuser.me/api/portraits/lego/5.jpg',
+        'https://randomuser.me/api/portraits/lego/7.jpg',
+        'https://randomuser.me/api/portraits/lego/8.jpg'
+    ];
+    const aleatorio = Math.floor(Math.random() * imagenes.length);
+	const randomImg = imagenes[aleatorio]
 
     return (
         <div className="container mt-5">
@@ -31,23 +30,31 @@ export const Artists = () => {
                     onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
-            <div className="row">
-                {filteredArtists.length > 0 ? (
-                    filteredArtists.map(artist => (
-                        <div key={artist.id} className="col-md-4 mb-4">
-                            <div className="card shadow-sm">
-                                <img className="card-img-top" src={artist.profile_pic || "https://via.placeholder.com/150"} alt={artist.username} />
-                                <div className="card-body">
-                                    <h5 className="card-title">{artist.username}</h5>
-                                    <p className="card-text">{artist.bio || "Artista sin biografía."}</p>
-                                    <Link to={`/artist/${artist.id}`} className="btn btn-primary">Ver Perfil</Link>
-                                </div>
-                            </div>
+            <div className="p-4 bg-light rounded">
+                {/* Header */}
+                <div className="text-center my-4">
+                <h1 className="fw-bold text-dark">Explora Artistas que ya venden Obras de Arte</h1>
+                <p className="text-muted">Descubre los distintos artistas talentosos de nuestra web.</p>
+                </div>
+
+                {/* Grid de productos */}
+                <div className="row">
+                {store.artists.map(item => (
+                    <div key={item.id} className="col-md-3 mb-4">
+                    <div className="card shadow-sm bg-white">
+                        <img
+                        src={randomImg}
+                        className="card-img-top rounded"
+                        style={{ height: "200px", objectFit: "cover", width: "100%" }}
+                        />
+                        <div className="card-body text-center">
+                        <h5 className="fw-bold">{item.username}</h5>
+                        <p className="text-muted">{/*store.seller.reputation*/}</p>
                         </div>
-                    ))
-                ) : (
-                    <p className="text-center">No se encontraron artistas.</p>
-                )}
+                    </div>
+                    </div>
+                ))}
+                </div>
             </div>
         </div>
     );

@@ -30,7 +30,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 setStore({ usuario: datos.results });
             },
             getArtists: async () => {
-                const uri = `${process.env.BACKEND_URL}/users/artists`;
+                const uri = `${process.env.BACKEND_URL}/api/users/artists`;
                 try {
                     const response = await fetch(uri, {
                         method: "GET",
@@ -72,41 +72,16 @@ const getState = ({ getStore, getActions, setStore }) => {
                 const response = await fetch(uri, options);
                 if (!response.ok) {
                     if (response.status == 401) {
-                        setStore({ alert: { text: "Usuario ya existe", background: "danger", visible: true } });
+                        setStore({ alert: { text: "El Usuario que intenta registrar ya existe", background: "danger", visible: true } });
                     }
                     return;
                 }
                 const datos = await response.json();
                 setStore({ isLogged: true, usuario: datos.results });
-                localStorage.setItem("token", datos.access_token);
-            },
-            signup: async(dataToSend) => {
-                const uri = `${process.env.BACKEND_URL}/usersApi/users`;
-                const options = {
-                    method:'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dataToSend)
-                };
-                const response = await fetch(uri, options);
-                if(!response.ok){
-                    if(response.status == 401){
-                        setStore({alert: {text:'Usuario que intenta registrar ya existe', background:'danger', visible:true}})
-                    }
-                    return
-                }
-                const datos = await response.json();
-                console.log(options);
-                console.log(datos);
-                setStore({
-                    isLogged: true,
-                    usuario: datos.results
-                })
-                if(dataToSend.is_buyer){
-                    setStore({ isBuyer: true })
-                }
-                localStorage.setItem('token', datos.access_token)
+				if(dataToSend.is_buyer){
+					setStore({ isBuyer: true })
+				}
+				localStorage.setItem("token", datos.access_token);
             },
             login: async(dataToSend) => {
                 const uri = `${process.env.BACKEND_URL}/api/login`;
@@ -144,7 +119,26 @@ const getState = ({ getStore, getActions, setStore }) => {
             setIsLogged: (value) => {
                 setStore({ isLogged: value })
             },
-			PostProduct: async(dataToSend) =>{
+            updateUsuario: async(dataToSend, id) => {
+				const uri = `${process.env.BACKEND_URL}/usersApi/users/${id}`;
+				const options = {
+					method:'PUT',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					if(response.status == 401){
+						setStore({ alert: {text:'Los datos del Usuario no se han podido guardar', background:'danger', visible:true} })
+					}
+					return
+				}
+				const datos = await response.json();
+				setStore({	usuario: datos.results	})
+			},
+			postProduct: async(dataToSend) =>{
 				
 				const uri = `${process.env.BACKEND_URL}/productsApi/products`;
 				const options = {

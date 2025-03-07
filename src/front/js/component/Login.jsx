@@ -12,6 +12,7 @@ export const Login = () => {
         event.preventDefault();
         const dataToSend = { username, password }
         await actions.login(dataToSend);
+        store.alert = { text: "", background: "primary", visible: false } ;
         if (store.isLogged) {
             navigate('/home')
         }
