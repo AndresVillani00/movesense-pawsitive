@@ -3,8 +3,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 		store: {
 			isLogged: false,
 			isBuyer: false,
+			isAddedToCart:true,
 			usuario: {},
 			artists: [],
+			products: [], 
+			cart: [],
 			alert: {text:'', background:'primary', visible: false},
 			message: null,
 		},
@@ -53,7 +56,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error en getArtists:", error);
 				}
 			},		
-			
+			addToCart: (product) => {
+				const store = getStore();
+				setStore({ 
+				  cart: [...store.cart, product],  
+				});
+			  },
+		
+			  removeFromCart: (productId) => {
+				const store = getStore();
+				setStore({ 
+				  cart: store.cart.filter((item) => item.id !== productId),
+				});
+			  },
+
 			getProducts: async () => {
 				const uri = `${process.env.BACKEND_URL}/products`;
 				try {
