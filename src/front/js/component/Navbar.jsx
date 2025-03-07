@@ -70,7 +70,7 @@ export const Navbar = () => {
                                         :
                                         <div>
                                         <Dropdown.Item as={Link} to="/sales">Mis Ventas</Dropdown.Item>
-                                        <Dropdown.Item as={Link} to="/publish-product">Publicar un producto</Dropdown.Item>
+                                        <Dropdown.Item as={Link} to="/post-product">Publicar un producto</Dropdown.Item>
                                         <Dropdown.Item as={Link} to="/new-blog-post">Publicar un evento</Dropdown.Item>
                                         </div>
                                     }
