@@ -34,28 +34,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                 const datos = await response.json();
                 setStore({ usuario: datos.results });
             },
-
-			getArtists: async () => {
-				const uri = `${process.env.BACKEND_URL}/users/artists`;
-				try {
-					const response = await fetch(uri, {
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json"
-						}
-					});
-			
-					if (!response.ok) {
-						console.log("Error obteniendo la lista de artistas");
-						return;
-					}
-			
-					const data = await response.json();
-					setStore({ artists: data.results });
-				} catch (error) {
-					console.log("Error en getArtists:", error);
-				}
-			},		
 			addToCart: (product) => {
 				const store = getStore();
 				setStore({ 
@@ -69,46 +47,104 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  cart: store.cart.filter((item) => item.id !== productId),
 				});
 			  },
-
-			getProducts: async () => {
-				const uri = `${process.env.BACKEND_URL}/products`;
-				try {
-					const response = await fetch(uri, {
-						method: "GET",
-						headers: { "Content-Type": "application/json" }
-					});
-					if (!response.ok) throw new Error("Error obteniendo productos");
-			
-					const data = await response.json();
-					setStore({ products: data.results });
-				} catch (error) {
-					console.log("Error en getProducts:", error);
-				}
-			},
-			
-
-            signup: async (dataToSend) => {
-                const uri = `${process.env.BACKEND_URL}/usersApi/users`;
-                const options = {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(dataToSend),
-                };
-                const response = await fetch(uri, options);
-                if (!response.ok) {
-                    if (response.status == 401) {
-                        setStore({ alert: { text: "El Usuario que intenta registrar ya existe", background: "danger", visible: true } });
+            getArtists: async () => {
+                const uri = `${process.env.BACKEND_URL}/api/users/artists`;
+                try {
+                    const response = await fetch(uri, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    });
+                    if (!response.ok) {
+                        console.log("Error obteniendo la lista de artistas");
+                        return;
                     }
-                    return;
+                    const data = await response.json();
+                    setStore({ artists: data.results });
+                } catch (error) {
+                    console.log("Error en getArtists:", error);
                 }
-                const datos = await response.json();
-                setStore({ isLogged: true, usuario: datos.results });
-                localStorage.setItem("token", datos.access_token);
             },
-
-			
+            getProducts: async () => {
+                const uri = `${process.env.BACKEND_URL}/products`;
+                try {
+                    const response = await fetch(uri, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" }
+                    });
+                    if (!response.ok) throw new Error("Error obteniendo productos");
+                    const data = await response.json();
+                    setStore({ products: data.results });
+                } catch (error) {
+                    console.log("Error en getProducts:", error);
+                }
+            },
 			signup: async(dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
+				if(dataToSend.is_buyer){
+					setStore({ isBuyer: true })
+				}
+				localStorage.setItem("token", datos.access_token);
+            },
+            login: async(dataToSend) => {
+                const uri = `${process.env.BACKEND_URL}/api/login`;
+                const options = {
+                    method:'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dataToSend)
+                };
+                const response = await fetch(uri, options);
+                if(!response.ok){
+                    if(response.status == 401){
+                        setStore({alert: {text:'Usuario o contraseña incorrecto', background:'danger', visible:true}})
+                    }
+                    return
+                }
+                const datos = await response.json();
+                setStore({
+                    isLogged: true,
+                    usuario: datos.results
+                })
+                if(getStore().usuario.is_buyer) {
+                    setStore({ isBuyer: true })
+                }
+                localStorage.setItem('token', datos.access_token)
+            },
+            logout: () => {
+                setStore({
+                    isLogged: false,
+                    usuario: {}
+                })
+                localStorage.removeItem('token')
+            },
+            setIsLogged: (value) => {
+                setStore({ isLogged: value })
+            },
+            updateUsuario: async(dataToSend, id) => {
+				const uri = `${process.env.BACKEND_URL}/usersApi/users/${id}`;
+				const options = {
+					method:'PUT',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					if(response.status == 401){
+						setStore({ alert: {text:'Los datos del Usuario no se han podido guardar', background:'danger', visible:true} })
+					}
+					return
+				}
+				const datos = await response.json();
+				setStore({	usuario: datos.results	})
+			},
+			postProduct: async(dataToSend) =>{
+				
+				const uri = `${process.env.BACKEND_URL}/productsApi/products`;
 				const options = {
 					method:'POST',
 					headers: {
