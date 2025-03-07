@@ -1,40 +1,32 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
+import { useNavigate } from "react-router-dom";
 
 export const UserProfile = () => {
-    const { store, actions } = useContext(Context)
-    const [userInfo, setUserInfo] = useState({
-        firstName: "",
-        lastName: "",
-        username: "",
-        email: "",
-        phone: "",
-        address: "",
-        city: "",
-        country: "",
-        zipCode: ""
-    });
-
-    const handleChange = (event) => {
-        const { name, value } = event.target;
-        setUserInfo({ ...userInfo, [name]: value });
-    };
+    const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
+    const [ name, setName ] = useState(store.usuario.name);
+    const [ last_name, setLastName ] = useState(store.usuario.last_name);
+    const [ username, setUsername ] = useState(store.usuario.username);
+    const [ email, setEmail ] = useState(store.usuario.email);
+    const [ phone, setPhone ] = useState(store.usuario.phone);
+    const [ address, setAddress ] = useState(store.usuario.address);
+    const [ country, setCountry ] = useState(store.usuario.country);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const idUsuario = store.usuario.id
         const dataToSend = {
-            name: userInfo.name,
-            lastName: userInfo.lastName,
-            username: userInfo.username,
-            email: userInfo.email,
-            phone: userInfo.phone,
-            address: userInfo.address,
-            city: userInfo.city,
-            country: userInfo.country,
-            zipCode: userInfo.zipCode
+            name,
+            last_name,
+            username,
+            email,
+            phone,
+            address,
+            country
         }
         actions.updateUsuario(dataToSend, idUsuario);
+        navigate('/home')
     };
 
     return (
@@ -54,41 +46,31 @@ export const UserProfile = () => {
                 <form onSubmit={handleSubmit} className="row g-3">
                     <div className="col-md-4">
                         <label className="form-label fw-semibold">Nombre</label>
-                        <input type="text" name="name" className="form-control" value={store.usuario.name} onChange={handleChange} required />
+                        <input type="text" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} />
                     </div>
                     <div className="col-md-4">
                         <label className="form-label fw-semibold">Apellido</label>
-                        <input type="text" name="lastName" className="form-control" value={store.usuario.lastName} onChange={handleChange} required />
+                        <input type="text" name="lastName" className="form-control" value={last_name} onChange={(event) => setLastName(event.target.value)} />
                     </div>
                     <div className="col-md-4">
                         <label className="form-label fw-semibold">Username</label>
-                        <input type="text" name="username" className="form-control" value={store.usuario.username} onChange={handleChange} required />
+                        <input type="text" name="username" className="form-control" value={username} onChange={(event) => setUsername(event.target.value)} required />
                     </div>
                     <div className="col-md-6">
                         <label className="form-label fw-semibold">Correo Electrónico</label>
-                        <input type="email" name="email" className="form-control" value={store.usuario.email} onChange={handleChange} required />
+                        <input type="email" name="email" className="form-control" value={email} onChange={(event) => setEmail(event.target.value)} required />
                     </div>
                     <div className="col-md-6">
                         <label className="form-label fw-semibold">Teléfono</label>
-                        <input type="text" name="phone" className="form-control" value={store.usuario.phone} onChange={handleChange} required />
+                        <input type="text" name="phone" className="form-control" value={phone} onChange={(event) => setPhone(event.target.value)} />
                     </div>
-                    <div className="col-md-12">
+                    <div className="col-md-8">
                         <label className="form-label fw-semibold">Dirección</label>
-                        <input type="text" name="address" className="form-control" value={store.usuario.address} onChange={handleChange} required />
+                        <input type="text" name="address" className="form-control" value={address} onChange={(event) => setAddress(event.target.value)} />
                     </div>
                     <div className="col-md-4">
-                        <label className="form-label fw-semibold">Ciudad</label>
-                        <input type="text" name="city" className="form-control" value={store.usuario.city} onChange={handleChange} required />
-                    </div>
-                    <div className="col-md-4">
-                        <fieldset disabled>
-                            <label htmlFor="disabledTextInput" className="form-label">País</label>
-                            <input type="text" id="disabledTextInput" className="form-control" placeholder="Espana" />
-                        </fieldset>
-                    </div>
-                    <div className="col-md-4">
-                        <label className="form-label">Código Postal</label>
-                        <input type="text" name="zipCode" className="form-control" value={store.usuario.zipCode} onChange={handleChange} required />
+                        <label className="form-label fw-semibold">País</label>
+                        <input type="text" className="form-control" value={country} onChange={(event) => setCountry(event.target.value)} />
                     </div>
                     <div className="col-12 text-center">
                         <button className="btn btn-primary w-50 fw-bold m-3" type="submit">Guardar Cambios</button>
