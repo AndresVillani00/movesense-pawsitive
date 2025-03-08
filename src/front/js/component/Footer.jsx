@@ -3,7 +3,7 @@ import React from "react";
 
 export const Footer = () => {
     return (
-        <footer className="bg-dark text-light py-4 mt-5" style={{
+        <footer className="bg-dark text-light py-4 mt-auto" style={{
             background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",  
             fontFamily: "'Montserrat', sans-serif"}}>
             <div className="container text-center">
