@@ -21,7 +21,6 @@ export const Artists = () => {
     const filteredArtists = store.artists.filter(artist =>
         artist.username.toLowerCase().includes(search.toLowerCase())
     );
-
     return (
         <div className="container mt-5">
             <h2 className="text-center mb-4">Descubre a Nuestros Artistas</h2>
