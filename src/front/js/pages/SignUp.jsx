@@ -144,9 +144,7 @@ export const SignUp = () => {
                                 </div>
                             </div>
 
-                            {/* Botón de Registro */}
                             <button className="btn btn-dark mt-3" type="submit">Registrarse</button>
-                            {/* Botón de Google */}
                             <button className="btn btn-outline-danger d-flex justify-content-center align-items-center rounded-pill mt-3" type="button">
                                 <i className="fab fa-google me-2"></i> Registrarse con Google
                             </button>
