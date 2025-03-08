@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
 
 export const Artists = () => {
-    const { store, actions } = useContext(Context);
+    const { store } = useContext(Context);
     const [search, setSearch] = useState("");
     const imagenes = [
         'https://randomuser.me/api/portraits/lego/0.jpg',
