@@ -1,7 +1,9 @@
 import React, { useState, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 
 export const Artists = () => {
+    const { store } = useContext(Context);
     const { store } = useContext(Context);
     const [search, setSearch] = useState("");
     const imagenes = [
@@ -21,6 +23,17 @@ export const Artists = () => {
     const filteredArtists = store.artists.filter(artist =>
         artist.username.toLowerCase().includes(search.toLowerCase())
     );
+    return (
+        <div className="container mt-5">
+            <h2 className="text-center mb-4">Descubre a Nuestros Artistas</h2>
+            <div className="mb-4">
+                <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Buscar artista..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
     return (
         <div className="container mt-5">
             <h2 className="text-center mb-4">Descubre a Nuestros Artistas</h2>
