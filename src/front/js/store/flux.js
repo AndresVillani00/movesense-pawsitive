@@ -160,6 +160,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			postProduct: async(dataToSend) =>{
 				
+				//  llamo al endpoint de cloundinary en mi back enviandole el  datatosend.image 
+				// el endpoint me devuelve una url, con esa url, reemplazo el datatosend.image (queda json) y despues continuo debajo
+				 
 				const uri = `${process.env.BACKEND_URL}/productsApi/products`;
 				const options = {
 					method:'POST',
