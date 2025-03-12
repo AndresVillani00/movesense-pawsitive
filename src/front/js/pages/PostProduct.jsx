@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 export const PostProduct = () => {
   const { actions } = useContext(Context);
   const navigate = useNavigate();
+
   
   const [name, setName] = useState("");
   const [preview, setPreview] = useState("");
@@ -30,10 +31,10 @@ export const PostProduct = () => {
       image: preview,
       price,
       description,
-      category,
+      category
     };
     await actions.postProduct(dataToSend);
-    navigate('/sales')
+    navigate('/product')
   };
 
   return (
@@ -78,6 +79,9 @@ export const PostProduct = () => {
                   <label className="form-label fw-semibold">Categoría</label>
                   <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
                     <option value="">Selecciona una categoría</option>
+                    <option value="pintura">Pintura</option>
+                    <option value="ropa">Ropa</option>
+                    <option value="ilustración Digital">Ilustración Digital</option>
                     <option value="pintura">Pintura</option>
                     <option value="ropa">Ropa</option>
                     <option value="ilustración Digital">Ilustración Digital</option>
