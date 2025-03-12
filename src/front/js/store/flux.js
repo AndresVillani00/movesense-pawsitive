@@ -6,12 +6,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isAddedToCart:true,
 			usuario: {},
 			artists: [],
-			products: [], 
+			products: [],
+			currentProduct: null, 
 			cart: [],
 			alert: {text:'', background:'primary', visible: false},
 			message: null,
 		},
 		actions: {
+			setCurrentProduct: (item) => { setStore({currentProduct: item})},
 			getUserProfile: async () => {
                 const token = localStorage.getItem("token");
                 if (!token) return;  // Si no hay token, no hace nada
@@ -67,7 +69,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
             getProducts: async () => {
-                const uri = `${process.env.BACKEND_URL}/products`;
+                const uri = `${process.env.BACKEND_URL}/productsApi/products`;
                 try {
                     const response = await fetch(uri, {
                         method: "GET",
@@ -147,11 +149,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 				//  llamo al endpoint de cloundinary en mi back enviandole el  datatosend.image 
 				// el endpoint me devuelve una url, con esa url, reemplazo el datatosend.image (queda json) y despues continuo debajo
 				 
+				const token = localStorage.getItem("token");
+                if (!token) return;  // Si no hay token, no hace nada
+                
 				const uri = `${process.env.BACKEND_URL}/productsApi/products`;
 				const options = {
 					method:'POST',
 					headers: {
-						'Content-Type': 'application/json'
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
 					},
 					body: JSON.stringify(dataToSend)
 				};

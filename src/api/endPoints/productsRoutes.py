@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.utils import generate_sitemap, APIException
-from flask_jwt_extended import jwt_required
-from flask_jwt_extended import get_jwt
+from flask_jwt_extended import jwt_required     #ESTO NUEVO
+from flask_jwt_extended import get_jwt              #ESTO   
+from flask_jwt_extended import get_jwt_identity         #ESTO
 from flask_cors import CORS
 from api.models import db, Products
 
@@ -10,9 +11,14 @@ products_api = Blueprint('productsApi', __name__)
 CORS(products_api)  # Allow CORS requests to this API
 
 
-@products_api.route('/products', methods=['GET'])
+@products_api.route('/products', methods=['GET', 'POST'])
+@jwt_required()
 def products():
     response_body = {}
+    current_user = get_jwt_identity()    #ESTO NUEVO
+    additional_claims = get_jwt()         #ESTO
+    print(additional_claims)                #ESTO
+    print("Additional claims:", additional_claims) # Depuración para ver si 'seller_id' está presente
     if request.method == 'GET':
         rows = db.session.execute(db.select(Products)).scalars()
         list_users = [ row.serialize() for row in rows ]
@@ -20,18 +26,21 @@ def products():
         response_body['results'] = list_users
         return response_body, 200
     if request.method == 'POST':
-        data = request.json
+        data = request.json 
+        seller_id= additional_claims['seller_id']
         row = Products(name=data.get('name'),
+                    seller_id=seller_id,            # HE AGREGADO ESTO
                     post_date=data.get('post_date'),
                     sending_address=data.get('sending_address'),
                     size=data.get('size'),
                     color=data.get('color'),
                     weight=data.get('weight'),
-                    quantity=data.get('quantity'),
+                    quantity=data.get('quantity', 1),
                     price=data.get('price'),
-                    final_price=data.get('final_price'),
+                    final_price=data.get('final_price', 0),
                     description=data.get('description'),
                     category=data.get('category'))
+        db.session.add(row)  #AGREGADO
         db.session.commit()
         response_body['message'] = f'Agregar nuevo Producto'
         response_body['results'] = row.serialize()

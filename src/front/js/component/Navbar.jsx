@@ -52,9 +52,9 @@ export const Navbar = () => {
                     {/* Ícono del carrito */}
                     <div className="d-flex align-items-center">
                         <Link to="/cart" className="position-relative me-3">
-                            <i className="fas fa-shopping-bag fs-4" style={{ color: "#1E1E50" }}></i>
+                            <i className="fas fa-shopping-bag fs-2" style={{ color: "#1E1E50" }}></i>
                             {store.cart && store.cart.length > 0 && (
-                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger ">
                                     {store.cart.length}
                                     <span className="visually-hidden">items in cart</span>
                                 </span>

@@ -53,7 +53,7 @@ class Products(db.Model):
     price = db.Column(db.Integer(), unique=False, nullable=False)
     final_price = db.Column(db.Integer(), unique=False, nullable=False)
     description = db.Column(db.String(), unique=False, nullable=False, default="")
-    category = db.Column(db.Enum('tipo1', 'tipo2', 'tipo3', name='category'), unique=False, nullable=False)  # ARREGLAR, QUE CATEGORIAS PONER? 
+    category = db.Column(db.Enum('pintura', 'ropa', 'ilustracion digital', name='category'), unique=False, nullable=False)  # ARREGLAR, QUE CATEGORIAS PONER? 
     seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
     seller_to = db.relationship('Sellers', foreign_keys=[seller_id], backref=db.backref('seller_to'), lazy='select')
 
