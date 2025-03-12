@@ -45,14 +45,13 @@ class Products(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), unique=False, nullable=False, default="")
     post_date = db.Column(db.DateTime(), unique=False, nullable=False, default=datetime.utcnow)
-    sending_address = db.Column(db.String(), unique=False, nullable=False, default="")
-    size = db.Column(db.String(), unique=False, nullable=False, default="")
-    color = db.Column(db.String(), unique=False, nullable=False, default="")
-    weight = db.Column(db.String(), unique=False, nullable=False, default="")
-    quantity = db.Column(db.Integer(), unique=False, nullable=False)
+    sending_address = db.Column(db.String(), unique=False, nullable=True, default="")
+    size = db.Column(db.String(), unique=False, nullable=True, default="")
+    color = db.Column(db.String(), unique=False, nullable=True, default="")
+    weight = db.Column(db.String(), unique=False, nullable=True, default="")
+    quantity = db.Column(db.Integer(), unique=False, nullable=True)
     price = db.Column(db.Integer(), unique=False, nullable=False)
-    final_price = db.Column(db.Integer(), unique=False, nullable=False)
-    description = db.Column(db.String(), unique=False, nullable=False, default="")
+    description = db.Column(db.String(), unique=False, nullable=True, default="")
     category = db.Column(db.Enum('pintura', 'ropa', 'ilustracion digital', name='category'), unique=False, nullable=False)  # ARREGLAR, QUE CATEGORIAS PONER? 
     seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
     seller_to = db.relationship('Sellers', foreign_keys=[seller_id], backref=db.backref('seller_to'), lazy='select')
@@ -67,7 +66,6 @@ class Products(db.Model):
                 'weight': self.weight,
                 'quantity': self.quantity,
                 'price': self.price,
-                'final_price': self.final_price, # quitar para primera version 
                 'description': self.description,
                 'category': self.category}
 
@@ -112,8 +110,8 @@ class OrderItems(db.Model):
 class Buyers(db.Model):
     __tablename__ = 'buyers'
     id = db.Column(db.Integer, primary_key=True)
-    sending_address_buyer = db.Column(db.String(), unique=False, nullable=False)
-    purchase_history = db.Column(db.String(), unique=False, nullable=False)
+    sending_address_buyer = db.Column(db.String(), unique=False, nullable=True)
+    purchase_history = db.Column(db.String(), unique=False, nullable=True)
 
     def serialize(self):
         return {
@@ -125,11 +123,11 @@ class Buyers(db.Model):
 class Sellers(db.Model):
     __tablename__ = 'sellers'
     id = db.Column(db.Integer, primary_key=True)
-    reputation= db.Column(db.String(), unique=False, nullable=False)
-    sell_history = db.Column(db.String(), unique=False, nullable=False)
-    product_for_sell = db.Column(db.String(), unique=False, nullable=False)
-    publish_product = db.Column(db.String(), unique=False, nullable=False)
-    total_income = db.Column(db.Integer(), unique=False, nullable=False)
+    reputation= db.Column(db.String(), unique=False, nullable=True)
+    sell_history = db.Column(db.String(), unique=False, nullable=True)
+    product_for_sell = db.Column(db.String(), unique=False, nullable=True)
+    publish_product = db.Column(db.String(), unique=False, nullable=True)
+    total_income = db.Column(db.Integer(), unique=False, nullable=True)
 
     def serialize(self):
         return {'id': self.id,

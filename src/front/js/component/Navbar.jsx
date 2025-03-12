@@ -49,8 +49,9 @@ export const Navbar = () => {
                             <Link className="nav-link text-dark mx-2 fs-5 fw-medium" to="/blogs">Events</Link>
                         </li>
                     </ul>
-                    {/* Ícono del carrito */}
                     <div className="d-flex align-items-center">
+                        {/* Ícono del carrito */
+                        store.isLogged && store.isBuyer ? (
                         <Link to="/cart" className="position-relative me-3">
                             <i className="fas fa-shopping-bag fs-2" style={{ color: "#1E1E50" }}></i>
                             {store.cart && store.cart.length > 0 && (
@@ -60,8 +61,11 @@ export const Navbar = () => {
                                 </span>
                             )}
                         </Link>
-                        {/* Botones de Login y Signup */}
-                        {store.isLogged ? (
+                        ):(
+                        <div></div>
+                        )}
+                        {/* Botones de Login y Signup */
+                        store.isLogged ? (
                             <div className="d-flex ms-3">
                                 <Dropdown className="ms-3">
                                     <Dropdown.Toggle variant="light" id="dropdown-user" className="d-flex align-items-center border-0">

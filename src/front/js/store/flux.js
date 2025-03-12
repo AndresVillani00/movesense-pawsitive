@@ -5,6 +5,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isBuyer: false,
 			isAddedToCart:true,
 			usuario: {},
+			seller: {},
+			buyer: {},
 			artists: [],
 			products: [],
 			currentProduct: null, 
@@ -41,14 +43,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ 
 				  cart: [...store.cart, product],  
 				});
-			  },
-		
-			  removeFromCart: (productId) => {
+			},
+			removeFromCart: (productId) => {
 				const store = getStore();
 				setStore({ 
 				  cart: store.cart.filter((item) => item.id !== productId),
 				});
-			  },
+			},
             getArtists: async () => {
                 const uri = `${process.env.BACKEND_URL}/api/users/artists`;
                 try {
@@ -105,42 +106,36 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 				localStorage.setItem('token', datos.access_token)
 			},
-            login: async(dataToSend) => {
-                const uri = `${process.env.BACKEND_URL}/api/login`;
-                const options = {
-                    method:'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dataToSend)
-                };
-                const response = await fetch(uri, options);
-                if(!response.ok){
-                    if(response.status == 401){
-                        setStore({alert: {text:'Usuario o contraseña incorrecto', background:'danger', visible:true}})
-                    }
-                    return
-                }
-                const datos = await response.json();
-                setStore({
-                    isLogged: true,
-                    usuario: datos.results
-                })
-                if(getStore().usuario.is_buyer) {
-                    setStore({ isBuyer: true })
-                }
-                localStorage.setItem('token', datos.access_token)
-            },
-            logout: () => {
-                setStore({
-                    isLogged: false,
-                    usuario: {}
-                })
-                localStorage.removeItem('token')
-            },
-            setIsLogged: (value) => {
-                setStore({ isLogged: value })
-            },
+			postSeller: async() => {
+				const uri = `${process.env.BACKEND_URL}/sellersApi/sellers`;
+				const options = {
+					method:'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					return
+				}
+				const datos = await response.json();
+				setStore({ seller: datos.results })
+			},
+			postBuyer: async() => {
+				const uri = `${process.env.BACKEND_URL}/buyersApi/buyers`;
+				const options = {
+					method:'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					return
+				}
+				const datos = await response.json();
+				setStore({ buyer: datos.results })
+			},
             updateUsuario: async(dataToSend, id) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users/${id}`;
 				const options = {
@@ -180,21 +175,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await fetch(uri, options);
 				if(!response.ok){
 					if(response.status == 401){
-						setStore({alert: {text:'Usuario que intenta registrar ya existe', background:'danger', visible:true}})
+						setStore({alert: {text:'El Producto que intenta registrar ya existe', background:'danger', visible:true}})
 					}
 					return
 				}
 				const datos = await response.json();
-				console.log(options);
-				console.log(datos);
-				setStore({
-					isLogged: true,
-					usuario: datos.results
-				})
-				if(dataToSend.is_buyer){
-					setStore({ isBuyer: true })
-				}
-				localStorage.setItem('token', datos.access_token)
+				setStore({ products: datos.results })
 			},
 			login: async(dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/login`;

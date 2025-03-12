@@ -11,12 +11,27 @@ CORS(seller_api)
 @seller_api.route('/sellers', methods=['GET'])
 def sellers():
     response_body = {}
+    additional_claims = get_jwt() 
     if request.method == 'GET':
         rows = db.session.execute(db.select(Sellers)).scalars()
         list_sellers = [ row.serialize() for row in rows ]
         response_body['message'] = f'Usuarios vendedores'
         response_body['results'] = list_sellers
         return response_body, 200
+    if request.method == 'POST':
+        data = request.json 
+        user_id= additional_claims['id']
+        row = Sellers(id=user_id,            
+                    reputation=data.get('reputation'),
+                    sell_history=data.get('sell_history'),
+                    product_for_sell=data.get('product_for_sell'),
+                    publish_product=data.get('publish_product'),
+                    total_income=data.get('total_income'))
+        db.session.add(row)  #AGREGADO
+        db.session.commit()
+        response_body['message'] = f'Agregar nuevo Producto'
+        response_body['results'] = row.serialize()
+        return response_body, 200  
 
 
 @seller_api.route('/sellers/<int:id>', methods=['GET', 'PUT', 'DELETE'])
