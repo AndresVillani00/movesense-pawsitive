@@ -30,7 +30,7 @@ export const PostProduct = () => {
       image: preview,
       price,
       description,
-      category
+      category,
     };
     await actions.postProduct(dataToSend);
     navigate('/product')
