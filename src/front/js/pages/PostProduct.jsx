@@ -28,7 +28,7 @@ export const PostProduct = () => {
       image: preview,
       price,
       description,
-      category: "tipo1",
+      category,
     };
     await actions.postProduct(dataToSend);
   };
