@@ -30,9 +30,16 @@ export const SignUp = () => {
             is_buyer,
             is_seller
         }
+
         await actions.signup(dataToSend);
-        store.alert = { text: "", background: "primary", visible: false };
+        if (is_seller) {
+            await actions.postSeller();
+        } else {
+            await actions.postBuyer();
+        }
+
         if (store.isLogged) {
+            store.alert = { text: "", background: "primary", visible: false };
             navigate('/home');
         }
     }

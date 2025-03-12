@@ -11,12 +11,24 @@ CORS(buyer_api)
 @buyer_api.route('/buyers', methods=['GET'])
 def buyers():
     response_body = {}
+    additional_claims = get_jwt() 
     if request.method == 'GET':
         rows = db.session.execute(db.select(Buyers)).scalars()
         list_buyers = [ row.serialize() for row in rows ]
         response_body['message'] = f'Usuarios Compradores'
         response_body['results'] = list_buyers
         return response_body, 200
+    if request.method == 'POST':
+        data = request.json 
+        user_id = additional_claims['id']
+        row = Buyers(id=user_id,            
+                    sending_address_buyer=data.get('sending_address_buyer'),
+                    purchase_history=data.get('purchase_history'))
+        db.session.add(row)  #AGREGADO
+        db.session.commit()
+        response_body['message'] = f'Agregar nuevo Producto'
+        response_body['results'] = row.serialize()
+        return response_body, 200 
    
 
 @buyer_api.route('/buyers/<int:id>', methods=['GET', 'PUT', 'DELETE'])

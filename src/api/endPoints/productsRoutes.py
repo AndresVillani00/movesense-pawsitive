@@ -15,10 +15,7 @@ CORS(products_api)  # Allow CORS requests to this API
 @jwt_required()
 def products():
     response_body = {}
-    current_user = get_jwt_identity()    #ESTO NUEVO
-    additional_claims = get_jwt()         #ESTO
-    print(additional_claims)                #ESTO
-    print("Additional claims:", additional_claims) # Depuración para ver si 'seller_id' está presente
+    additional_claims = get_jwt()         
     if request.method == 'GET':
         rows = db.session.execute(db.select(Products)).scalars()
         list_users = [ row.serialize() for row in rows ]
@@ -27,7 +24,11 @@ def products():
         return response_body, 200
     if request.method == 'POST':
         data = request.json 
-        seller_id= additional_claims['seller_id']
+        seller_id = additional_claims['user_id']
+        is_seller = additional_claims['is_seller']
+        if not is_seller:
+            response_body['message'] = f'El  usuario es comprador'
+            return response_body, 404
         row = Products(name=data.get('name'),
                     seller_id=seller_id,            # HE AGREGADO ESTO
                     post_date=data.get('post_date'),
@@ -37,7 +38,6 @@ def products():
                     weight=data.get('weight'),
                     quantity=data.get('quantity', 1),
                     price=data.get('price'),
-                    final_price=data.get('final_price', 0),
                     description=data.get('description'),
                     category=data.get('category'))
         db.session.add(row)  #AGREGADO
