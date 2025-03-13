@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
 
 export const Artists = () => {
     const { store } = useContext(Context);
@@ -22,7 +21,7 @@ export const Artists = () => {
     const filteredArtists = store.artists.filter(artist =>
         artist.username.toLowerCase().includes(search.toLowerCase())
     );
-
+    
     return (
         <div className="container mt-5">
             {/* Encabezado */}
