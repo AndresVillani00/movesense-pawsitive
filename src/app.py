@@ -13,7 +13,6 @@ from api.endPoints.productsRoutes import products_api
 from api.endPoints.ordersRoutes import orders_api
 from api.endPoints.ordersItemRoutes import order_items_api
 from api.endPoints.buyerRoutes import buyer_api
-from api.endPoints.sellerRoutes import seller_api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
@@ -45,7 +44,6 @@ app.register_blueprint(products_api, url_prefix='/productsApi')
 app.register_blueprint(orders_api, url_prefix='/ordersApi')
 app.register_blueprint(order_items_api, url_prefix='/ordersItemApi')
 app.register_blueprint(buyer_api, url_prefix='/buyerApi')
-app.register_blueprint(seller_api, url_prefix='/sellerApi')
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY') # Change this!
 jwt = JWTManager(app)

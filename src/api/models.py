@@ -22,8 +22,6 @@ class Users(db.Model):
     is_seller = db.Column(db.Boolean(), nullable=False, default=False)
     buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id'))
     buyer_to = db.relationship('Buyers', foreign_keys=[buyer_id], backref=db.backref('buyers_to'), lazy='select')
-    seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
-    seller_to = db.relationship('Sellers', foreign_keys=[seller_id], backref=db.backref('sellers_to'), lazy='select')
 
     def serialize(self):
         return {'id': self.id,
@@ -53,8 +51,8 @@ class Products(db.Model):
     price = db.Column(db.Integer(), unique=False, nullable=False)
     description = db.Column(db.String(), unique=False, nullable=True, default="")
     category = db.Column(db.Enum('pintura', 'ropa', 'ilustracion digital', name='category'), unique=False, nullable=False)  # ARREGLAR, QUE CATEGORIAS PONER? 
-    seller_id = db.Column(db.Integer, db.ForeignKey('sellers.id'))
-    seller_to = db.relationship('Sellers', foreign_keys=[seller_id], backref=db.backref('seller_to'), lazy='select')
+    seller_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    seller_to = db.relationship('Users', foreign_keys=[seller_id], backref=db.backref('seller_to'), lazy='select')
 
     def serialize(self):
         return {'id': self.id,
@@ -118,24 +116,3 @@ class Buyers(db.Model):
                 'id': self.id,
                 'sending_address_buyer': self.sending_address_buyer,
                 'purchase_history': self.purchase_history}
-
-
-class Sellers(db.Model):
-    __tablename__ = 'sellers'
-    id = db.Column(db.Integer, primary_key=True)
-    reputation= db.Column(db.String(), unique=False, nullable=True)
-    sell_history = db.Column(db.String(), unique=False, nullable=True)
-    product_for_sell = db.Column(db.String(), unique=False, nullable=True)
-    publish_product = db.Column(db.String(), unique=False, nullable=True)
-    total_income = db.Column(db.Integer(), unique=False, nullable=True)
-
-    def serialize(self):
-        return {'id': self.id,
-                'reputation': self.reputation,
-                'sell_history': self.sell_history,
-                'product_for_sell': self.product_for_sell,
-                'publish_product': self.publish_product,
-                'total_income': self.total_income}
-    
-
-
