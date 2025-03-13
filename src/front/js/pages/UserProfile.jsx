@@ -5,13 +5,14 @@ import { useNavigate } from "react-router-dom";
 export const UserProfile = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-    const [ name, setName ] = useState(store.usuario.name);
-    const [ last_name, setLastName ] = useState(store.usuario.last_name);
-    const [ username, setUsername ] = useState(store.usuario.username);
-    const [ email, setEmail ] = useState(store.usuario.email);
-    const [ phone, setPhone ] = useState(store.usuario.phone);
-    const [ address, setAddress ] = useState(store.usuario.address);
-    const [ country, setCountry ] = useState(store.usuario.country);
+    const [name, setName] = useState(store.usuario.name);
+    const [last_name, setLastName] = useState(store.usuario.last_name);
+    const [username, setUsername] = useState(store.usuario.username);
+    const [email, setEmail] = useState(store.usuario.email);
+    const [phone, setPhone] = useState(store.usuario.phone);
+    const [address, setAddress] = useState(store.usuario.address);
+    const [sending_address_buyer, setSendingAddress] = useState(store.usuario.sending_address_buyer);
+    const [country, setCountry] = useState(store.usuario.country);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -23,9 +24,16 @@ export const UserProfile = () => {
             email,
             phone,
             address,
+            sending_address_buyer,
             country
         }
         actions.updateUsuario(dataToSend, idUsuario);
+        
+        if(store.usuario.is_buyer) {
+            const dataToSendBuyer = { sending_address_buyer }
+            actions.updateUsuario(dataToSendBuyer, idUsuario);
+        }
+        
         navigate('/home')
     };
 
@@ -72,6 +80,14 @@ export const UserProfile = () => {
                         <label className="form-label fw-semibold">País</label>
                         <input type="text" className="form-control" value={country} onChange={(event) => setCountry(event.target.value)} />
                     </div>
+                    {store.usuario.is_buyer ?
+                    <div className="col-md-12">
+                        <label className="form-label fw-semibold">Dirección de Envio</label>
+                        <input type="text" name="address" className="form-control" value={sending_address_buyer} onChange={(event) => setSendingAddress(event.target.value)} />
+                    </div>
+                    :
+                    <div></div>
+                    }
                     <div className="col-12 text-center">
                         <button className="btn btn-primary w-50 fw-bold m-3" type="submit">Guardar Cambios</button>
                     </div>

@@ -33,7 +33,7 @@ export const PostProduct = () => {
       category
     };
     await actions.postProduct(dataToSend);
-    navigate('/product')
+    navigate('/sales')
   };
 
   return (

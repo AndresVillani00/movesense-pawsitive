@@ -106,36 +106,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 				localStorage.setItem('token', datos.access_token)
 			},
-			postSeller: async() => {
-				const uri = `${process.env.BACKEND_URL}/sellersApi/sellers`;
-				const options = {
-					method:'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-				};
-				const response = await fetch(uri, options);
-				if(!response.ok){
-					return
-				}
-				const datos = await response.json();
-				setStore({ seller: datos.results })
-			},
-			postBuyer: async() => {
-				const uri = `${process.env.BACKEND_URL}/buyersApi/buyers`;
-				const options = {
-					method:'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-				};
-				const response = await fetch(uri, options);
-				if(!response.ok){
-					return
-				}
-				const datos = await response.json();
-				setStore({ buyer: datos.results })
-			},
             updateUsuario: async(dataToSend, id) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users/${id}`;
 				const options = {
