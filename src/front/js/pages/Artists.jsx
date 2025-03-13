@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 
 export const Artists = () => {
@@ -22,6 +21,7 @@ export const Artists = () => {
     const filteredArtists = store.artists.filter(artist =>
         artist.username.toLowerCase().includes(search.toLowerCase())
     );
+    
     return (
         <div className="container mt-5">
             {/* Encabezado */}
