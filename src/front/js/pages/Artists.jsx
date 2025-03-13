@@ -24,6 +24,7 @@ export const Artists = () => {
     );
     return (
         <div className="container mt-5">
+            {/* Encabezado */}
             <h2 className="text-center mb-4">Descubre a Nuestros Artistas</h2>
             <div className="mb-4">
                 <input
@@ -32,64 +33,82 @@ export const Artists = () => {
                     placeholder="Buscar artista..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
+                    style={{ borderRadius: "20px", padding: "10px 20px" }}
                 />
             </div>
-            <div className="row">
-                {filteredArtists.length > 0 ? (
-                    filteredArtists.map((item, index) => (
-                        <div key={item.id || index} className="col-sm-6 col-md-4 col-lg-3 mb-4">
-                            <div
-                                className="card shadow-sm"
-                                style={{
-                                    border: "none",
-                                    borderRadius: "15px",
-                                    overflow: "hidden",
-                                    position: "relative",
-                                }}
-                            >
-                                {/* Banda superior para destacar la imagen */}
-                                <div style={{ background: "#1E1E50", height: "60px" }}></div>
-                                {/* Imagen del artista, solapada a la banda */}
+
+            {/* Sección central con fondo ligeramente más oscuro */}
+            <div className="p-4 bg-light rounded">
+                {/* Tarjetas de artistas filtrados */}
+                <div className="row g-3">
+                    {filteredArtists.length > 0 ? (
+                        filteredArtists.map((item, index) => (
+                            <div key={item.id || index} className="col-sm-6 col-md-4 col-lg-3">
                                 <div
+                                    className="card h-100 border-0 shadow-sm"
                                     style={{
-                                        position: "absolute",
-                                        top: "10px",
-                                        left: "50%",
-                                        transform: "translateX(-50%)",
+                                        borderRadius: "15px",
+                                        overflow: "hidden",
+                                        transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = "scale(1.05)";
+                                        e.currentTarget.style.boxShadow = "0 10px 20px rgba(0, 0, 0, 0.2)";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = "scale(1)";
+                                        e.currentTarget.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
                                     }}
                                 >
-                                    <img
-                                        src={randomImg}
-                                        alt={item.username}
-                                        style={{
-                                            width: "120px",
-                                            height: "120px",
-                                            borderRadius: "50%",
-                                            border: "4px solid white",
-                                            objectFit: "cover",
-                                        }}
-                                    />
-                                </div>
-                                {/* Cuerpo de la tarjeta */}
-                                <div className="card-body text-center" style={{ marginTop: "70px" }}>
-                                    <h5 className="fw-bold" style={{ color: "#1E1E50" }}>
-                                        {item.username}
-                                    </h5>
-                                    <p className="text-muted" style={{ fontSize: "0.9rem" }}>
-                                        Artista
-                                    </p>
-                                    <Link to={`/artist/${item.id}`} className="btn btn-primary btn-sm">
-                                        Ver Perfil
-                                    </Link>
+                                    {/* Imagen de perfil circular */}
+                                    <div className="text-center p-4">
+                                        <img
+                                            src={randomImg}
+                                            alt={item.username}
+                                            style={{
+                                                width: "120px",
+                                                height: "120px",
+                                                borderRadius: "50%",
+                                                border: "4px solid white",
+                                                objectFit: "cover",
+                                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)"
+                                            }}
+                                        />
+                                    </div>
+                                    {/* Cuerpo de la tarjeta */}
+                                    <div className="card-body text-center">
+                                        <h5 className="fw-bold mb-2" style={{ color: "#1E3A5F" }}>
+                                            {item.username}
+                                        </h5>
+                                        <p className="text-muted mb-3" style={{ fontSize: "0.9rem" }}>
+                                            Artista
+                                        </p>
+                                        <Link
+                                            to={`/artist/${item.id}`}
+                                            className="btn btn-primary btn-sm"
+                                            style={{
+                                                background: "#1E3A5F",
+                                                border: "none",
+                                                borderRadius: "20px",
+                                                padding: "8px 20px",
+                                                fontSize: "0.9rem",
+                                                fontWeight: "500"
+                                            }}
+                                        >
+                                            Ver Perfil
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))
-                ) : (
-                    <p>No se encontraron artistas.</p>
-                )}
+                        ))
+                    ) : (
+                        <p className="text-center">No se encontraron artistas.</p>
+                    )}
+                </div>
             </div>
-            <div className="p-4 bg-light rounded">
+
+            {/* Sección de exploración de artistas */}
+            <div className="p-4 bg-light rounded mt-4">
                 {/* Header */}
                 <div className="text-center my-4">
                     <h1 className="fw-bold text-dark">Explora Artistas que ya venden Obras de Arte</h1>
@@ -97,19 +116,40 @@ export const Artists = () => {
                 </div>
 
                 {/* Grid de productos */}
-                <div className="row">
+                <div className="row g-3">
                     {store.artists.map(item => (
-                        <div key={item.id} className="col-md-3 mb-4">
-                            <div className="card shadow-sm bg-white">
+                        <div key={item.id} className="col-sm-6 col-md-4 col-lg-3">
+                            <div
+                                className="card h-100 border-0 shadow-sm"
+                                style={{
+                                    borderRadius: "15px",
+                                    overflow: "hidden",
+                                    transition: "transform 0.3s ease, box-shadow 0.3s ease"
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = "scale(1.05)";
+                                    e.currentTarget.style.boxShadow = "0 10px 20px rgba(0, 0, 0, 0.2)";
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = "scale(1)";
+                                    e.currentTarget.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
+                                }}
+                            >
                                 <img
                                     src={randomImg}
-                                    className="card-img-top rounded"
-                                    style={{ height: "200px", objectFit: "cover", width: "100%" }}
+                                    className="card-img-top"
                                     alt={item.username}
+                                    style={{
+                                        height: "200px",
+                                        objectFit: "cover",
+                                        width: "100%"
+                                    }}
                                 />
                                 <div className="card-body text-center">
-                                    <h5 className="fw-bold">{item.username}</h5>
-                                    <p className="text-muted">{/*store.seller.reputation*/}</p>
+                                    <h5 className="fw-bold" style={{ color: "#1E3A5F" }}>
+                                        {item.username}
+                                    </h5>
+                                    <p className="text-muted">Artista</p>
                                 </div>
                             </div>
                         </div>
