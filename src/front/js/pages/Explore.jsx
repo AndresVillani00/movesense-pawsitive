@@ -44,7 +44,7 @@ export const Explore = () => {
 
         {/* Filtros */}
         <div className="d-flex justify-content-center gap-3 mb-4">
-          {['All', 'Pintura', 'Ilustración digital', 'Ropa'].map(cat => (
+          {['All', 'pintura', 'ilustración digital', 'ropa'].map(cat => (
             <button key={cat} className={`btn ${category === cat ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setCategory(cat)}>
               {cat}
             </button>
