@@ -150,8 +150,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const datos = await response.json();
-				setStore({ products: datos.results })
+				getActions().getProducts()  // action del get product
 			},
+			
 			login: async(dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/login`;
 				const options = {

@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.utils import generate_sitemap, APIException
-from flask_jwt_extended import jwt_required     #ESTO NUEVO
-from flask_jwt_extended import get_jwt              #ESTO   
-from flask_jwt_extended import get_jwt_identity         #ESTO
+from flask_jwt_extended import jwt_required     
+from flask_jwt_extended import get_jwt                
+from flask_jwt_extended import get_jwt_identity         
 from flask_cors import CORS
 from api.models import db, Products
 
@@ -11,17 +11,21 @@ products_api = Blueprint('productsApi', __name__)
 CORS(products_api)  # Allow CORS requests to this API
 
 
-@products_api.route('/products', methods=['GET', 'POST'])
-@jwt_required()
+@products_api.route('/products', methods=['GET'])
 def products():
-    response_body = {}
-    additional_claims = get_jwt()         
+    response_body = {}       
     if request.method == 'GET':
         rows = db.session.execute(db.select(Products)).scalars()
         list_users = [ row.serialize() for row in rows ]
         response_body['message'] = f'Listado de usuarios'
         response_body['results'] = list_users
         return response_body, 200
+    
+@products_api.route('/products', methods=['POST'])
+@jwt_required()
+def postProducts():
+    response_body = {}
+    additional_claims = get_jwt()  
     if request.method == 'POST':
         data = request.json 
         seller_id = additional_claims['user_id']

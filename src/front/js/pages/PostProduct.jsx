@@ -27,11 +27,12 @@ export const PostProduct = () => {
     event.preventDefault();
     const dataToSend = {
       name,
-      image: preview,
+      image: "URL:",
       price,
       description,
       category
     };
+    console.log(dataToSend)
     await actions.postProduct(dataToSend);
     navigate('/sales')
   };
@@ -80,7 +81,7 @@ export const PostProduct = () => {
                     <option value="">Selecciona una categoría</option>
                     <option value="pintura">Pintura</option>
                     <option value="ropa">Ropa</option>
-                    <option value="ilustración Digital">Ilustración Digital</option>
+                    <option value="ilustracion digital">Ilustración Digital</option>
                   </select>
                 </div>
 
