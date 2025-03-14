@@ -70,6 +70,7 @@ class Products(db.Model):
                 'description': self.description,
                 'image_url': self.image_url,
                 'is_sold': self.is_sold, 
+                'image_url': self.image_url,
                 'category': self.category}
 
 
