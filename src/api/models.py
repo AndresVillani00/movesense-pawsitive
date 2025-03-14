@@ -50,10 +50,12 @@ class Products(db.Model):
     quantity = db.Column(db.Integer(), unique=False, nullable=True)
     price = db.Column(db.Integer(), unique=False, nullable=False)
     description = db.Column(db.String(), unique=False, nullable=True, default="")
+    is_sold = db.Column(db.Boolean(), nullable=False, default=False)
     category = db.Column(db.Enum('pintura', 'ropa', 'ilustracion digital', name='category'), unique=False, nullable=False)  # ARREGLAR, QUE CATEGORIAS PONER? 
     seller_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     seller_to = db.relationship('Users', foreign_keys=[seller_id], backref=db.backref('seller_to'), lazy='select')
-
+    # se agregó el campo is_sold que determina si un producto esta vendido o no vendido. Por defecto es false, no vendido
+    
     def serialize(self):
         return {'id': self.id,
                 'name': self.name,
@@ -65,6 +67,7 @@ class Products(db.Model):
                 'quantity': self.quantity,
                 'price': self.price,
                 'description': self.description,
+                'is_sold': self.is_sold, 
                 'category': self.category}
 
 
