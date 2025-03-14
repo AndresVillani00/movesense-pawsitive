@@ -190,19 +190,34 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setIsLogged: (value) => {
 				setStore({ isLogged: value })
 			},
-			exampleFunction: () => {getActions().changeColor(0, "green");},
-			getMessage: async () => {
-				const uri = `${process.env.BACKEND_URL}/api/hello`;
-				const response = await fetch(uri);
-				if (!response.ok) {
-					// Gestionar los errores
-					console.log("Error loading message from backend", error)
-					return
+			uploadImage: async (file) => {
+				const store = getStore();
+				const cloud_name = "diakkcdpm"; 
+				const preset_name = "artVibespreset"; 
+			
+				const data = new FormData();
+				data.append("file", file);
+				data.append("upload_preset", preset_name);
+			
+				try {
+					const response = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
+						method: "POST",
+						body: data
+					});
+			
+					if (!response.ok) throw new Error("Error al subir la imagen");
+			
+					const fileData = await response.json();
+					console.log("flux: ",fileData.secure_url)
+					return fileData.secure_url;
+				} catch (error) {
+					console.error("Error en uploadImage:", error);
+					return null;
 				}
-				const data = await response.json()
-				setStore({ message: data.message })
-				return;
-			}
+			},
+			
+
+			
 		}
 	};
 };

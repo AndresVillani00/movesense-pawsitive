@@ -43,6 +43,7 @@ def postProducts():
                     quantity=data.get('quantity', 1),
                     price=data.get('price'),
                     description=data.get('description'),
+                    image_url=data.get('image_url'),
                     category=data.get('category'))
         db.session.add(row)  #AGREGADO
         db.session.commit()

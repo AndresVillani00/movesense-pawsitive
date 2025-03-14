@@ -28,7 +28,6 @@ const injectContext = PassedComponent => {
 		  store, instead use actions, like this:
 		*/
 		useEffect(() => {
-			state.actions.getMessage();  // Calling this function from the flux.js actions
 			state.actions.getUserProfile();
 			state.actions.getArtists();
 			state.actions.getProducts();
