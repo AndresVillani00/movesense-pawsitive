@@ -70,6 +70,26 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Error en getArtists:", error);
                 }
             },
+			getArtistById: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/users/artists/${id}`;
+				try {
+				  const response = await fetch(uri, {
+					method: "GET",
+					headers: {
+					  "Content-Type": "application/json",
+					},
+				  });
+				  if (!response.ok) {
+					console.log("Error obteniendo el artista");
+					return null;
+				  }
+				  const data = await response.json();
+				  return data.results; 
+				} catch (error) {
+				  console.log("Error en getArtistById:", error);
+				  return null;
+				}
+			  },
             getProducts: async () => {
                 const uri = `${process.env.BACKEND_URL}/productsApi/products`;
                 try {

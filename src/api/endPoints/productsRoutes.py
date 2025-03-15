@@ -44,7 +44,8 @@ def postProducts():
                     price=data.get('price'),
                     description=data.get('description'),
                     image_url=data.get('image_url'),
-                    category=data.get('category'))
+                    category=data.get('category'),
+                    characteristics=data.get('characteristics'))
         db.session.add(row)  #AGREGADO
         db.session.commit()
         response_body['message'] = f'Agregar nuevo Producto'
@@ -64,17 +65,17 @@ def product(id):
         return response_body, 200
     if request.method == 'PUT':
         data = request.json
-        row.name=data.get('name'),
-        row.post_date=data.get('post_date'),
-        row.sending_address=data.get('sending_address'),
-        row.size=data.get('size'),
-        row.color=data.get('color'),
-        row.weight=data.get('weight'),
-        row.quantity=data.get('quantity'),
-        row.price=data.get('price'),
-        row.final_price=data.get('final_price'),
-        row.description=data.get('description'),
-        row.category=data.get('category')
+        row.name = data.get('name', row.name)
+        row.post_date = data.get('post_date', row.post_date)
+        row.sending_address = data.get('sending_address', row.sending_address)
+        row.size = data.get('size', row.size)
+        row.color = data.get('color', row.color)
+        row.weight = data.get('weight', row.weight)
+        row.quantity = data.get('quantity', row.quantity)
+        row.price = data.get('price', row.price)
+        row.description = data.get('description', row.description)
+        row.category = data.get('category', row.category)
+        row.characteristics = data.get('characteristics', row.characteristics) 
         db.session.commit()
         response_body['message'] = f'Producto con id: {id}. Actualizado'
         response_body["results"] = row.serialize()

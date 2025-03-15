@@ -14,32 +14,64 @@ export const PostProduct = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [error, setError] = useState("");
-
+  const [characteristics, setCharacteristics] = useState({});
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const result = await actions.uploadImage(file)
+      const result = await actions.uploadImage(file);
       if (!result) {
         setError("Error al subir la imagen");
         return;
       }
       setImageUrl(result);
-      console.log("componente: result", result)
-      console.log("imageUrl: ", imageUrl)
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
       };
       reader.readAsDataURL(file);
     }
-
   };
 
   const removeImage = () => {
     setPreview("");
     setImageFile(null);
     setImageUrl(null);
+  };
+
+  const handleCategoryChange = (e) => {
+    const selectedCategory = e.target.value;
+    setCategory(selectedCategory);
+
+    if (selectedCategory === "pintura") {
+      setCharacteristics({
+        material: "",
+        estilo: "",
+        dimensiones: "",
+        marco: ""
+      });
+    } else if (selectedCategory === "ropa") {
+      setCharacteristics({
+        material: "",
+        talla: "",
+        color: "",
+        marca: ""
+      });
+    } else if (selectedCategory === "ilustracion digital") {
+      setCharacteristics({
+        resolucion: "",
+        formato: "",
+        software: "",
+        licencia: ""
+      });
+    }
+  };
+
+  const handleCharacteristicChange = (key, value) => {
+    setCharacteristics({
+      ...characteristics,
+      [key]: value
+    });
   };
 
   const handleSubmit = async (event) => {
@@ -52,14 +84,20 @@ export const PostProduct = () => {
     }
     setError("");
 
+    // Convertir características a cadena formateada
+    const characteristicsString = Object.entries(characteristics)
+      .map(([key, value]) => `${key}:${value}`)
+      .join(",");
+
     const dataToSend = {
       name,
-      image_url: imageUrl, 
+      image_url: imageUrl,
       price,
       description,
-      category
+      category,
+      characteristics: characteristicsString
     };
-    console.log("dataTSend: ", dataToSend)
+
     await actions.postProduct(dataToSend);
     navigate("/selling");
   };
@@ -110,13 +148,28 @@ export const PostProduct = () => {
 
                 <div className="col-md-12 mt-3">
                   <label className="form-label fw-semibold">Categoría</label>
-                  <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} required>
+                  <select className="form-select" value={category} onChange={handleCategoryChange} required>
                     <option value="">Selecciona una categoría</option>
                     <option value="pintura">Pintura</option>
                     <option value="ropa">Ropa</option>
                     <option value="ilustracion digital">Ilustración Digital</option>
                   </select>
                 </div>
+
+                {/* Campos dinámicos para características */}
+                {Object.entries(characteristics).map(([key, value]) => (
+                  <div className="col-md-6 mt-3" key={key}>
+                    <label className="form-label fw-semibold">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder={`Ingrese ${key}`}
+                      value={value}
+                      onChange={(e) => handleCharacteristicChange(key, e.target.value)}
+                      required
+                    />
+                  </div>
+                ))}
 
                 <div className="col-12 mt-3">
                   <label className="form-label fw-semibold">Descripción</label>
@@ -132,7 +185,6 @@ export const PostProduct = () => {
                   </div>
                 </div>
               </form>
-
             </div>
           </div>
         </div>
