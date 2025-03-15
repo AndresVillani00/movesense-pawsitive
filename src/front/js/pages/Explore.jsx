@@ -1,7 +1,10 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export const Explore = () => {
+
+  const navigate = useNavigate();
   const { store, actions } = useContext(Context);
   const [category, setCategory] = useState("All");
 
@@ -12,8 +15,10 @@ export const Explore = () => {
     actions.postOrderItem(dataToSend);
   }
 
+
   const products = store.products;
-  const filteredProducts = category === "All" ? products : products.filter(p => p.category === category);
+  const filteredProducts = category === "All" ? products : products.filter(p => p.category.toLowerCase() === category.toLowerCase());
+
 
   const isProductInCart = (productId) => {
     return store.cart.some((item) => item.id === productId);
@@ -22,7 +27,8 @@ export const Explore = () => {
   const handleDetails = (product) => {
     // 1. guardar el product en el store 
     actions.setCurrentProduct(product)
-    // 2. Navegar al componente productdetail en el path /product/id 
+    // 2. Navegar al componente productdetail en el path /product/id
+    navigate(`/product-details/${product.id}`);
   }
 
   return (
@@ -36,7 +42,7 @@ export const Explore = () => {
 
         {/* Filtros */}
         <div className="d-flex justify-content-center gap-3 mb-4">
-          {['All', 'pintura', 'ilustración digital', 'ropa'].map(cat => (
+          {['All', 'pintura', 'ilustracion digital', 'ropa'].map(cat => (
             <button key={cat} className={`btn ${category === cat ? "btn-primary" : "btn-outline-primary"}`} onClick={() => setCategory(cat)}>
               {cat}
             </button>
@@ -48,9 +54,9 @@ export const Explore = () => {
           {filteredProducts.map(product => (
             <div key={product.id} className="col-md-3 mb-4">
               <div className="card shadow-sm bg-white">
-                <img src={product.image} alt={`Imagen de ${product.title}`} className="card-img-top rounded" style={{ height: "200px", objectFit: "cover", width: "100%" }} />
+                <img src={product.image_url} alt={`Imagen de ${product.name}`} className="card-img-top rounded" style={{ height: "200px", objectFit: "cover", width: "100%" }} />
                 <div className="card-body text-center">
-                  <h5 className="fw-bold">{product.title}</h5>
+                  <h5 className="fw-bold">{product.name}</h5>
                   <p className="text-muted">{product.category}</p>
 
                   {/* Botón para ver detalles */}
