@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
 import { useNavigate } from "react-router-dom";
-// import Cloudinary from "../component/Cloudinary.jsx";
 
 export const PostProduct = () => {
   const { actions } = useContext(Context);
@@ -52,12 +51,6 @@ export const PostProduct = () => {
       return;
     }
     setError("");
-
-    // const imageUrl = await actions.uploadImageToCloudinary(imageFile);
-    // if (!imageUrl) {
-    //   setError("Error al subir la imagen");
-    //   return;
-    // }
 
     const dataToSend = {
       name,
@@ -138,7 +131,6 @@ export const PostProduct = () => {
                     <label htmlFor="fileInput" className="btn btn-outline-primary mt-2"><i className="fas fa-cloud-upload-alt"></i> Subir Una Imagen</label>
                   </div>
                 </div>
-                {/* <Cloudinary /> */}
               </form>
 
             </div>

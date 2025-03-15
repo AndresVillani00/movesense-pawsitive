@@ -6,6 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isAddedToCart:true,
 			usuario: {},
 			seller: {},
+			sellerProducts: [],
 			buyer: {},
 			artists: [],
 			products: [],
@@ -18,7 +19,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setCurrentProduct: (item) => { setStore({currentProduct: item})},
 			getUserProfile: async () => {
                 const token = localStorage.getItem("token");
-                if (!token) return;  // Si no hay token, no hace nada
+                if (!token) return; 
                 
                 const uri = `${process.env.BACKEND_URL}/users/profile`;
                 const options = {
@@ -215,8 +216,55 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return null;
 				}
 			},
+			getSellerProducts: async () => {
+				const token = localStorage.getItem("token");
+				if (!token) return;  
 			
-
+				const uri = `${process.env.BACKEND_URL}/productsApi/sellers/<int:seller_id>/products`;  
+				const options = {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				};
+			
+				try {
+					const response = await fetch(uri, options);
+					if (!response.ok) throw new Error("Error obteniendo productos del vendedor");
+					const data = await response.json();
+					setStore({ sellerProducts: data.results });  
+				} catch (error) {
+					console.log("Error en getSellerProducts:", error);
+				}
+			},
+			removeProduct: async (productId) => {
+				const token = localStorage.getItem("token");
+				if (!token) return false;  
+			
+				const uri = `${process.env.BACKEND_URL}/productsApi/products/${productId}`;  
+				const options = {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				};
+			
+				try {
+					const response = await fetch(uri, options);
+					if (!response.ok) throw new Error("No tienes permisos para eliminar este producto");
+			
+					const store = getStore();
+					const updatedProducts = store.products.filter(product => product.id !== productId);
+					setStore({ products: updatedProducts });
+			
+					return true; 
+				} catch (error) {
+					console.log("Error en removeProduct:", error);
+					return false; 
+				}
+			},
 			
 		}
 	};

@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import injectContext from "./store/appContext.js";
@@ -10,7 +11,7 @@ import { BackendURL } from "./component/BackendURL.jsx";
 import { Home } from "./pages/Home.jsx";
 import { SignUp } from "./pages/SignUp.jsx";
 import { Login } from "./component/Login.jsx";
-import { Product } from "./pages/Product.jsx";
+import { ProductDetail } from "./pages/ProductDetails.jsx";
 import { Blog } from "./pages/Blogs.jsx";
 import { NewBlogPost } from "./pages/NewBlogPost.jsx";
 import { Explore } from "./pages/Explore.jsx";
@@ -18,6 +19,7 @@ import { PostProduct } from "./pages/PostProduct.jsx";
 import { UserProfile } from "./pages/UserProfile.jsx";
 import { Purchases } from "./pages/Purchases.jsx";
 import { Sales } from "./pages/Sales.jsx";
+import { MySales, Selling } from "./pages/Selling.jsx";
 import { Artists } from "./pages/Artists.jsx";
 import { Alert } from "./component/Alert.jsx";
 
@@ -30,7 +32,7 @@ const Layout = () => {
     // The basename is used when your project is published in a subdirectory and not in the root of the domain
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
     const basename = process.env.BASENAME || "";
-    if(!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL/ >;
+    if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
 
     return (
         <div className="d-flex flex-column min-vh-100">
@@ -39,21 +41,23 @@ const Layout = () => {
                     <Navbar />
                     <Alert />
                     <Routes>
+                        <Route path="/" element={<Navigate to="/home" />} />
                         <Route element={<Home />} path="/home" />
                         <Route element={<SignUp />} path="/sign-up" />
                         <Route element={<Login />} path="/login" />
-                        <Route element={<Product />} path="/product" />
-                        <Route element={<Blog />} path="/blogs" />
+                        <Route element={<ProductDetail />} path="/product-details/:id" />
+                        <Route element={<Blog />} path="/events" />
                         <Route element={<NewBlogPost />} path="/new-blog-post" />
                         <Route element={<Explore />} path="/explore" />
                         <Route element={<Artists />} path="/artists" />
                         <Route element={<PostProduct />} path="/post-product" />
                         <Route element={<UserProfile />} path="/user-profile" />
                         <Route element={<Purchases />} path="/purchases" />
-                        <Route element={<Sales />} path="/sales" />
+                        <Route element={<Sales />} path="/sold" />
+                        <Route element={<Selling />} path="/selling" />
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
-                        <Route element={<h1>Not found!</h1>} path='*'/>
+                        <Route element={<h1>Not found!</h1>} path='*' />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
