@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt                
 from flask_jwt_extended import get_jwt_identity         
 from flask_cors import CORS
-from api.models import db, Products
+from api.models import db, Products, Users
 
 
 products_api = Blueprint('productsApi', __name__)
@@ -43,6 +43,7 @@ def postProducts():
                     quantity=data.get('quantity', 1),
                     price=data.get('price'),
                     description=data.get('description'),
+                    image_url=data.get('image_url'),
                     category=data.get('category'))
         db.session.add(row)  #AGREGADO
         db.session.commit()
@@ -54,7 +55,7 @@ def postProducts():
 @products_api.route('/products/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def product(id):
     response_body = {}
-    row = db.session.execute(db.select(Products).where(Products.id == id)).scalars()
+    row = db.session.execute(db.select(Products).where(Products.id == id)).scalar()
     if not row:
         response_body['message'] = f'El Producto de id: {id}, no existe'
     if request.method == 'GET':
@@ -88,10 +89,17 @@ def product(id):
 @products_api.route('/sellers/<int:seller_id>/products', methods=['GET'])
 def seller_products(seller_id):
     response_body = {}
-    row = db.session.execute(db.select(Products).where(Products.seller_id == seller_id)).scalars()
-    if not row:
-        response_body['message'] = f'No hay comprador en los usuarios con id: {seller_id}'
-    if request.method == 'GET':
-        response_body['message'] = f'Usuario comprador con id: {seller_id}'
-        response_body["results"] = row.serialize()
+    seller = db.session.execute(db.select(Users).where(Users.id == seller_id)).scalar()
+    if not seller:
+        response_body['message'] = f'El vendedor con id: {seller_id} no existe'
+        return response_body, 404    
+    products = db.session.execute(db.select(Products).where(Products.seller_id == seller_id)).scalars()    
+    product_list = [product.serialize() for product in products]    
+    if not product_list:
+        response_body['message'] = f'No hay productos para el vendedor con id: {seller_id}'
+        response_body['results'] = []
+        return response_body, 200
+    response_body['message'] = f'Productos del vendedor con id: {seller_id}'
+    response_body['results'] = product_list
+    return response_body, 200
 

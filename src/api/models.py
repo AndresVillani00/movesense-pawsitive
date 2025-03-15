@@ -50,6 +50,7 @@ class Products(db.Model):
     quantity = db.Column(db.Integer(), unique=False, nullable=True)
     price = db.Column(db.Integer(), unique=False, nullable=False)
     description = db.Column(db.String(), unique=False, nullable=True, default="")
+    image_url = db.Column(db.String(), unique=False, nullable=True)
     is_sold = db.Column(db.Boolean(), nullable=False, default=False)
     category = db.Column(db.Enum('pintura', 'ropa', 'ilustracion digital', name='category'), unique=False, nullable=False)  # ARREGLAR, QUE CATEGORIAS PONER? 
     seller_id = db.Column(db.Integer, db.ForeignKey('users.id'))
@@ -67,7 +68,9 @@ class Products(db.Model):
                 'quantity': self.quantity,
                 'price': self.price,
                 'description': self.description,
+                'image_url': self.image_url,
                 'is_sold': self.is_sold, 
+                'image_url': self.image_url,
                 'category': self.category}
 
 
