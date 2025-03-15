@@ -127,12 +127,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({	usuario: datos.results	})
 			},
 			postProduct: async(dataToSend) =>{
-				
 				//  llamo al endpoint de cloundinary en mi back enviandole el  datatosend.image 
 				// el endpoint me devuelve una url, con esa url, reemplazo el datatosend.image (queda json) y despues continuo debajo
 				 
 				const token = localStorage.getItem("token");
-                if (!token) return;  // Si no hay token, no hace nada
+                if (!token) return;  
                 
 				const uri = `${process.env.BACKEND_URL}/productsApi/products`;
 				const options = {

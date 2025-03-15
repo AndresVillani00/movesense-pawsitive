@@ -61,7 +61,7 @@ export const PostProduct = () => {
     };
     console.log("dataTSend: ", dataToSend)
     await actions.postProduct(dataToSend);
-    navigate("/sales");
+    navigate("/selling");
   };
 
   return (
