@@ -1,7 +1,7 @@
 from flask import request, Blueprint
 from flask_jwt_extended import create_access_token
 from flask_cors import CORS
-from api.models import db, Users
+from api.models import db, Users, Buyers
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import jwt_required
@@ -39,6 +39,11 @@ def users():
             return response_body, 401
         db.session.add(row)
         db.session.commit()
+        if data.get('is_buyer'):
+            rowbuyer = Buyers(sending_address_buyer='',
+                              purchase_history='')
+            db.session.add(rowbuyer)
+            db.session.commit()
         user = row.serialize()
         claims = {'user_id': user['id'],
               'user_username': user['username'],

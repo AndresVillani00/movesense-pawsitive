@@ -23,13 +23,15 @@ def order_items():
         return response_body, 200
     if request.method == 'POST':
         data = request.json
+        print(request.json)
         """ 
         "buyer_id", "order_id", "product_id", "quantity" 
         """
         # Aqui recibo el cliente, el producto, y el numero de orden si la tiene (puede venir null)
         # Si no tiene un numero de orden, tengo que crear una orden nueva. 
         # Revisar nombres archivos
-        product = db.session.execute(db.select(Products).where(Products.id  == data.get("product_id"))).scalar()
+        product = db.session.execute(db.select(Products).where(Products.id  == data.get("id"))).scalar()
+        print(product)
         if not product: 
             response_body['message'] = 'Producto inexistente'
             return response_body, 401 # Verificar que error devolver aqui 
@@ -38,8 +40,7 @@ def order_items():
             row = Orders(total_amount=0,
                          order_status='en proceso',
                          buy_date=datetime.now(timezone.utc),
-                         buyer_id=data.get('buyer_id'),
-                         payment_options='')
+                         buyer_id=data.get('buyer_id'))
             db.session.add(row)
             db.session.commit()
             order_id = row.serialize()["id"] 

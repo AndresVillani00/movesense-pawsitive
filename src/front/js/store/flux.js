@@ -4,12 +4,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isLogged: false,
 			isBuyer: false,
 			isAddedToCart:true,
+			secretClient: '',
 			usuario: {},
+			orderId: null,
+			orders: {},
 			seller: {},
 			sellerProducts: [],
 			buyer: {},
 			artists: [],
 			products: [],
+			productsInCart:[],
 			currentProduct: null, 
 			cart: [],
 			alert: {text:'', background:'primary', visible: false},
@@ -39,10 +43,40 @@ const getState = ({ getStore, getActions, setStore }) => {
                 const datos = await response.json();
                 setStore({ usuario: datos.results });
             },
+			postOrderItem: async(dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/orderItemsApi/order-items`;
+				const options = {
+					method:'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					return
+				}
+				const data = await response.json();
+				setStore({ orderId: data.results.order_id })
+				getActions().getOrders(); 
+			},
+			getOrders: async() => {
+				const uri = `${process.env.BACKEND_URL}/ordersApi/orders`;
+                try {
+                    const response = await fetch(uri, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" }
+                    });
+                    if (!response.ok) throw new Error("Error obteniendo pedidos");
+                    const data = await response.json();
+                    setStore({ orders: data.results });
+                } catch (error) {
+                    console.log("Error en getProducts:", error);
+                }
+			},
 			addToCart: (product) => {
-				const store = getStore();
 				setStore({ 
-				  cart: [...store.cart, product],  
+				  cart: [...getStore().cart, product],  
 				});
 			},
 			removeFromCart: (productId) => {
@@ -105,6 +139,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					isLogged: true,
 					usuario: datos.results
 				})
+				if(getStore().usuario.is_buyer) {
+					setStore({ isBuyer: true })
+				}
 				localStorage.setItem('token', datos.access_token)
 			},
             updateUsuario: async(dataToSend, id) => {
@@ -127,7 +164,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({	usuario: datos.results	})
 			},
 			postProduct: async(dataToSend) =>{
-				
 				//  llamo al endpoint de cloundinary en mi back enviandole el  datatosend.image 
 				// el endpoint me devuelve una url, con esa url, reemplazo el datatosend.image (queda json) y despues continuo debajo
 				 
@@ -152,8 +188,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				const datos = await response.json();
 				getActions().getProducts()  // action del get product
-			},
-			
+			},	
 			login: async(dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/login`;
 				const options = {
@@ -173,6 +208,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const datos = await response.json();
 				setStore({
 					isLogged: true,
+					orderId: datos.results.order_id,
 					usuario: datos.results
 				})
 				if(getStore().usuario.is_buyer) {
@@ -265,6 +301,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false; 
 				}
 			},
+      usePayment: async(dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/stripeApi/payment-checkout`;
+				const options = {
+					method:'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					if(response.status == 401){
+						setStore({alert: {text:'Pago no realizado', background:'danger', visible:true}})
+					}
+					return
+				}
+
+				const datos = await response.json();
+				setStore({ secretClient: datos.clientSecret })
+			}
 			
 		}
 	};

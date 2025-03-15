@@ -22,6 +22,7 @@ import { Sales } from "./pages/Sales.jsx";
 import { MySales, Selling } from "./pages/Selling.jsx";
 import { Artists } from "./pages/Artists.jsx";
 import { Alert } from "./component/Alert.jsx";
+import { Cart } from "./pages/Cart.jsx";
 
 
 
@@ -55,6 +56,8 @@ const Layout = () => {
                         <Route element={<Purchases />} path="/purchases" />
                         <Route element={<Sales />} path="/sold" />
                         <Route element={<Selling />} path="/selling" />
+                        <Route element={<Cart />} path="/cart" />
+
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
                         <Route element={<h1>Not found!</h1>} path='*' />
