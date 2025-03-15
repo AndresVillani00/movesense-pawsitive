@@ -26,8 +26,7 @@ def orders():
         data = request.json
         row = Orders(total_amount=data.get('total_amount'),
                      order_status=data.get('order_status'),
-                     buy_date=datetime.now(timezone.utc),
-                     payment_Options=data.get('payment_Options'))
+                     buy_date=datetime.now(timezone.utc))
         db.session.add(row)
         db.session.commit()
         response_body['message'] = f'Agregar nueva orden'

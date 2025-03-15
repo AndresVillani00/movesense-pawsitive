@@ -5,22 +5,14 @@ export const Explore = () => {
   const { store, actions } = useContext(Context);
   const [category, setCategory] = useState("All");
 
-  const products = store.products
-  // const products = [
-  //   { id: 1, title: "Paisaje en óleo", category: "Pintura", image: "https://i.imgur.com/d8zx32r.png", inCart: false },
-  //   { id: 2, title: "Ilustración digital", category: "Ilustración digital", image: "https://i.imgur.com/fS7xClr.png", inCart: false },
-  //   { id: 3, title: "Abrigo artística", category: "Ropa", image: "https://i.imgur.com/OVagfHx.png", inCart: false },
-  //   { id: 4, title: "Pintura", category: "Pintura", image: "https://i.imgur.com/gsLEtHk.png", inCart: false },
-  //   { id: 5, title: "Pintura", category: "Pintura", image: "https://i.imgur.com/c8tpWZs.png", inCart: false },
-  //   { id: 6, title: "Pintura", category: "Pintura", image: "https://i.imgur.com/IPMY4NX.png", inCart: false },
-  //   { id: 7, title: "Camiseta artística", category: "Ropa", image: "https://i.imgur.com/26iApX3.png", inCart: false },
-  //   { id: 8, title: "Abrigo artística", category: "Ropa", image: "https://i.imgur.com/RsOMMT2.png", inCart: false },
-  //   { id: 9, title: "Taza artística", category: "Ropa", image: "https://i.imgur.com/W9r9dd6.png", inCart: false },
-  //   { id: 12, title: "Ilustración digital", category: "Ilustración digital", image: "https://i.imgur.com/QDAxKlP.png", inCart: false },
-  //   { id: 10, title: "Ilustración digital", category: "Ilustración digital", image: "https://i.imgur.com/zYNvbBU.png", inCart: false },
-  //   { id: 11, title: "Ilustración digital", category: "Ilustración digital", image: "https://i.imgur.com/IyLHwsC.png", inCart: false },
-  // ];
+  const handleCart = (product) => {
+    const dataToSend = { ...product, order_id: store.orderId }
+    
+    actions.addToCart(product);
+    actions.postOrderItem(dataToSend);
+  }
 
+  const products = store.products;
   const filteredProducts = category === "All" ? products : products.filter(p => p.category === category);
 
   const isProductInCart = (productId) => {
@@ -72,7 +64,7 @@ export const Explore = () => {
                       <i className="fas fa-trash text-end"></i>
                     </button>
                   ) : (
-                    <button className="btn btn-success" onClick={() => actions.addToCart(product)}>
+                    <button className="btn btn-success" onClick={() => handleCart(product)}>
                       <i className="fas fa-shopping-cart text-end"></i>
                     </button>
                   )}
