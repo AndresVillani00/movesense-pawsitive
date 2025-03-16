@@ -1,9 +1,9 @@
 import React, { useEffect, useContext, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Context } from "./store/appContext";
+import { Context } from "../store/appContext";
 
 export const ArtistProfile = () => {
-    
+
   const { actions } = useContext(Context);
   const { id } = useParams();
   const [artist, setArtist] = useState(null);

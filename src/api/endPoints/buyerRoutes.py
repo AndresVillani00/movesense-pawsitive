@@ -24,7 +24,7 @@ def buyers():
         row = Buyers(id=user_id,            
                     sending_address_buyer=data.get('sending_address_buyer'),
                     purchase_history=data.get('purchase_history'))
-        db.session.add(row)  #AGREGADO
+        db.session.add(row)
         db.session.commit()
         response_body['message'] = f'Agregar nuevo Producto'
         response_body['results'] = row.serialize()

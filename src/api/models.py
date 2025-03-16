@@ -120,3 +120,24 @@ class Buyers(db.Model):
                 'id': self.id,
                 'sending_address_buyer': self.sending_address_buyer,
                 'purchase_history': self.purchase_history}
+
+class Events(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_post = db.Column(db.String(), unique=True, nullable=True, default="")
+    title = db.Column(db.String(), unique=False, nullable=True, default="")
+    date = db.Column(db.DateTime(), unique=False, nullable=False, default=datetime.utcnow)
+    location = db.Column(db.String(), unique=False, nullable=False, default="")
+    image_url = db.Column(db.String(), unique=False, nullable=True)
+    body_content =  db.Column(db.Text(), unique=False, nullable=True, default="")
+    db.relationship('Users', foreign_keys=[user_id], backref=db.backref('events', lazy=True))
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user_post': self.user_post,
+            'title': self.title,
+            'date': self.date,
+            'location': self.location,
+            'image_url': self.image_url,
+            'body_content': self.body_content}
