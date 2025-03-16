@@ -23,7 +23,7 @@ import { MySales, Selling } from "./pages/Selling.jsx";
 import { Artists } from "./pages/Artists.jsx";
 import { Alert } from "./component/Alert.jsx";
 import { AboutUs } from "./pages/AboutUs.jsx";
-import { ArtistProfile } from "./ArtistProfile.jsx":
+import { ArtistProfile } from "./pages/ArtistProfile.jsx";
 import { Cart } from "./pages/Cart.jsx";
 
 
