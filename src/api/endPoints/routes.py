@@ -4,7 +4,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import jwt_required
 from flask_cors import CORS
-from api.models import db, Users
+from api.models import db, Users, Orders
 from flask import jsonify
 
 
@@ -23,6 +23,9 @@ def login():
         response_body['message'] = f'El usuario no existe'
         return response_body, 401
     user = row.serialize()
+    # Buscar si el usuario tiene Order
+    order = db.session.execute(db.select(Orders).where(Orders.buyer_id == user['id'])).scalar()
+    user['order_id'] = order.get('id') if order else None
     claims = {'user_id': user['id'],
               'user_username': user['username'],
               'is_buyer': user['is_buyer'],
