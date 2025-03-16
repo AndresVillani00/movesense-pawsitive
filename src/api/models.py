@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 
-
 db = SQLAlchemy()
 
 
@@ -52,7 +51,8 @@ class Products(db.Model):
     description = db.Column(db.String(), unique=False, nullable=True, default="")
     image_url = db.Column(db.String(), unique=False, nullable=True)
     is_sold = db.Column(db.Boolean(), nullable=False, default=False)
-    category = db.Column(db.Enum('pintura', 'ropa', 'ilustracion digital', name='category'), unique=False, nullable=False)  # ARREGLAR, QUE CATEGORIAS PONER? 
+    category = db.Column(db.Enum('pintura', 'ropa', 'ilustracion digital', name='category'), unique=False, nullable=False)
+    characteristics = db.Column(db.Text, nullable=True)
     seller_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     seller_to = db.relationship('Users', foreign_keys=[seller_id], backref=db.backref('seller_to'), lazy='select')
     # se agregó el campo is_sold que determina si un producto esta vendido o no vendido. Por defecto es false, no vendido
@@ -71,7 +71,8 @@ class Products(db.Model):
                 'image_url': self.image_url,
                 'is_sold': self.is_sold, 
                 'image_url': self.image_url,
-                'category': self.category}
+                'category': self.category,
+                'characteristics': self.characteristics}
 
 
 class Orders(db.Model):

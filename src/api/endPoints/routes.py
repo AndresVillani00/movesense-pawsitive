@@ -61,9 +61,18 @@ def get_artists():
     response_body = {}
     rows = db.session.execute(db.select(Users).where(Users.is_seller == True)).scalars()
     artists = [row.serialize() for row in rows]
-    
     response_body['message'] = 'Lista de artistas obtenida con éxito'
     response_body['results'] = artists
-    
+    return response_body, 200
+
+@api.route('/users/artists/<int:artist_id>', methods=['GET'])
+def get_artist_by_id(artist_id):
+    response_body = {}
+    artist = db.session.execute(db.select(Users).where(Users.id == artist_id, Users.is_seller == True)).scalar()
+    if not artist:
+        response_body['message'] = 'Artista no encontrado'
+        return response_body, 404
+    response_body['message'] = 'Artista obtenido con éxito'
+    response_body['results'] = artist.serialize()
     return response_body, 200
 

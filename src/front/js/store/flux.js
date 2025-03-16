@@ -104,6 +104,26 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("Error en getArtists:", error);
                 }
             },
+			getArtistById: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/api/users/artists/${id}`;
+				try {
+				  const response = await fetch(uri, {
+					method: "GET",
+					headers: {
+					  "Content-Type": "application/json",
+					},
+				  });
+				  if (!response.ok) {
+					console.log("Error obteniendo el artista");
+					return null;
+				  }
+				  const data = await response.json();
+				  return data.results; 
+				} catch (error) {
+				  console.log("Error en getArtistById:", error);
+				  return null;
+				}
+			  },
             getProducts: async () => {
                 const uri = `${process.env.BACKEND_URL}/productsApi/products`;
                 try {
@@ -168,7 +188,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				// el endpoint me devuelve una url, con esa url, reemplazo el datatosend.image (queda json) y despues continuo debajo
 				 
 				const token = localStorage.getItem("token");
-                if (!token) return;  // Si no hay token, no hace nada
+                if (!token) return;  
                 
 				const uri = `${process.env.BACKEND_URL}/productsApi/products`;
 				const options = {

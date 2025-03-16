@@ -1,19 +1,65 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
+import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
 
 export const Home = () => {
+  const { store, actions } = useContext(Context);
+
+  // Obtener productos y artistas al cargar el componente
+  useEffect(() => {
+    actions.getProducts();
+    actions.getArtists();
+  }, []);
+
+  // Función para obtener productos aleatorios
+  const getRandomProducts = () => {
+    if (store.products.length > 0) {
+      const shuffledProducts = [...store.products].sort(() => 0.5 - Math.random());
+      return shuffledProducts.slice(0, 4); // Mostrar 4 productos aleatorios
+    }
+    return [];
+  };
+
+  // Función para obtener artistas aleatorios
+  const getRandomArtists = () => {
+    if (store.artists.length > 0) {
+      const shuffledArtists = [...store.artists].sort(() => 0.5 - Math.random());
+      return shuffledArtists.slice(0, 3); // Mostrar 3 artistas aleatorios
+    }
+    return [];
+  };
+
   return (
-    <div className="bg-light"  style={{ background: "#e9ecef" }}>
+    <div className="bg-light" style={{ background: "#e9ecef" }}>
       {/* Hero Section */}
       <section
         className="text-white d-flex align-items-center justify-content-center"
         style={{
-          background: "#1E1E50 url('https://source.unsplash.com/1600x900/?art') no-repeat center center/cover",
           height: "80vh",
-          position: "relative"
+          position: "relative",
+          overflow: "hidden"
         }}
       >
-        {/* Overlay para suavizar la imagen */}
+        {/* Video de fondo */}
+        <video
+          autoPlay
+          loop
+          muted
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            transform: "translate(-50%, -50%)",
+            zIndex: 0
+          }}
+        >
+          <source src="https://i.imgur.com/zxdohU1.mp4" type="video/webm" />
+        </video>
+
+        {/* Overlay para suavizar el video */}
         <div
           style={{
             position: "absolute",
@@ -21,13 +67,14 @@ export const Home = () => {
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0, 0, 0, 0.5)"
+            background: "rgba(0, 0, 0, 0.5)",
+            zIndex: 1
           }}
         ></div>
 
         <div
           className="hero-content text-center"
-          style={{ position: "relative", zIndex: 1 }}
+          style={{ position: "relative", zIndex: 2 }}
         >
           <h1 className="display-4 fw-bold">Descubre el Mundo del Arte</h1>
           <p className="lead">Compra, explora y vive experiencias únicas</p>
@@ -62,7 +109,7 @@ export const Home = () => {
                     {category.name}
                   </h5>
                   <Link
-                    to={`/category/${category.name.toLowerCase().replace(/\s/g, "-")}`}
+                    to={`/explore?category=${category.name.toLowerCase().replace(/\s/g, "-")}`}
                     className="btn btn-outline-primary btn-sm"
                   >
                     Ver
@@ -112,21 +159,21 @@ export const Home = () => {
           Productos Destacados
         </h2>
         <div className="row g-4">
-          {[1, 2, 3, 4].map((product) => (
-            <div key={product} className="col-sm-6 col-md-3">
+          {getRandomProducts().map((product) => (
+            <div key={product.id} className="col-sm-6 col-md-3">
               <div className="card shadow-sm h-100">
                 <img
-                  src="https://i.imgur.com/c8tpWZs.png"
-                  alt={`Producto ${product}`}
+                  src={product.image_url}
+                  alt={`Producto ${product.name}`}
                   className="card-img-top"
                   style={{ height: "300px", objectFit: "cover" }}
                 />
                 <div className="card-body text-center">
                   <h5 className="card-title" style={{ color: "#1E1E50" }}>
-                    Obra {product}
+                    {product.name}
                   </h5>
-                  <p className="card-text">Una pieza excepcional para tu colección.</p>
-                  <Link to="/product" className="btn btn-dark">
+                  <p className="card-text">{product.category}</p>
+                  <Link to={`/product-details/${product.id}`} className="btn btn-dark">
                     Ver Detalle
                   </Link>
                 </div>
@@ -142,13 +189,13 @@ export const Home = () => {
           Artistas Destacados
         </h2>
         <div className="row g-4">
-          {[1, 2, 3].map((artist) => (
-            <div key={artist} className="col-md-4">
+          {getRandomArtists().map((artist) => (
+            <div key={artist.id} className="col-md-4">
               <div className="card shadow-sm text-center h-100" style={{ borderRadius: "15px" }}>
                 <div className="card-body d-flex flex-column align-items-center justify-content-center">
                   <img
-                    src={`https://randomuser.me/api/portraits/lego/${artist}.jpg`}
-                    alt={`Artista ${artist}`}
+                    src={artist.profile_picture || "https://randomuser.me/api/portraits/lego/1.jpg"}
+                    alt={`Artista ${artist.username}`}
                     className="rounded-circle mb-3"
                     style={{
                       width: "120px",
@@ -158,9 +205,9 @@ export const Home = () => {
                     }}
                   />
                   <h5 className="card-title fw-bold mb-3" style={{ color: "#1E1E50" }}>
-                    ArtLover {artist}
+                    {artist.username}
                   </h5>
-                  <Link to="/artists" className="btn btn-outline-primary btn-sm">
+                  <Link to={`/artist/${artist.id}`} className="btn btn-outline-primary btn-sm">
                     Ver Perfil
                   </Link>
                 </div>

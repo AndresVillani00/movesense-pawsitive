@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export const NewBlogPost = () => {
     const [blogs, setBlogs] = useState([
         { id: 1, title: "Exploring Modern Art", category: "Pintura", content: "An in-depth look at contemporary painting techniques.", image: "https://via.placeholder.com/300" },
-        { id: 2, title: "Sculpting Wonders", category: "Escultura", content: "The beauty of sculptures throughout history.", image: "https://via.placeholder.com/300" },
+        { id: 2, title: "Sculpting Wonders", category: "Ilustracion digital", content: "The beauty of sculptures throughout history.", image: "https://via.placeholder.com/300" },
         { id: 3, title: "Fashion & Art", category: "Ropa", content: "How fashion intersects with artistic expression.", image: "https://via.placeholder.com/300" }
     ]);
     
