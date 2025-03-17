@@ -18,16 +18,16 @@ export const NewBlogPost = () => {
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      const result = await actions.uploadImage(file);
+      const result = await actions.uploadImage(file); 
       if (!result) {
         setModalMessage("Error al subir la imagen.");
         setShowModal(true);
         return;
       }
-      setImageUrl(result);
+      setImageUrl(result); 
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreview(reader.result);
+        setPreview(reader.result); 
       };
       reader.readAsDataURL(file);
     }
@@ -45,11 +45,11 @@ export const NewBlogPost = () => {
       date,
       location,
       body_content: bodyContent,
-      image_url: imageUrl || "", // La imagen no es obligatoria
+      image_url: imageUrl || "", 
     };
 
-    actions.postEvent(dataToSend);
-    navigate("/events");
+    actions.postEvent(dataToSend); 
+    navigate("/events"); 
   };
 
   return (
