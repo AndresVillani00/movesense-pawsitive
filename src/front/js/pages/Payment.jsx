@@ -1,5 +1,5 @@
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext.js";
 import { useNavigate } from "react-router-dom";
 
@@ -8,18 +8,38 @@ export const Payment = () => {
   const elements = useElements();
   const { store, actions } = useContext(Context)
   const navigate = useNavigate();
+  const [ clientSecret, setClientSecret ] = useState(false);
   const [ loading, setLoading ] = useState(false);
+  const productsInCart = store.cart;
+  const total_amount = productsInCart.reduce((count, item) => count + item.price, 0);
+
+  useEffect(() => {
+    const paymentIntent = () => {
+      const uri = `${process.env.BACKEND_URL}/stripeApi/payment-checkout`;
+			const options = {
+				method:'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ amount:total_amount, currency:'usd' })
+			};
+			fetch(uri, options).then((respuesta) => respuesta.json()).then((datos) => setClientSecret(datos.clientSecret));
+      
+    }
+    paymentIntent()
+  }, [])
 
   const handleSubmit = async(event) => {
     event.preventDefault();
-    actions.usePayment(store.totalAmount, 'usd');
+
 
     if(!stripe || !elements){
       return
     }
     setLoading(true);
+    console.log(clientSecret)
     const { error, paymentIntent } = await stripe.confirmCardPayment(
-      store.secretClient,{
+      clientSecret,{
         payment_method:{
           card: elements.getElement(CardElement)
         }
