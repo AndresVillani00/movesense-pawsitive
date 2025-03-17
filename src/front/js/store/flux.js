@@ -17,6 +17,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			productsInCart:[],
 			currentProduct: null, 
 			cart: [],
+			totalAmount: '',
 			alert: {text:'', background:'primary', visible: false},
 			message: null,
 		},
@@ -282,30 +283,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setIsLogged: (value) => {
 				setStore({ isLogged: value })
 			},
-			uploadUserImage: async(file) => {
-				const cloud_name = ""; 
-				const preset_name = ""; 
-			
-				const data = new FormData();
-				data.append("file", file);
-				data.append("upload_preset", preset_name);
-			
-				try {
-					const response = await fetch(`https://api.cloudinary.com/v1_1/${cloud_name}/image/upload`, {
-						method: "POST",
-						body: data
-					});
-			
-					if (!response.ok) throw new Error("Error al subir la imagen");
-			
-					const fileData = await response.json();
-					console.log("flux: ",fileData.secure_url)
-					return fileData.secure_url;
-				} catch (error) {
-					console.error("Error en uploadImage:", error);
-					return null;
-				}
-			},
 			uploadImage: async (file) => {
 				const cloud_name = "diakkcdpm"; 
 				const preset_name = "artVibespreset"; 
@@ -379,14 +356,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false; 
 				}
 			},
-      		usePayment: async(dataToSend) => {
+      		usePayment: async(amount, currency) => {
 				const uri = `${process.env.BACKEND_URL}/stripeApi/payment-checkout`;
 				const options = {
 					method:'POST',
 					headers: {
 						'Content-Type': 'application/json'
 					},
-					body: JSON.stringify(dataToSend)
+					body: JSON.stringify({ amount:amount, currency:currency })
 				};
 				const response = await fetch(uri, options);
 				if(!response.ok){

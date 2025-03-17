@@ -5,7 +5,7 @@ import stripe
 
 
 stripe_api = Blueprint('stripeApi', __name__)
-stripe.api_key = 'sk_test_51R2VwlHhaVmppJQwR3tOfxGoMp4TiQH1qKAbjutp84bZCIh9BbQTWxvibDIEidhPFnjbRJC4VL9OksR455TKXujg00rl7bE8fy'
+stripe.api_key = os.getenv('BACKSTRIPEKEY')
 CORS(stripe_api)  # Allow CORS requests to this API
 
 @stripe_api.route('/payment-checkout', methods=['POST'])
