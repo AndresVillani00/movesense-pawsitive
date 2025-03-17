@@ -4,7 +4,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isLogged: false,
 			isBuyer: false,
 			isAddedToCart:true,
-			secretClient: '',
 			usuario: {},
 			events: {},
 			orderId: null,
@@ -17,7 +16,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			productsInCart:[],
 			currentProduct: null, 
 			cart: [],
-			totalAmount: '',
 			alert: {text:'', background:'primary', visible: false},
 			message: null,
 		},
@@ -356,26 +354,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false; 
 				}
 			},
-      		usePayment: async(amount, currency) => {
-				const uri = `${process.env.BACKEND_URL}/stripeApi/payment-checkout`;
-				const options = {
-					method:'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ amount:amount, currency:currency })
-				};
-				const response = await fetch(uri, options);
-				if(!response.ok){
-					if(response.status == 401){
-						setStore({alert: {text:'Pago no realizado', background:'danger', visible:true}})
-					}
-					return
-				}
-
-				const datos = await response.json();
-				setStore({ secretClient: datos.clientSecret })
-			}
 			
 		}
 	};
