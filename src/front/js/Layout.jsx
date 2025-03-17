@@ -12,7 +12,6 @@ import { Home } from "./pages/Home.jsx";
 import { SignUp } from "./pages/SignUp.jsx";
 import { Login } from "./component/Login.jsx";
 import { ProductDetail } from "./pages/ProductDetails.jsx";
-import { Blog } from "./pages/Blogs.jsx";
 import { NewBlogPost } from "./pages/NewBlogPost.jsx";
 import { Explore } from "./pages/Explore.jsx";
 import { PostProduct } from "./pages/PostProduct.jsx";
@@ -30,9 +29,8 @@ import { PaymentSuccess } from "./pages/PaymentSuccess.jsx";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { PaymentFail } from "./pages/PaymentFail.jsx";
-
-
-
+import { EventDetail } from "./pages/EventDetails.jsx";
+import { Events } from "./pages/Events.jsx";
 
 
 
@@ -58,7 +56,7 @@ const Layout = () => {
                         <Route element={<SignUp />} path="/sign-up" />
                         <Route element={<Login />} path="/login" />
                         <Route element={<ProductDetail />} path="/product-details/:id" />
-                        <Route element={<Blog />} path="/events" />
+                        <Route element={<Events  />} path="/events" />
                         <Route element={<NewBlogPost />} path="/new-blog-post" />
                         <Route element={<Explore />} path="/explore" />
                         <Route element={<Artists />} path="/artists" />
@@ -72,10 +70,12 @@ const Layout = () => {
                         <Route element={<Cart />} path="/cart" />
                         <Route element={<Payment />} path="/payment" />
                         <Route element={<PaymentSuccess />} path="/success" />
+                        <Route element={<PaymentFail />} path="/fail" />                        
+                        <Route element={<EventDetail />} path="/event-detail/:id" />
                         <Route element={<PaymentFail />} path="/fail" />
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
-                        <Route element={<h1>Not found!</h1>} path='*' />
+                        <Route element={<h1>Not    found!</h1>} path='*' />
                     </Routes>
                     </Elements>
                     <Footer />
