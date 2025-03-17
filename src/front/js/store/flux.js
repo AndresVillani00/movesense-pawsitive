@@ -354,6 +354,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false; 
 				}
 			},
+			updateUsuario: async (dataToSend, id) => {
+				const uri = `${process.env.BACKEND_URL}/usersApi/users/${id}`;
+				const options = {
+				  method: "PUT",
+				  headers: {
+					"Content-Type": "application/json",
+				  },
+				  body: JSON.stringify(dataToSend),
+				};
+			  
+				try {
+				  const response = await fetch(uri, options);
+				  if (!response.ok) throw new Error("Error al actualizar el usuario");
+				  const datos = await response.json();
+			  
+				  // Actualizar el estado global con los nuevos datos del usuario
+				  setStore({ usuario: datos.results });
+			  
+				  return datos;
+				} catch (error) {
+				  console.error("Error en updateUsuario:", error);
+				  return null;
+				}
+			  },
 			
 		}
 	};
