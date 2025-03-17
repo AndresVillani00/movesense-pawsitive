@@ -5,6 +5,7 @@ from api.models import db, Users, Buyers
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import jwt_required
+from flask import jsonify
 
 
 users_api = Blueprint('usersApi', __name__)
@@ -110,3 +111,18 @@ def user_seller(seller_id):
     if request.method == 'GET':
         response_body['message'] = f'Usuario vendedor con id: {seller_id}'
         response_body["results"] = row.serialize()
+
+@users_api.route("/users/profile/picture", methods=["PUT"])
+@jwt_required()
+def update_profile_picture():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    image_url = data.get("image_url")
+    if not image_url:
+        return jsonify({"error": "URL de la imagen no proporcionada"}), 400
+    user = Users.query.get(user_id)
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+    user.image_url = image_url
+    db.session.commit()
+    return jsonify({"message": "Foto de perfil actualizada", "user": users.serialize()}), 200

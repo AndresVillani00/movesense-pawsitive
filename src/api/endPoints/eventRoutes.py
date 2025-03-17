@@ -35,7 +35,8 @@ def postEvents():
                      title=data.get('title'),
                      date=data.get('date'),
                      location=data.get('location'),
-                     body_content=data.get('body_content'))
+                     body_content=data.get('body_content'),
+                     image_url=data.get('image_url'))
         db.session.add(row)
         db.session.commit()
         response_body['message'] = f'Agregar nuevo evento'

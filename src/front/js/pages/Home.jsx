@@ -143,7 +143,7 @@ export const Home = () => {
                   <h5 className="card-title" style={{ color: "#1E1E50" }}>
                     {activity.title}
                   </h5>
-                  <Link to="/activities" className="btn btn-outline-primary btn-sm">
+                  <Link to="/events" className="btn btn-outline-primary btn-sm">
                     Más Info
                   </Link>
                 </div>
@@ -194,7 +194,7 @@ export const Home = () => {
               <div className="card shadow-sm text-center h-100" style={{ borderRadius: "15px" }}>
                 <div className="card-body d-flex flex-column align-items-center justify-content-center">
                   <img
-                    src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
+                   src={artist.image_url || "https://i.imgur.com/24t1SYU.jpeg"}
                     alt={`Artista ${artist.username}`}
                     className="rounded-circle mb-3"
                     style={{

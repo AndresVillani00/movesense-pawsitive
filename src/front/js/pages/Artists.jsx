@@ -54,7 +54,7 @@ export const Artists = () => {
                   {/* Imagen de perfil circular */}
                   <div className="text-center p-4">
                     <img
-                      src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
+                    src={artist.image_url || "https://i.imgur.com/24t1SYU.jpeg"}
                       alt={artist.username}
                       style={{
                         width: "120px",
@@ -133,7 +133,7 @@ export const Artists = () => {
                 }}
               >
                 <img
-                  src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
+                  src={artist.image_url || "https://i.imgur.com/24t1SYU.jpeg"}
                   className="card-img-top"
                   alt={artist.username}
                   style={{

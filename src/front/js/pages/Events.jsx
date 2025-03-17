@@ -4,15 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 
 export const Events = () => {
   const { store, actions } = useContext(Context);
-  const [currentPage, setCurrentPage] = useState(1); 
+  const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage] = useState(4);
 
   const events = Object.values(store.events);
 
-  
-  const indexOfLastevents = currentPage * eventsPerPage;
-  const indexOfFirstevents = indexOfLastevents - eventsPerPage;
-  const currentevents = events.slice(indexOfFirstevents, indexOfLastevents);
+  const indexOfLastEvent = currentPage * eventsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+  const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
 
   // Cambiar de página
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -39,7 +38,7 @@ export const Events = () => {
         <div className="col-md-6">
           <img src="https://i.imgur.com/mC016Ss.png" className="img-fluid rounded" alt="Destacado" />
         </div>
-        <div className="col-md-6 d-flex flex-column justify-content-center">
+        <div className="col-md-6 d-flex flex-column justify-content-center text-center">
           <h2>El impacto del arte en la sociedad moderna</h2>
           <p>Descubre cómo el arte sigue inspirando, educando y transformando nuestras vidas en la era digital.</p>
           <Link to={`/event-details/${events.id}`} className="text-decoration-none"><button className="btn btn-light text-dark mt-3">Leer más</button></Link>
