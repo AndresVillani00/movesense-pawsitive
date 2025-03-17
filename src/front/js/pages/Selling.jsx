@@ -12,9 +12,9 @@ export const Selling = () => {
     const handleRemoveProduct = async (productId) => {
         const success = await actions.removeProduct(productId);
         if (success) {
-            alert("Producto eliminado correctamente");
+            store.alert = { text: "Producto eliminado correctamente", background: "primary", visible: true };
         } else {
-            alert("Error al eliminar el producto");
+            store.alert = { text: "Error al eliminar el producto", background: "danger", visible: true } ;
         }
         setShowDeleteModal(false); 
     };
