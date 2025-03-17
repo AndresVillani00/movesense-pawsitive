@@ -6,6 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isAddedToCart:true,
 			secretClient: '',
 			usuario: {},
+			events: {},
 			orderId: null,
 			orders: {},
 			seller: {},
@@ -43,6 +44,40 @@ const getState = ({ getStore, getActions, setStore }) => {
                 const datos = await response.json();
                 setStore({ usuario: datos.results });
             },
+			postEvent: async(dataToSend) => {
+				const token = localStorage.getItem("token");
+                if (!token) return;
+
+				const uri = `${process.env.BACKEND_URL}/eventsApi/events`;
+				const options = {
+					method:'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if(!response.ok){
+					return
+				}
+				
+				getActions().getEvents();
+			},
+			getEvents: async() => {
+				const uri = `${process.env.BACKEND_URL}/eventsApi/events`;
+                try {
+                    const response = await fetch(uri, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" }
+                    });
+                    if (!response.ok) throw new Error("Error obteniendo eventos");
+                    const data = await response.json();
+                    setStore({ events: data.results });
+                } catch (error) {
+                    console.log("Error en getProducts:", error);
+                }
+			},
 			postOrderItem: async(dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/orderItemsApi/order-items`;
 				const options = {
@@ -123,7 +158,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				  console.log("Error en getArtistById:", error);
 				  return null;
 				}
-			  },
+			},
             getProducts: async () => {
                 const uri = `${process.env.BACKEND_URL}/productsApi/products`;
                 try {
@@ -321,7 +356,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false; 
 				}
 			},
-      usePayment: async(dataToSend) => {
+      		usePayment: async(dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/stripeApi/payment-checkout`;
 				const options = {
 					method:'POST',
