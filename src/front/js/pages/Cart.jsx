@@ -6,7 +6,6 @@ export const Cart = () => {
   const { store, actions } = useContext(Context);
   const productsInCart = store.cart;
   const total_amount = productsInCart.reduce((count, item) => count + item.price, 0);
-  store.totalAmount = total_amount;
 
   return (
     <div className="container p-5">

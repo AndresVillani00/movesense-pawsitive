@@ -16,10 +16,10 @@ def payment_checkout():
             amount = data['amount'],
             currency = data['currency'],
             automatic_payment_methods={
-                'enable': True
+                'enabled': True
             }
         )
-        return jsonify({ 'clientSecret': intent['clientSecret']})
+        return jsonify({ 'clientSecret': intent['client_secret']})
         
     except Exception as e:
         return jsonify({ 'success': False, 'error': str(e)})
