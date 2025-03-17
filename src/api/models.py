@@ -16,7 +16,8 @@ class Users(db.Model):
     country = db.Column(db.String(), unique=False, nullable=True, default=" ")
     address = db.Column(db.String(), unique=False, nullable=True, default=" ")
     phone = db.Column(db.String(), unique=False, nullable=True, default=" ")
-    gender = db.Column(db.String(), unique=False, nullable=True, default=" ")
+    biography = db.Column(db.String(), unique=False, nullable=True, default=" ")
+    image_url = db.Column(db.String(), unique=False, nullable=True)
     is_buyer = db.Column(db.Boolean(), nullable=False, default=False)
     is_seller = db.Column(db.Boolean(), nullable=False, default=False)
     buyer_id = db.Column(db.Integer, db.ForeignKey('buyers.id'))
@@ -32,7 +33,8 @@ class Users(db.Model):
                 'country': self.country,
                 'address': self.address,
                 'phone': self.phone,
-                'gender': self.gender,
+                'biography': self.biography,
+                'image_url': self.image_url,
                 'is_buyer': self.is_buyer,
                 'is_seller': self.is_seller}
 

@@ -6,11 +6,6 @@ export const Artists = () => {
   const { store, actions } = useContext(Context);
   const [search, setSearch] = useState("");
 
-  // Obtener artistas al cargar el componente
-  useEffect(() => {
-    actions.getArtists();
-  }, []);
-
   // Filtrar artistas basado en la búsqueda
   const filteredArtists = store.artists.filter((artist) =>
     artist.username.toLowerCase().includes(search.toLowerCase())
@@ -59,10 +54,7 @@ export const Artists = () => {
                   {/* Imagen de perfil circular */}
                   <div className="text-center p-4">
                     <img
-                      src={
-                        artist.profile_picture ||
-                        "https://randomuser.me/api/portraits/lego/1.jpg"
-                      }
+                      src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
                       alt={artist.username}
                       style={{
                         width: "120px",
@@ -141,10 +133,7 @@ export const Artists = () => {
                 }}
               >
                 <img
-                  src={
-                    artist.profile_picture ||
-                    "https://randomuser.me/api/portraits/lego/1.jpg"
-                  }
+                  src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
                   className="card-img-top"
                   alt={artist.username}
                   style={{

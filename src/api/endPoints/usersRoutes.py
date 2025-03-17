@@ -30,7 +30,8 @@ def users():
                     country=data.get('country'),
                     address=data.get('address'),
                     phone=data.get('phone'),
-                    gender=data.get('gender'),
+                    biography=data.get('biography'),
+                    image_url=data.get('image_url'),
                     is_buyer=data.get('is_buyer', False),
                     is_seller=data.get('is_seller', False))
         rowdb = db.session.execute(db.select(Users).where(Users.username == data.get('username'), Users.password == data.get('password'))).scalar()
@@ -74,7 +75,9 @@ def user(id):
         row.email=data.get('email'),
         row.country=data.get('country'),
         row.address=data.get('address'),
-        row.phone=data.get('phone')
+        row.phone=data.get('phone'),
+        row.biography=data.get('biography'),
+        row.image_url=data.get('image_url')
         db.session.add(row)
         db.session.commit()  
         response_body['message'] = f'Usuario con id: {id}. Actualizado'
