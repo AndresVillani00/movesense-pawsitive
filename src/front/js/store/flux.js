@@ -241,7 +241,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const datos = await response.json();
-				getActions().getProducts()  // action del get product
+				getActions().getProducts()  
 			},	
 			login: async(dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/login`;

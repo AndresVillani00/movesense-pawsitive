@@ -1,21 +1,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Context } from "../store/appContext";
-import { Modal, Button } from "react-bootstrap";  // Importar componentes de Bootstrap
+import { Modal, Button } from "react-bootstrap";
 
 export const ProductDetail = () => {
     const { store } = useContext(Context);
     const { id } = useParams();
     const [product, setProduct] = useState(null);
-    const [showModal, setShowModal] = useState(false);  // Estado para controlar el modal
-    const [modalMessage, setModalMessage] = useState("");  // Mensaje del modal
+    const [showModal, setShowModal] = useState(false);  
+    const [modalMessage, setModalMessage] = useState("");
 
     useEffect(() => {
         const foundProduct = store.products.find(p => p.id === Number(id)); 
         setProduct(foundProduct);
     }, [id, store.products]);
 
-    // Función para parsear las características
     const parseCharacteristics = (characteristics) => {
         if (!characteristics) return [];
         return characteristics.split(",").map((item) => {
@@ -24,7 +23,6 @@ export const ProductDetail = () => {
         });
     };
 
-    // Función para manejar el clic en "Añadir al carrito"
     const handleAddToCart = () => {
         if (!store.isLogged) {
             setModalMessage("Debes registrarte para realizar una compra.");
@@ -33,17 +31,14 @@ export const ProductDetail = () => {
             setModalMessage("Lo siento, para comprar una obra de arte debes registrarte como comprador.");
             setShowModal(true);
         } else {
-            // Lógica para añadir al carrito
             alert("Producto añadido al carrito");
         }
     };
 
     if (!product) return <h2 className="text-center mt-5">Cargando...</h2>;
 
-    // Parsear las características del producto
     const characteristics = parseCharacteristics(product.characteristics);
 
-    // Íconos para las características
     const characteristicIcons = {
         material: "🎨",
         size: "📏",
@@ -63,14 +58,14 @@ export const ProductDetail = () => {
                             src={product.image_url} 
                             className="img-fluid rounded-4 product-image" 
                             alt={product.name} 
-                            style={{ maxHeight: "600px", objectFit: "cover" }}  // Imagen más grande
+                            style={{ maxHeight: "600px", objectFit: "cover" }} 
                         />
                     </div>
                     <div className="col-md-6 d-flex flex-column">
                         <h2 className="fw-bold text-center text-dark mb-4">{product.name}</h2>
                         <div className="d-flex align-items-center mb-4">
                             <img
-                                src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
+                                src={product.seller_to?.image_url || "https://i.imgur.com/24t1SYU.jpeg"}
                                 className="rounded-circle owner-avatar"
                                 alt="Owner"
                                 style={{ width: "40px", height: "40px" }}
@@ -95,16 +90,13 @@ export const ProductDetail = () => {
                             <h4 className="fw-bold text-dark">€ {product.price}</h4>
                             <p className="ms-3 text-muted"><em>{product.extraInfo}</em></p>
                         </div>
-                        {store.isBuyer ?
+                        {/* Mostrar el botón "Añadir al carrito" siempre */}
                         <button 
                             className="btn btn-success mt-4 w-100 py-2 fw-bold"
                             onClick={handleAddToCart}
                         >
                             🛒 Añadir al carrito
                         </button>
-                        :
-                        <div></div>
-                        }
                     </div>
                 </div>
             </div>
