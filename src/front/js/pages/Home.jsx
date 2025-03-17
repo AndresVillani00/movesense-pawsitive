@@ -194,7 +194,7 @@ export const Home = () => {
               <div className="card shadow-sm text-center h-100" style={{ borderRadius: "15px" }}>
                 <div className="card-body d-flex flex-column align-items-center justify-content-center">
                   <img
-                    src={artist.profile_picture || "https://randomuser.me/api/portraits/lego/1.jpg"}
+                    src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
                     alt={`Artista ${artist.username}`}
                     className="rounded-circle mb-3"
                     style={{

@@ -8,7 +8,6 @@ export const PostProduct = () => {
 
   const [name, setName] = useState("");
   const [preview, setPreview] = useState("");
-  const [imageFile, setImageFile] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
@@ -35,7 +34,6 @@ export const PostProduct = () => {
 
   const removeImage = () => {
     setPreview("");
-    setImageFile(null);
     setImageUrl(null);
   };
 
