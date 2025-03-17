@@ -4,14 +4,14 @@ import { Link, useNavigate } from "react-router-dom";
 
 export const Events = () => {
   const { store, actions } = useContext(Context);
-  const [currentPage, setCurrentPage] = useState(1); 
+  const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage] = useState(4);
 
   const events = Object.values(store.events || {});
 
-  const indexOfLastevents = currentPage * eventsPerPage;
-  const indexOfFirstevents = indexOfLastevents - eventsPerPage;
-  const currentevents = events.slice(indexOfFirstevents, indexOfLastevents);
+  const indexOfLastEvent = currentPage * eventsPerPage;
+  const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
+  const currentEvents = events.slice(indexOfFirstEvent, indexOfLastEvent);
 
   // Cambiar de página
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
@@ -42,7 +42,7 @@ export const Events = () => {
         <div className="col-md-6">
           <img src="https://i.imgur.com/mC016Ss.png" className="img-fluid rounded" alt="Destacado" />
         </div>
-        <div className="col-md-6 d-flex flex-column justify-content-center">
+        <div className="col-md-6 d-flex flex-column justify-content-center text-center">
           <h2>El impacto del arte en la sociedad moderna</h2>
           <p>Descubre cómo el arte sigue inspirando, educando y transformando nuestras vidas en la era digital.</p>
           <Link to={`/event-details/${events.id}`} className="text-decoration-none"><button className="btn btn-light text-dark mt-3">Leer más</button></Link>
@@ -52,15 +52,23 @@ export const Events = () => {
       {/* Lista de publicaciones */}
       <h3 className="text-center mb-4">Últimos eventos</h3>
       <div className="row">
-        {currentevents.map((events) => (
-          <div key={events.id} className="col-md-6 mb-4">
-            <div className="card border-0 shadow-lg">
-              <img src={events.image_url || "https://i.imgur.com/yPRhTpS.png"} className="card-img-top" alt={events.title} />
-              <div className="card-body">
-                <h5 className="card-title">{events.title}</h5>
-                <p className="card-text">{events.body_content}</p>
-                <p className="text-muted">Por <strong>@{events.user?.username || "artlover"}</strong></p>
-                <Link to={`/event-details/${events.id}`} className="text-decoration-none"> <button className="btn btn-primary">Leer más</button></Link>
+        {currentEvents.map((event) => (
+          <div key={event.id} className="col-md-6 mb-4">
+            <div className="card border-0 shadow-lg h-100">
+              <div style={{ width: "100%", height: "250px", overflow: "hidden" }}>
+                <img
+                  src={event.image_url || "https://i.imgur.com/yPRhTpS.png"}
+                  alt={event.title}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                />
+              </div>
+              <div className="card-body d-flex flex-column justify-content-center text-center">
+                <h5 className="card-title">{event.title}</h5>
+                <p className="card-text">{event.body_content}</p>
+                <p className="text-muted">Por <strong>@{event.user?.username || "artlover"}</strong></p>
+                <Link to={`/event-details/${event.id}`} className="text-decoration-none">
+                  <button className="btn btn-primary">Leer más</button>
+                </Link>
               </div>
             </div>
           </div>

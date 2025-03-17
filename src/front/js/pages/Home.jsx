@@ -143,7 +143,7 @@ export const Home = () => {
                   <h5 className="card-title" style={{ color: "#1E1E50" }}>
                     {activity.title}
                   </h5>
-                  <Link to="/activities" className="btn btn-outline-primary btn-sm">
+                  <Link to="/events" className="btn btn-outline-primary btn-sm">
                     Más Info
                   </Link>
                 </div>

@@ -1,17 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Context } from "../store/appContext";
-import { Modal, Button } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 
 export const ProductDetail = () => {
     const { store } = useContext(Context);
     const { id } = useParams();
     const [product, setProduct] = useState(null);
-    const [showModal, setShowModal] = useState(false);  
-    const [modalMessage, setModalMessage] = useState("");
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        const foundProduct = store.products.find(p => p.id === Number(id)); 
+        const foundProduct = store.products.find(p => p.id === Number(id));
         setProduct(foundProduct);
     }, [id, store.products]);
 
@@ -24,11 +23,7 @@ export const ProductDetail = () => {
     };
 
     const handleAddToCart = () => {
-        if (!store.isLogged) {
-            setModalMessage("Debes registrarte para realizar una compra.");
-            setShowModal(true);
-        } else if (store.usuario.is_seller) {
-            setModalMessage("Lo siento, para comprar una obra de arte debes registrarte como comprador.");
+        if (!store.isLogged || store.usuario.is_seller) {
             setShowModal(true);
         } else {
             alert("Producto añadido al carrito");
@@ -39,120 +34,84 @@ export const ProductDetail = () => {
 
     const characteristics = parseCharacteristics(product.characteristics);
 
-    const characteristicIcons = {
-        material: "🎨",
-        size: "📏",
-        color: "✨",
-        style: "🖼️",
-        uniqueness: "🏆",
-        shipping: "🚚"
-    };
-
     return (
-        <div className="bg-light" style={{ background: "#e9ecef" }}>
-            {/* Sección Principal del Producto */}
-            <div className="container mt-5 p-4 bg-white rounded-4 shadow-lg">
+        <div className="bg-light" style={{ background: "#f8f9fa" }}>
+            <div className="container mt-5 p-4 bg-white rounded-4 shadow">
                 <div className="row">
+                    {/* Imagen del producto */}
                     <div className="col-md-6 d-flex justify-content-center align-items-center">
                         <img 
                             src={product.image_url} 
-                            className="img-fluid rounded-4 product-image" 
+                            className="img-fluid rounded-4" 
                             alt={product.name} 
-                            style={{ maxHeight: "600px", objectFit: "cover" }} 
+                            style={{ maxHeight: "550px", objectFit: "cover" }} 
                         />
                     </div>
+
+                    {/* Detalles del producto */}
                     <div className="col-md-6 d-flex flex-column">
-                        <h2 className="fw-bold text-center text-dark mb-4">{product.name}</h2>
-                        <div className="d-flex align-items-center mb-4">
+                        <h2 className="fw-bold text-dark mb-3">{product.name}</h2>
+
+                        {/* Vendedor */}
+                        <div className="d-flex align-items-center mb-3">
                             <img
                                 src={product.seller_to?.image_url || "https://i.imgur.com/24t1SYU.jpeg"}
-                                src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
-                                className="rounded-circle owner-avatar"
-                                alt="Owner"
-                                style={{ width: "40px", height: "40px" }}
+                                className="rounded-circle"
+                                alt="Vendedor"
+                                style={{ width: "40px", height: "40px", objectFit: "cover", border: "2px solid #1E1E50" }}
                             />
-                            <span className="ms-2 text-muted">By <strong>@{product.seller_to?.username || "unknown"}</strong></span>
+                            <span className="ms-2 text-muted">
+                                Creado por: <strong className="text-dark">@{product.seller_to?.username || "Desconocido"}</strong>
+                            </span>
                         </div>
-                        <h4 className="text-primary mb-3">🖼️ Detalles del producto:</h4>
+
+                        {/* Características */}
+                        <h5 className="text-primary mt-3">Características</h5>
                         <ul className="list-unstyled">
                             {characteristics.map((item, index) => (
                                 <li key={index} className="mt-2">
-                                    <span className="badge bg-primary me-2">
-                                        {characteristicIcons[item.key] || "✨"}  {/* Ícono personalizado */}
-                                    </span>
                                     <strong>{item.key}:</strong> {item.value}
                                 </li>
                             ))}
                         </ul>
-                        <h4 className="mt-4 text-primary">📖 Descripción</h4>
-                        <p className="text-muted mt-2">{product.description}</p>
-                        <h3 className="text-danger fw-bold mt-3">🔹 {product.availability}</h3>
+
+                        {/* Descripción */}
+                        <h5 className="text-primary mt-3">Descripción</h5>
+                        <p className="text-muted">{product.description}</p>
+
+                        {/* Precio */}
                         <div className="d-flex align-items-center mt-3">
-                            <h4 className="fw-bold text-dark">€ {product.price}</h4>
-                            <p className="ms-3 text-muted"><em>{product.extraInfo}</em></p>
+                            <h3 className="fw-bold text-danger me-3 mb-0">€ {product.price}</h3>
                         </div>
-                        {/* Mostrar el botón "Añadir al carrito" siempre */}
-                        {store.isBuyer ?
-                        <button 
-                            className="btn btn-success mt-4 w-100 py-2 fw-bold"
+
+                        {/* Botón de Añadir al carrito */}
+                        <Button 
+                            variant="success" 
+                            className="mt-4 py-2 fs-5 fw-bold" 
                             onClick={handleAddToCart}
                         >
                             🛒 Añadir al carrito
-                        </button>
-                        :
-                        <div></div>
-                        }
+                        </Button>
                     </div>
                 </div>
             </div>
 
-            {/* Sección de Otros Productos */}
-            <div className="container py-5">
-                <h2 className="text-center mb-4 fw-bold" style={{ color: "#1E1E50" }}>
-                    🎨 Explora otros productos
-                </h2>
-                <div className="row g-4">
-                    {store.products
-                        .filter(p => p.id !== product.id)
-                        .slice(0, 3)
-                        .map((item) => (
-                            <div key={item.id} className="col-md-4">
-                                <Link to={`/product-details/${item.id}`} className="text-decoration-none">
-                                    <div className="card border-0 shadow-sm h-100 product-card">
-                                        <img
-                                            src={item.image_url}
-                                            className="card-img-top product-card-img"
-                                            alt={item.name}
-                                            style={{ height: "250px", objectFit: "cover" }}
-                                        />
-                                        <div className="card-body text-center">
-                                            <h5 className="fw-bold" style={{ color: "#1E1E50" }}>{item.name}</h5>
-                                            <p className="text-muted">By: <span className="text-primary">@{item.seller_to?.username || "unknown"}</span></p>
-                                            <p className="text-dark fw-semibold">{item.category}</p>
-                                        </div>
-                                    </div>
-                                </Link>
-                            </div>
-                        ))}
-                </div>
-            </div>
-
-            {/* Modal para usuarios no registrados o vendedores */}
+            {/* Modal de Login / Sign Up */}
             <Modal show={showModal} onHide={() => setShowModal(false)} centered>
-                <Modal.Header closeButton style={{ backgroundColor: "#1E1E50", color: "#fff" }}>
-                    <Modal.Title>Registro Requerido</Modal.Title>
+                <Modal.Header closeButton>
+                    <Modal.Title>Regístrate o inicia sesión</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p>{modalMessage}</p>
+                    <p>Para comprar esta obra de arte, por favor inicia sesión o regístrate.</p>
+                    <div className="d-flex justify-content-around">
+                        <Link to="/login">
+                            <Button variant="primary">Iniciar sesión</Button>
+                        </Link>
+                        <Link to="/sign-up">
+                            <Button variant="secondary">Registrarse</Button>
+                        </Link>
+                    </div>
                 </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
-                        Cerrar
-                    </Button>
-                    <Button variant="primary" as={Link} to="/sign-up" onClick={() => setShowModal(false)}>
-                        Registrarse
-                    </Button>
-                </Modal.Footer>
             </Modal>
         </div>
     );
