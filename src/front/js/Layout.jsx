@@ -29,6 +29,7 @@ import { Payment } from "./pages/Payment.jsx";
 import { PaymentSuccess } from "./pages/PaymentSuccess.jsx";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { PaymentFail } from "./pages/PaymentFail.jsx";
 
 
 
@@ -69,8 +70,9 @@ const Layout = () => {
                         <Route element={<AboutUs />} path="/about-us" />
                         <Route element={<ArtistProfile />} path='/artist/:id' />
                         <Route element={<Cart />} path="/cart" />
-                            <Route element={<Payment />} path="/payment" />
+                        <Route element={<Payment />} path="/payment" />
                         <Route element={<PaymentSuccess />} path="/success" />
+                        <Route element={<PaymentFail />} path="/fail" />
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
                         <Route element={<h1>Not found!</h1>} path='*' />
