@@ -66,6 +66,7 @@ export const ProductDetail = () => {
                         <div className="d-flex align-items-center mb-4">
                             <img
                                 src={product.seller_to?.image_url || "https://i.imgur.com/24t1SYU.jpeg"}
+                                src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
                                 className="rounded-circle owner-avatar"
                                 alt="Owner"
                                 style={{ width: "40px", height: "40px" }}
@@ -91,12 +92,16 @@ export const ProductDetail = () => {
                             <p className="ms-3 text-muted"><em>{product.extraInfo}</em></p>
                         </div>
                         {/* Mostrar el botón "Añadir al carrito" siempre */}
+                        {store.isBuyer ?
                         <button 
                             className="btn btn-success mt-4 w-100 py-2 fw-bold"
                             onClick={handleAddToCart}
                         >
                             🛒 Añadir al carrito
                         </button>
+                        :
+                        <div></div>
+                        }
                     </div>
                 </div>
             </div>

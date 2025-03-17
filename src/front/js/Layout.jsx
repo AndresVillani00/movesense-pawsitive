@@ -34,9 +34,6 @@ import { Events } from "./pages/Events.jsx";
 
 
 
-
-
-
 // Create your first component
 const Layout = () => {
     const { store } = useContext(Context);
@@ -73,7 +70,9 @@ const Layout = () => {
                         <Route element={<Cart />} path="/cart" />
                         <Route element={<Payment />} path="/payment" />
                         <Route element={<PaymentSuccess />} path="/success" />
-                        <Route element={<PaymentFail />} path="/fail" />                        <Route element={<EventDetail />} path="/event-detail/:id" />
+                        <Route element={<PaymentFail />} path="/fail" />                        
+                        <Route element={<EventDetail />} path="/event-detail/:id" />
+                        <Route element={<PaymentFail />} path="/fail" />
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
                         <Route element={<h1>Not    found!</h1>} path='*' />
