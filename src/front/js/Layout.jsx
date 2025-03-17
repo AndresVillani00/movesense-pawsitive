@@ -25,6 +25,10 @@ import { Alert } from "./component/Alert.jsx";
 import { AboutUs } from "./pages/AboutUs.jsx";
 import { ArtistProfile } from "./pages/ArtistProfile.jsx";
 import { Cart } from "./pages/Cart.jsx";
+import { Payment } from "./pages/Payment.jsx";
+import { PaymentSuccess } from "./pages/PaymentSuccess.jsx";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 
 
@@ -38,6 +42,7 @@ const Layout = () => {
     // you can set the basename on the .env file located at the root of this project, E.g: BASENAME=/react-hello-webapp/
     const basename = process.env.BASENAME || "";
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL == "") return <BackendURL />;
+    const key = loadStripe(process.env.FRONTSTRIPEKEY);
 
     return (
         <div className="d-flex flex-column min-vh-100">
@@ -45,6 +50,7 @@ const Layout = () => {
                 <ScrollToTop>
                     <Navbar />
                     <Alert />
+                    <Elements stripe={key}>
                     <Routes>
                         <Route path="/" element={<Navigate to="/" />} />
                         <Route element={<Home />} path="/home" />
@@ -63,11 +69,13 @@ const Layout = () => {
                         <Route element={<AboutUs />} path="/about-us" />
                         <Route element={<ArtistProfile />} path='/artist/:id' />
                         <Route element={<Cart />} path="/cart" />
-
+                            <Route element={<Payment />} path="/payment" />
+                        <Route element={<PaymentSuccess />} path="/success" />
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
                         <Route element={<h1>Not found!</h1>} path='*' />
                     </Routes>
+                    </Elements>
                     <Footer />
                 </ScrollToTop>
             </BrowserRouter>
