@@ -74,7 +74,8 @@ class Products(db.Model):
                 'is_sold': self.is_sold, 
                 'image_url': self.image_url,
                 'category': self.category,
-                'characteristics': self.characteristics}
+                'characteristics': self.characteristics,
+                'seller_id': self.seller_id}
 
 
 class Orders(db.Model):
@@ -140,5 +141,6 @@ class Events(db.Model):
             'date': self.date,
             'location': self.location,
             'image_url': self.image_url,
-            'body_content': self.body_content}
+            'body_content': self.body_content,
+            'user_id': self.user_id}
     

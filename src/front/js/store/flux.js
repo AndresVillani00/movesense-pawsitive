@@ -5,7 +5,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isBuyer: false,
 			isAddedToCart:true,
 			usuario: {},
-			events: {},
+			events: [],
 			orderId: null,
 			orders: {},
 			seller: {},
@@ -74,7 +74,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const data = await response.json();
                     setStore({ events: data.results });
                 } catch (error) {
-                    console.log("Error en getProducts:", error);
+                    console.log("Error en getEvents:", error);
                 }
 			},
 			postOrderItem: async(dataToSend) => {

@@ -48,6 +48,9 @@ export const ProductDetail = () => {
         shipping: "🚚"
     };
 
+    const sellers = store.artists
+    const filteredUser = sellers.filter(seller => seller.id === product.seller_id);
+
     return (
         <div className="bg-light" style={{ background: "#e9ecef" }}>
             {/* Sección Principal del Producto */}
@@ -65,13 +68,12 @@ export const ProductDetail = () => {
                         <h2 className="fw-bold text-center text-dark mb-4">{product.name}</h2>
                         <div className="d-flex align-items-center mb-4">
                             <img
-                                src={product.seller_to?.image_url || "https://i.imgur.com/24t1SYU.jpeg"}
                                 src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
                                 className="rounded-circle owner-avatar"
                                 alt="Owner"
                                 style={{ width: "40px", height: "40px" }}
                             />
-                            <span className="ms-2 text-muted">By <strong>@{product.seller_to?.username || "unknown"}</strong></span>
+                            <span className="ms-2 text-muted">By <strong>@{filteredUser[0].username || "unknown"}</strong></span>
                         </div>
                         <h4 className="text-primary mb-3">🖼️ Detalles del producto:</h4>
                         <ul className="list-unstyled">
@@ -127,7 +129,7 @@ export const ProductDetail = () => {
                                         />
                                         <div className="card-body text-center">
                                             <h5 className="fw-bold" style={{ color: "#1E1E50" }}>{item.name}</h5>
-                                            <p className="text-muted">By: <span className="text-primary">@{item.seller_to?.username || "unknown"}</span></p>
+                                            <p className="text-muted">By: <span className="text-primary">@{store.artists.filter(seller => seller.id === item.seller_id)[0].username || "unknown"}</span></p>
                                             <p className="text-dark fw-semibold">{item.category}</p>
                                         </div>
                                     </div>

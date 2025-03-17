@@ -7,8 +7,9 @@ export const Events = () => {
   const [currentPage, setCurrentPage] = useState(1); 
   const [eventsPerPage] = useState(4);
 
-  const events = Object.values(store.events || {});
+  const events = Object.values(store.events);
 
+  
   const indexOfLastevents = currentPage * eventsPerPage;
   const indexOfFirstevents = indexOfLastevents - eventsPerPage;
   const currentevents = events.slice(indexOfFirstevents, indexOfLastevents);
@@ -30,10 +31,6 @@ export const Events = () => {
     }
   };
 
-  // Obtener los eventos al cargar el componente
-  useEffect(() => {
-    actions.getEvents();
-  }, []);
 
   return (
     <div className="container mt-5">
@@ -59,8 +56,8 @@ export const Events = () => {
               <div className="card-body">
                 <h5 className="card-title">{events.title}</h5>
                 <p className="card-text">{events.body_content}</p>
-                <p className="text-muted">Por <strong>@{events.user?.username || "artlover"}</strong></p>
-                <Link to={`/event-details/${events.id}`} className="text-decoration-none"> <button className="btn btn-primary">Leer más</button></Link>
+                <p className="text-muted">Por <strong>@{ store.artists.filter(seller => seller.id === events.user_id)[0].username || "artlover" }</strong></p>
+                <Link to={`/event-detail/${events.id}`} className="text-decoration-none"> <button className="btn btn-primary">Leer más</button></Link>
               </div>
             </div>
           </div>
