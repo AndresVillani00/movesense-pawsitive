@@ -6,15 +6,6 @@ import { Dropdown } from "react-bootstrap";
 export const Navbar = () => {
     const { store, actions } = useContext(Context);
 
-    useEffect(() => {
-        actions.getUserProfile();
-    }, []);
-
-    const [user, setUser] = useState({
-        name: "Usuario",
-        profilePic: "https://i.imgur.com/24t1SYU.jpeg"
-    });
-
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
             <div className="container">
@@ -66,7 +57,7 @@ export const Navbar = () => {
                         {store.isLogged ? (
                             <Dropdown className="ms-3">
                                 <Dropdown.Toggle variant="light" className="d-flex align-items-center border-0">
-                                    <img src={user.profilePic} alt="Profile" className="rounded-circle m-1" width="30" height="30" />
+                                    <img src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url} alt="Profile" className="rounded-circle m-1" width="30" height="30" />
                                     <span className="fw-bold text-dark ms-2">{store.usuario.username}</span>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu align="end">

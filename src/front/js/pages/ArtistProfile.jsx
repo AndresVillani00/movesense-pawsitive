@@ -4,7 +4,7 @@ import { Context } from "../store/appContext";
 
 export const ArtistProfile = () => {
 
-  const { actions } = useContext(Context);
+  const { store, actions } = useContext(Context);
   const { id } = useParams();
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,10 +38,7 @@ export const ArtistProfile = () => {
       <div className="row">
         <div className="col-md-4 text-center">
           <img
-            src={
-              artist.profile_picture ||
-              "https://randomuser.me/api/portraits/lego/1.jpg"
-            }
+            src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
             alt={`Artista ${artist.username}`}
             className="rounded-circle mb-3"
             style={{ width: "200px", height: "200px", objectFit: "cover" }}
@@ -49,10 +46,18 @@ export const ArtistProfile = () => {
           <h2 style={{ color: "#1E3A5F" }}>{artist.username}</h2>
         </div>
         <div className="col-md-8">
-          <h3 style={{ color: "#1E3A5F" }}>Biografía</h3>
-          <p className="lead">
-            {artist.bio || "Este artista no tiene una biografía disponible."}
-          </p>
+          <div>
+            <h3 style={{ color: "#1E3A5F" }}>Biografía</h3>
+            <p className="lead">
+              {artist.biography || "Este artista no tiene una biografía disponible."}
+            </p>
+          </div>
+          <div>
+            <h3 style={{ color: "#1E3A5F" }}>Contacto</h3>
+            <p className="lead">
+              {artist.email || "Este artista no tiene información de contacto disponible."}
+            </p>
+          </div>
         </div>
       </div>
     </div>
