@@ -48,7 +48,7 @@ export const Events = () => {
       {/* Lista de publicaciones */}
       <h3 className="text-center mb-4">Últimos eventos</h3>
       <div className="row">
-        {currentevents.map((events) => (
+        {currentEvents.map((events) => (
           <div key={events.id} className="col-md-6 mb-4">
             <div className="card border-0 shadow-lg">
               <img src={events.image_url || "https://i.imgur.com/yPRhTpS.png"} className="card-img-top" alt={events.title} />
