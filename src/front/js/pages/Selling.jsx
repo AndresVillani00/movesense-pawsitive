@@ -5,18 +5,20 @@ import { Modal, Button } from "react-bootstrap";  // Importar componentes de Boo
 
 export const Selling = () => {
     const { store, actions } = useContext(Context);
-    const productsForSale = store.products || [];
-    const [showDeleteModal, setShowDeleteModal] = useState(false);  
-    const [productToDelete, setProductToDelete] = useState(null);  
+    const products = store.products;
+    const productsUser = products.filter(p => p.seller_id === store.usuario.id);
+    const productsForSale = productsUser || [];
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
 
     const handleRemoveProduct = async (productId) => {
         const success = await actions.removeProduct(productId);
         if (success) {
             store.alert = { text: "Producto eliminado correctamente", background: "primary", visible: true };
         } else {
-            store.alert = { text: "Error al eliminar el producto", background: "danger", visible: true } ;
+            store.alert = { text: "Error al eliminar el producto", background: "danger", visible: true };
         }
-        setShowDeleteModal(false); 
+        setShowDeleteModal(false);
     };
 
     const confirmDelete = (productId) => {
@@ -37,20 +39,20 @@ export const Selling = () => {
             <div className="row g-4">
                 {productsForSale.length > 0 ? (
                     productsForSale.map((product) => (
-                        <div key={product.id} className="col-md-4">
+                        <div key={product.id} className="col-md-3">
                             <div className="card shadow-sm rounded-4 border-0">
-                                <img 
-                                    src={product.image_url} 
-                                    className="card-img-top rounded-top-4" 
-                                    alt={product.name} 
+                                <img
+                                    src={product.image_url}
+                                    className="card-img-top rounded-top-4"
+                                    alt={product.name}
                                     style={{ height: "250px", objectFit: "cover" }}
                                 />
                                 <div className="card-body text-center">
                                     <h5 className="card-title fw-bold text-primary">{product.name}</h5>
                                     <p className="card-text text-muted">{product.description}</p>
-                                    <h6 className="text-success fw-bold">€{product.price}</h6>
-                                    <button 
-                                        className="btn btn-danger mt-2 fw-bold" 
+                                    <h6 className="text-success fw-bold">{product.price}€</h6>
+                                    <button
+                                        className="btn btn-danger mt-2 fw-bold"
                                         onClick={() => confirmDelete(product.id)}  // Mostrar modal de confirmación
                                     >
                                         Eliminar
@@ -76,9 +78,9 @@ export const Selling = () => {
                     <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
                         Cancelar
                     </Button>
-                    <Button 
-                        variant="danger" 
-                        onClick={() => handleRemoveProduct(productToDelete)} 
+                    <Button
+                        variant="danger"
+                        onClick={() => handleRemoveProduct(productToDelete)}
                     >
                         Eliminar
                     </Button>

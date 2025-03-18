@@ -40,13 +40,17 @@ export const Payment = () => {
     }
 
     if (clientSecret) {
-      const { paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
         },
       });
 
-      if (paymentIntent.status === "succeeded") {
+      if(error) {
+        console.log(error)
+        setModalMessage(error.message);
+        setShowModal(true);
+      } else if (paymentIntent.status === "succeeded") {
         navigate("/success");
       } else {
         setModalMessage("El pago no se pudo procesar. Inténtalo de nuevo.");

@@ -4,7 +4,7 @@ import { Context } from "../store/appContext";
 import { Button, Modal } from "react-bootstrap";
 
 export const ProductDetail = () => {
-    const { store } = useContext(Context);
+    const { store, actions } = useContext(Context);
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -26,7 +26,9 @@ export const ProductDetail = () => {
         if (!store.isLogged || store.usuario.is_seller) {
             setShowModal(true);
         } else {
-            alert("Producto añadido al carrito");
+            const dataToSend = { ...product, order_id: store.orderId };
+            actions.addToCart(product);
+            actions.postOrderItem(dataToSend);
         }
     };
 

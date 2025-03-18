@@ -16,9 +16,6 @@ export const PaymentSuccess = () => {
                     <Link to="/home" className="btn btn-light btn-lg">
                         Volver al inicio
                     </Link>
-                    <Link to="/mis-pedidos" className="btn btn-outline-light btn-lg">
-                        Ver mis pedidos
-                    </Link>
                 </div>
             </div>
         </div>
