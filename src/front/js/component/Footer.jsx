@@ -7,7 +7,7 @@ export const Footer = () => {
             background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",  
             fontFamily: "'Montserrat', sans-serif"}}>
             <div className="container text-center">
-                <p class="font-italic"> <em>Made by Lisa Moreno & Andres Villani</em></p>
+                <p className="font-italic"> <em>Made by Lisa Moreno & Andres Villani</em></p>
                 <p className="mb-0">&copy; {new Date().getFullYear()} ArtVibe. All Rights Reserved.</p>
                 <div className="mt-3">
                     <a href="#" className="text-light mx-2">
