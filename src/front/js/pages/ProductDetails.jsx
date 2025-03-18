@@ -34,6 +34,18 @@ export const ProductDetail = () => {
 
     const characteristics = parseCharacteristics(product.characteristics);
 
+    const characteristicIcons = {
+        material: "🎨",
+        size: "📏",
+        color: "✨",
+        style: "🖼️",
+        uniqueness: "🏆",
+        shipping: "🚚"
+    };
+
+    const sellers = store.artists
+    const filteredUser = sellers.filter(seller => seller.id === product.seller_id);
+
     return (
         <div className="bg-light" style={{ background: "#f8f9fa" }}>
             <div className="container mt-5 p-4 bg-white rounded-4 shadow">
@@ -55,14 +67,12 @@ export const ProductDetail = () => {
                         {/* Vendedor */}
                         <div className="d-flex align-items-center mb-3">
                             <img
-                                src={product.seller_to?.image_url || "https://i.imgur.com/24t1SYU.jpeg"}
-                                className="rounded-circle"
-                                alt="Vendedor"
-                                style={{ width: "40px", height: "40px", objectFit: "cover", border: "2px solid #1E1E50" }}
+                                src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url}
+                                className="rounded-circle owner-avatar"
+                                alt="Owner"
+                                style={{ width: "40px", height: "40px" }}
                             />
-                            <span className="ms-2 text-muted">
-                                Creado por: <strong className="text-dark">@{product.seller_to?.username || "Desconocido"}</strong>
-                            </span>
+                            <span className="ms-2 text-muted">By <strong>@{filteredUser[0].username || "unknown"}</strong></span>
                         </div>
 
                         {/* Características */}
@@ -93,6 +103,37 @@ export const ProductDetail = () => {
                             🛒 Añadir al carrito
                         </Button>
                     </div>
+                </div>
+            </div>
+
+            {/* Sección de Otros Productos */}
+            <div className="container py-5">
+                <h2 className="text-center mb-4 fw-bold" style={{ color: "#1E1E50" }}>
+                    🎨 Explora otros productos
+                </h2>
+                <div className="row g-4">
+                    {store.products
+                        .filter(p => p.id !== product.id)
+                        .slice(0, 3)
+                        .map((item) => (
+                            <div key={item.id} className="col-md-4">
+                                <Link to={`/product-details/${item.id}`} className="text-decoration-none">
+                                    <div className="card border-0 shadow-sm h-100 product-card">
+                                        <img
+                                            src={item.image_url}
+                                            className="card-img-top product-card-img"
+                                            alt={item.name}
+                                            style={{ height: "250px", objectFit: "cover" }}
+                                        />
+                                        <div className="card-body text-center">
+                                            <h5 className="fw-bold" style={{ color: "#1E1E50" }}>{item.name}</h5>
+                                            <p className="text-muted">By: <span className="text-primary">@{store.artists.filter(seller => seller.id === item.seller_id)[0].username || "unknown"}</span></p>
+                                            <p className="text-dark fw-semibold">{item.category}</p>
+                                        </div>
+                                    </div>
+                                </Link>
+                            </div>
+                        ))}
                 </div>
             </div>
 

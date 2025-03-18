@@ -7,7 +7,7 @@ export const Events = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [eventsPerPage] = useState(4);
 
-  const events = Object.values(store.events || {});
+  const events = Object.values(store.events);
 
   const indexOfLastEvent = currentPage * eventsPerPage;
   const indexOfFirstEvent = indexOfLastEvent - eventsPerPage;
@@ -30,10 +30,6 @@ export const Events = () => {
     }
   };
 
-  // Obtener los eventos al cargar el componente
-  useEffect(() => {
-    actions.getEvents();
-  }, []);
 
   return (
     <div className="container mt-5">
@@ -52,23 +48,15 @@ export const Events = () => {
       {/* Lista de publicaciones */}
       <h3 className="text-center mb-4">Últimos eventos</h3>
       <div className="row">
-        {currentEvents.map((event) => (
-          <div key={event.id} className="col-md-6 mb-4">
-            <div className="card border-0 shadow-lg h-100">
-              <div style={{ width: "100%", height: "250px", overflow: "hidden" }}>
-                <img
-                  src={event.image_url || "https://i.imgur.com/yPRhTpS.png"}
-                  alt={event.title}
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
-                />
-              </div>
-              <div className="card-body d-flex flex-column justify-content-center text-center">
-                <h5 className="card-title">{event.title}</h5>
-                <p className="card-text">{event.body_content}</p>
-                <p className="text-muted">Por <strong>@{event.user?.username || "artlover"}</strong></p>
-                <Link to={`/event-details/${event.id}`} className="text-decoration-none">
-                  <button className="btn btn-primary">Leer más</button>
-                </Link>
+        {currentevents.map((events) => (
+          <div key={events.id} className="col-md-6 mb-4">
+            <div className="card border-0 shadow-lg">
+              <img src={events.image_url || "https://i.imgur.com/yPRhTpS.png"} className="card-img-top" alt={events.title} />
+              <div className="card-body">
+                <h5 className="card-title">{events.title}</h5>
+                <p className="card-text">{events.body_content}</p>
+                <p className="text-muted">Por <strong>@{ store.artists.filter(seller => seller.id === events.user_id)[0].username || "artlover" }</strong></p>
+                <Link to={`/event-detail/${events.id}`} className="text-decoration-none"> <button className="btn btn-primary">Leer más</button></Link>
               </div>
             </div>
           </div>
