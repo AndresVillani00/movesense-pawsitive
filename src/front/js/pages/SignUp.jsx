@@ -110,7 +110,6 @@ export const SignUp = () => {
                                         value={password}
                                         type={showPassword ? "text" : "password"}
                                         className="form-control"
-                                        placeholder="Mínimo 8 caracteres"
                                         required
                                     />
                                     <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
