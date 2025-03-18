@@ -112,7 +112,7 @@ export const Payment = () => {
                       disabled={!stripe}
                       style={{ backgroundColor: "#28a745", border: "none" }} 
                     >
-                      Pagar ${total_amount.toFixed(2)}
+                      Pagar 
                     </button>
                   </div>
                 </form>
