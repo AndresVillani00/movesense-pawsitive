@@ -11,26 +11,16 @@ import { BackendURL } from "./component/BackendURL.jsx";
 import { Home } from "./pages/Home.jsx";
 import { SignUp } from "./pages/SignUp.jsx";
 import { Login } from "./component/Login.jsx";
-import { ProductDetail } from "./pages/ProductDetails.jsx";
-import { NewBlogPost } from "./pages/NewBlogPost.jsx";
 import { Explore } from "./pages/Explore.jsx";
-import { PostProduct } from "./pages/PostProduct.jsx";
 import { UserProfile } from "./pages/UserProfile.jsx";
-import { Purchases } from "./pages/Purchases.jsx";
-import { Sales } from "./pages/Sales.jsx";
-import { MySales, Selling } from "./pages/Selling.jsx";
-import { Artists } from "./pages/Artists.jsx";
 import { Alert } from "./component/Alert.jsx";
 import { AboutUs } from "./pages/AboutUs.jsx";
-import { ArtistProfile } from "./pages/ArtistProfile.jsx";
 import { Cart } from "./pages/Cart.jsx";
 import { Payment } from "./pages/Payment.jsx";
 import { PaymentSuccess } from "./pages/PaymentSuccess.jsx";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { PaymentFail } from "./pages/PaymentFail.jsx";
-import { EventDetail } from "./pages/EventDetails.jsx";
-import { Events } from "./pages/Events.jsx";
 
 
 
@@ -55,24 +45,13 @@ const Layout = () => {
                         <Route element={<Home />} path="/home" />
                         <Route element={<SignUp />} path="/sign-up" />
                         <Route element={<Login />} path="/login" />
-                        <Route element={<ProductDetail />} path="/product-details/:id" />
-                        <Route element={<Events  />} path="/events" />
-                        <Route element={<NewBlogPost />} path="/new-blog-post" />
                         <Route element={<Explore />} path="/explore" />
-                        <Route element={<Artists />} path="/artists" />
-                        <Route element={<PostProduct />} path="/post-product" />
                         <Route element={<UserProfile />} path="/user-profile" />
-                        <Route element={<Purchases />} path="/purchases" />
-                        <Route element={<Sales />} path="/sold" />
-                        <Route element={<Selling />} path="/selling" />
                         <Route element={<AboutUs />} path="/about-us" />
-                        <Route element={<ArtistProfile />} path='/artist/:id' />
                         <Route element={<Cart />} path="/cart" />
                         <Route element={<Payment />} path="/payment" />
                         <Route element={<PaymentSuccess />} path="/success" />
                         <Route element={<PaymentFail />} path="/fail" />                        
-                        <Route element={<EventDetail />} path="/event-detail/:id" />
-                        <Route element={<PaymentFail />} path="/fail" />
                         {/* <Route element={<Demo />} path="/demo" /> */}
                         {/* <Route element={<Single />} path="/single/:theid" /> */}
                         <Route element={<h1>Not    found!</h1>} path='*' />

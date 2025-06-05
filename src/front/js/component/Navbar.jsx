@@ -62,15 +62,6 @@ export const Navbar = () => {
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu align="end">
                                     <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
-                                    {store.isBuyer ? (
-                                        <Dropdown.Item as={Link} to="/purchases">Mis Compras</Dropdown.Item>
-                                    ) : (
-                                        <>
-                                            <Dropdown.Item as={Link} to="/selling">Productos en Venta</Dropdown.Item>
-                                            <Dropdown.Item as={Link} to="/post-product">Publicar un producto</Dropdown.Item>
-                                            <Dropdown.Item as={Link} to="/new-blog-post">Publicar un evento</Dropdown.Item>
-                                        </>
-                                    )}
                                     <Dropdown.Divider />
                                     <Dropdown.Item as={Link} to="/home" onClick={() => actions.logout()} className="text-danger">
                                         Cerrar Sesión
