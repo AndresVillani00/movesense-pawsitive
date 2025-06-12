@@ -7,7 +7,7 @@ async def identify_movesense():
         print(f"{d.name} [{d.address}]")
 
     # Conéctate al que crees que es el Movesense (cambia si es necesario)
-    address = "38:1F:8D:C3:2B:EB"
+    address = "74:92:BA:10:FE:1B"
     async with BleakClient(address) as client:
         print(f"Conectado a {address}")
         svcs = await client.get_services()
