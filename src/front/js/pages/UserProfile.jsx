@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 export const UserProfile = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-  const [selectedAvatar, setSelectedAvatar] = useState(store.usuario.image_url || "");
   const [name, setName] = useState(store.usuario.name);
   const [last_name, setLastName] = useState(store.usuario.last_name);
   const [username, setUsername] = useState(store.usuario.username);
@@ -15,29 +14,6 @@ export const UserProfile = () => {
   const [sending_address_buyer, setSendingAddress] = useState(store.usuario.sending_address_buyer);
   const [country, setCountry] = useState(store.usuario.country);
   const [biography, setBiography] = useState(store.usuario.biography);
-  const [showAvatars, setShowAvatars] = useState(false);
-
-  const avatarsForSellers = [
-    "https://i.imgur.com/24t1SYU.jpeg", 
-    "https://i.imgur.com/sERE9Yi.jpeg", 
-    "https://i.imgur.com/zYX4xje.jpeg", 
-    "https://i.imgur.com/rMJbDrq.jpeg", 
-    "https://i.imgur.com/QwH0Arw.jpeg", 
-  ];
-
-  const avatarsForBuyers = [
-    "https://i.imgur.com/4uXNHmC.jpeg", 
-    "https://i.imgur.com/PgVeFHm.jpeg",
-    "https://i.imgur.com/VZ7yg81.jpeg",
-    "https://i.imgur.com/bn0gutF.jpeg" 
-  ];
-
-  const avatars = store.usuario.is_seller ? avatarsForSellers : avatarsForBuyers;
-
-  const handleAvatarSelect = (avatarUrl) => {
-    setSelectedAvatar(avatarUrl);
-    setShowAvatars(false); 
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -72,7 +48,7 @@ export const UserProfile = () => {
         <div className="text-center mb-4">
           <div className="mt-3 text-end">
             <img
-              src={selectedAvatar || "https://i.imgur.com/24t1SYU.jpeg"}
+              src={"https://i.imgur.com/24t1SYU.jpeg"}
               className="rounded-circle img-fluid"
               alt="Owner"
               style={{ width: "60px", height: "60px" }}
@@ -81,31 +57,6 @@ export const UserProfile = () => {
           </div>
         </div>
         <form onSubmit={handleSubmit} className="row g-3">
-          {/* Botón para mostrar/ocultar avatares */}
-          <div className="col-12 text-center">
-            <button
-              type="button"
-              className="btn btn-outline-primary mb-3"
-              onClick={() => setShowAvatars(!showAvatars)}
-            >
-              {showAvatars ? "Ocultar avatares" : "Seleccionar avatar"}
-            </button>
-
-            {showAvatars && (
-              <div className="d-flex flex-wrap justify-content-center gap-3">
-                {avatars.map((avatar, index) => (
-                  <img
-                    key={index}
-                    src={avatar}
-                    alt={`Avatar ${index + 1}`}
-                    className={`img-fluid rounded-circle cursor-pointer ${selectedAvatar === avatar ? "border border-primary" : ""}`}
-                    style={{ width: "80px", height: "80px", objectFit: "cover" }}
-                    onClick={() => handleAvatarSelect(avatar)}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
 
           {/* Campos del formulario */}
           <div className="col-md-4">

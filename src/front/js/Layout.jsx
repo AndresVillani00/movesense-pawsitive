@@ -21,6 +21,7 @@ import { PaymentSuccess } from "./pages/PaymentSuccess.jsx";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { PaymentFail } from "./pages/PaymentFail.jsx";
+import { MascotaDetalles } from "./pages/MascotaDetalles.jsx";
 
 
 
@@ -47,6 +48,7 @@ const Layout = () => {
                         <Route element={<Login />} path="/login" />
                         <Route element={<Explore />} path="/explore" />
                         <Route element={<UserProfile />} path="/user-profile" />
+                        <Route element={<MascotaDetalles />} path="/mascota-profile" />  
                         <Route element={<AboutUs />} path="/about-us" />
                         <Route element={<Cart />} path="/cart" />
                         <Route element={<Payment />} path="/payment" />

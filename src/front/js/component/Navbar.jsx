@@ -11,7 +11,7 @@ export const Navbar = () => {
             <div className="container">
                 {/* Logo */}
                 <Link to="/home" className="navbar-brand fw-bold" style={{ color: "#1E1E50", fontSize: "1.5rem" }}>
-                    Art Vibes
+                    Pawsitive
                 </Link>
                 
                 {/* Botón de menú en móviles */}
@@ -30,7 +30,7 @@ export const Navbar = () => {
                 {/* Menú colapsable */}
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav mx-auto text-center">
-                        {["Home", "Explore", "Artists", "Events"].map((item, index) => (
+                        {["Home", "Mis Mascotas", "About Us"].map((item, index) => (
                             <li className="nav-item" key={index}>
                                 <Link className="nav-link text-dark mx-2 fw-medium" to={`/${item.toLowerCase()}`}>
                                     {item}
@@ -42,7 +42,7 @@ export const Navbar = () => {
                     {/* Sección de usuario y carrito */}
                     <div className="d-flex align-items-center">
                         {/* Carrito */}
-                        {store.isLogged && store.isBuyer && (
+                        {store.isLogged && (
                             <Link to="/cart" className="position-relative me-3">
                                 <i className="fas fa-shopping-bag fs-2" style={{ color: "#1E1E50" }}></i>
                                 {store.cart?.length > 0 && (

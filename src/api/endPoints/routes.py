@@ -4,7 +4,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import jwt_required
 from flask_cors import CORS
-from api.models import db, Users, Orders
+from api.models import db, Users, Mascotas
 from flask import jsonify
 
 
@@ -24,12 +24,11 @@ def login():
         return response_body, 401
     user = row.serialize()
     # Buscar si el usuario tiene Order
-    order = db.session.execute(db.select(Orders).where(Orders.buyer_id == user['id'])).scalar()
-    user['order_id'] = order.get('id') if order else None
+    mascotas = db.session.execute(db.select(Mascotas).where(Mascotas.id == user['mascotas_id'])).scalar()
+    user['mascotas_id'] = mascotas.get('id') if mascotas else None
     claims = {'user_id': user['id'],
               'user_username': user['username'],
-              'is_buyer': user['is_buyer'],
-              'is_seller': user['is_seller']}
+              'is_veterinario': user['is_veterinario']}
     access_token = create_access_token(identity=username, additional_claims=claims)
     response_body['access_token'] = access_token
     response_body['message'] = f'Usuario Logeado'
@@ -56,23 +55,23 @@ def user_profile():
         return jsonify({"message": "Usuario no encontrado"}), 404
     return jsonify({"message": "Perfil del usuario", "results": user.serialize()}), 200
 
-@api.route('/users/artists', methods=['GET'])
-def get_artists():
+@api.route('/users/mascotas', methods=['GET'])
+def get_mascotas():
     response_body = {}
-    rows = db.session.execute(db.select(Users).where(Users.is_seller == True)).scalars()
-    artists = [row.serialize() for row in rows]
-    response_body['message'] = 'Lista de artistas obtenida con éxito'
-    response_body['results'] = artists
+    rows = db.session.execute(db.select(Mascotas)).scalars()
+    mascotas = [row.serialize() for row in rows]
+    response_body['message'] = 'Lista de mascotas obtenida con éxito'
+    response_body['results'] = mascotas
     return response_body, 200
 
-@api.route('/users/artists/<int:artist_id>', methods=['GET'])
-def get_artist_by_id(artist_id):
+@api.route('/users/mascotas/<int:mascotas_id>', methods=['GET'])
+def get_artist_by_id(mascotas_id):
     response_body = {}
-    artist = db.session.execute(db.select(Users).where(Users.id == artist_id, Users.is_seller == True)).scalar()
-    if not artist:
-        response_body['message'] = 'Artista no encontrado'
+    mascotas = db.session.execute(db.select(Users).where(Users.mascotas_id == mascotas_id, Users.is_veterinario == False)).scalar()
+    if not mascotas:
+        response_body['message'] = 'Maascota de un usuario no encontrada'
         return response_body, 404
-    response_body['message'] = 'Artista obtenido con éxito'
-    response_body['results'] = artist.serialize()
+    response_body['message'] = 'Maascota de un usuario obtenida con éxito'
+    response_body['results'] = mascotas.serialize()
     return response_body, 200
 

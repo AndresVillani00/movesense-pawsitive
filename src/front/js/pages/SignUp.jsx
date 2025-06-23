@@ -64,15 +64,10 @@ export const SignUp = () => {
                         fontFamily: "'Poppins', sans-serif"
                     }}>
 
-                    <h1 className="fw-bold display-4">Únete a la comunidad de arte</h1>
+                    <h1 className="fw-bold display-4">Únete a la comunidad de Pawsitive</h1>
                     <p className="fs-5 mt-3">
-                        Vende, descubre y colecciona arte de todo el mundo.
+                        Añade a tus mascotas, controla sus cambios de estado y contacta con veterinarios en caso de emergencias
                     </p>
-                    <ul className="list-unstyled mt-3">
-                        <li> 🎨  Sube y vende tus obras fácilmente</li>
-                        <li> 📅  Explora eventos artísticos</li>
-                        <li> 💰  Conéctate con compradores y artistas</li>
-                    </ul>
                     <button className="btn btn-lg btn-light text-dark mt-4 px-5 py-3 fw-bold rounded-pill shadow-lg">
                         ¡Empieza hoy!
                     </button>
@@ -115,33 +110,6 @@ export const SignUp = () => {
                                     <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
                                         {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                                     </span>
-                                </div>
-                            </div>
-
-                            {/* Selección de Rol */}
-                            <div className="col-12 text-center">
-                                <label className="form-label fw-semibold">Selecciona tu rol</label>
-                                <div className="d-flex justify-content-center gap-3">
-                                    <button
-                                        className={`btn ${selectedRole === "buyer" ? "btn-primary active" : "btn-outline-primary"}`}
-                                        style={{
-                                            borderRadius: "30px",
-                                            padding: "10px 20px",
-                                            fontWeight: "bold"
-                                        }}
-                                        onClick={(event) => handleBuyer(event)}>
-                                        🛒 Comprador
-                                    </button>
-                                    <button
-                                        className={`btn ${selectedRole === "seller" ? "btn-primary active" : "btn-outline-primary"}`}
-                                        style={{
-                                            borderRadius: "30px",
-                                            padding: "10px 20px",
-                                            fontWeight: "bold"
-                                        }}
-                                        onClick={(event) => handleSeller(event)}>
-                                        🎨 Vendedor
-                                    </button>
                                 </div>
                             </div>
 

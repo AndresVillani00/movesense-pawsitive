@@ -9,11 +9,10 @@ from api.utils import APIException, generate_sitemap
 from api.models import db
 from api.endPoints.routes import api
 from api.endPoints.usersRoutes import users_api
-from api.endPoints.productsRoutes import products_api
-from api.endPoints.ordersRoutes import orders_api
-from api.endPoints.ordersItemRoutes import order_items_api
-from api.endPoints.buyerRoutes import buyer_api
-from api.endPoints.eventRoutes import events_api
+from api.endPoints.mascotasRoutes import mascotas_api
+from api.endPoints.incidenciasRoutes import incidencias_api
+from api.endPoints.metricasRoutes import metricas_api
+from api.endPoints.vetRoutes import veterinarios_api
 from api.endPoints.stripeRoutes import stripe_api
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -42,11 +41,10 @@ setup_admin(app)  # Add the admin
 setup_commands(app)  # Add the admin
 app.register_blueprint(api, url_prefix='/api')  # Add all endpoints form the API with a "api" prefix
 app.register_blueprint(users_api, url_prefix='/usersApi')
-app.register_blueprint(products_api, url_prefix='/productsApi')
-app.register_blueprint(orders_api, url_prefix='/ordersApi')
-app.register_blueprint(order_items_api, url_prefix='/orderItemsApi')
-app.register_blueprint(buyer_api, url_prefix='/buyerApi')
-app.register_blueprint(events_api, url_prefix='/eventsApi')
+app.register_blueprint(mascotas_api, url_prefix='/mascotasApi')
+app.register_blueprint(incidencias_api, url_prefix='/incidenciasApi')
+app.register_blueprint(metricas_api, url_prefix='/metricasApi')
+app.register_blueprint(veterinarios_api, url_prefix='/veterinariosApi')
 app.register_blueprint(stripe_api, url_prefix='/stripeApi')
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY') # Change this!

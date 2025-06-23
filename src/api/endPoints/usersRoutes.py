@@ -1,7 +1,7 @@
 from flask import request, Blueprint
 from flask_jwt_extended import create_access_token
 from flask_cors import CORS
-from api.models import db, Users, Buyers
+from api.models import db, Users, Veterinarios
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import jwt_required
@@ -31,26 +31,30 @@ def users():
                     country=data.get('country'),
                     address=data.get('address'),
                     phone=data.get('phone'),
-                    biography=data.get('biography'),
-                    image_url=data.get('image_url'),
-                    is_buyer=data.get('is_buyer', False),
-                    is_seller=data.get('is_seller', False))
+                    is_veterinario=data.get('is_veterinario', False))
         rowdb = db.session.execute(db.select(Users).where(Users.username == data.get('username'), Users.password == data.get('password'))).scalar()
         if rowdb:
             response_body['message'] = f'El usuario ya existe'
             return response_body, 401
         db.session.add(row)
         db.session.commit()
-        if data.get('is_buyer'):
-            rowbuyer = Buyers(sending_address_buyer='',
-                              purchase_history='')
-            db.session.add(rowbuyer)
+        if data.get('is_veterinario'):
+            rowveterinario = Veterinarios(id = row.id,
+                                            name_clinica = '',
+                                            email_clinica = '',
+                                            address_clinica = '',
+                                            phone_clinica = '',
+                                            name_doctor = '',
+                                            last_name_doctor = '',
+                                            email_doctor = '',
+                                            address_doctor = '',
+                                            phone_doctor = '')
+            db.session.add(rowveterinario)
             db.session.commit()
         user = row.serialize()
         claims = {'user_id': user['id'],
               'user_username': user['username'],
-              'is_buyer': user['is_buyer'],
-              'is_seller': user['is_seller']}
+              'is_veterinario': user['is_veterinario']}
         access_token = create_access_token(identity=data.get('username'), additional_claims=claims)
         response_body['access_token'] = access_token
         response_body['message'] = f'Agregar nuevo Usuario'
@@ -77,8 +81,6 @@ def user(id):
         row.country=data.get('country'),
         row.address=data.get('address'),
         row.phone=data.get('phone'),
-        row.biography=data.get('biography'),
-        row.image_url=data.get('image_url')
         db.session.add(row)
         db.session.commit()  
         response_body['message'] = f'Usuario con id: {id}. Actualizado'
@@ -91,38 +93,28 @@ def user(id):
         return response_body, 200
     
 
-@users_api.route('/buyers/<int:buyer_id>/users', methods=['GET'])
-def user_buyer(buyer_id):
+@users_api.route('/veterinarios/<int:veterinario_id>/users', methods=['GET'])
+def user_veterinario(veterinario_id):
     response_body = {}
-    row = db.session.execute(db.select(Users).where(Users.buyer_id == buyer_id, Users.is_buyer == True)).scalars()
+    row = db.session.execute(db.select(Users).where(Users.id == veterinario_id, Users.is_veterinario == True)).scalars()
     if not row:
-        response_body['message'] = f'No hay comprador en los usuarios con id: {buyer_id}'
+        response_body['message'] = f'No hay comprador en los usuarios con id: {veterinario_id}'
     if request.method == 'GET':
-        response_body['message'] = f'Usuario comprador con id: {buyer_id}'
+        response_body['message'] = f'Usuario comprador con id: {veterinario_id}'
         response_body["results"] = row.serialize()
 
 
-@users_api.route('/sellers/<int:seller_id>/users', methods=['GET'])
-def user_seller(seller_id):
-    response_body = {}
-    row = db.session.execute(db.select(Users).where(Users.seller_id == seller_id, Users.is_seller == True)).scalars()
-    if not row:
-        response_body['message'] = f'No hay vendedor en los usuarios con id: {seller_id}'
-    if request.method == 'GET':
-        response_body['message'] = f'Usuario vendedor con id: {seller_id}'
-        response_body["results"] = row.serialize()
-
-@users_api.route("/users/profile/picture", methods=["PUT"])
-@jwt_required()
-def update_profile_picture():
-    user_id = get_jwt_identity()
-    data = request.get_json()
-    image_url = data.get("image_url")
-    if not image_url:
-        return jsonify({"error": "URL de la imagen no proporcionada"}), 400
-    user = Users.query.get(user_id)
-    if not user:
-        return jsonify({"error": "Usuario no encontrado"}), 404
-    user.image_url = image_url
-    db.session.commit()
-    return jsonify({"message": "Foto de perfil actualizada", "user": users.serialize()}), 200
+#@users_api.route("/users/profile/picture", methods=["PUT"])
+#@jwt_required()
+#def update_profile_picture():
+#    user_id = get_jwt_identity()
+#    data = request.get_json()
+#    image_url = data.get("image_url")
+#    if not image_url:
+#        return jsonify({"error": "URL de la imagen no proporcionada"}), 400
+#    user = Users.query.get(user_id)
+#    if not user:
+#        return jsonify({"error": "Usuario no encontrado"}), 404
+#    user.image_url = image_url
+#    db.session.commit()
+#    return jsonify({"message": "Foto de perfil actualizada", "user": users.serialize()}), 200
