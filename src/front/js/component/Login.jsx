@@ -12,14 +12,14 @@ export const Login = () => {
         event.preventDefault();
         const dataToSend = { username, password }
         await actions.login(dataToSend);
-        store.alert = { text: "", background: "primary", visible: false } ;
+        store.alert = { text: "", background: "primary", visible: false };
         if (store.isLogged) {
             navigate('/home')
         }
     }
     return (
         <div className="container-fluid d-flex justify-content-center align-items-center vh-100" style={{
-            background: "#F4F4F7", // Fondo claro y limpio
+            background: "#F5EFDE", // Fondo claro y limpio
             color: "#333" // Texto oscuro para contraste
         }}>
             <div className="card p-5 shadow-lg border-0" style={{
@@ -29,9 +29,9 @@ export const Login = () => {
                 borderRadius: "12px",
                 border: "1px solid #DDD" // Borde sutil
             }}>
-                 <Link to="/home" className="text-decoration-none text-muted mb-3">  <i className="fas fa-arrow-left"></i> go back home</Link>
-                <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1E3A5F" }}>Welcome Back</h2>
-                <p className="text-center text-muted">Log in to continue</p>
+                <Link to="/home" className="text-decoration-none mb-3" style={{ color: "#1B365D" }}>  <i className="fas fa-arrow-left"></i> go back home</Link>
+                <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1B365D" }}>Welcome Back</h2>
+                <p className="text-center" style={{ color: "#1B365D" }}>Log in to continue</p>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Username</label>
@@ -49,27 +49,15 @@ export const Login = () => {
                             <input className="form-check-input" type="checkbox" id="rememberMe" />
                             <label className="form-check-label text-muted" htmlFor="rememberMe">Remember me</label>
                         </div>
-                        <Link to="/home" className="text-decoration-none" style={{ color: "#5A189A" }}>Forgot password?</Link>
+                        <Link to="/home" className="text-decoration-none" style={{ color: "#1B365D" }}>Forgot password?</Link>
                     </div>
-                    <div className="d-flex">
-                        <button type="submit" className="btn w-100 mt-4" style={{
-                            background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)", // Azul oscuro + Morado elegante
-                            color: "#fff",
-                            fontWeight: "bold",
-                            padding: "10px",
+                    <div className="text-center">
+                        <button type="submit" className="btn w-50 mt-4 fw-bold" style={{
+                            background: "#1B365D",
+                            color: "#F5EFDE",
                             borderRadius: "8px",
-                            border: "none",
-                            transition: "0.3s"
+                            padding: "10px"
                         }}>Log In</button>
-                        {/*<button type="reset" onClick={() => navigate('/home')} className="btn w-50 mt-4" style={{
-                            background: "linear-gradient(135deg,rgb(55, 56, 56),rgb(93, 100, 119),rgb(204, 213, 231))",
-                            color: "#fff",
-                            fontWeight: "bold",
-                            padding: "10px",
-                            borderRadius: "8px",
-                            border: "none",
-                            transition: "0.3s"
-                        }}>Go Back</button>*/}
                     </div>
                     <div className="text-center mt-3">
                         <p className="text-muted">Don't have an account? <Link to={"/sign-up"} className="text-decoration-none" style={{ color: "#1E1E50" }}>Sign Up</Link></p>

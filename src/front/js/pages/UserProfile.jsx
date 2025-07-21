@@ -43,70 +43,68 @@ export const UserProfile = () => {
   };
 
   return (
-    <div className="container mt-5 p-4 bg-light rounded shadow-lg d-flex justify-content-center">
-      <div className="card p-4 shadow-lg border-0" style={{ maxWidth: "600px", width: "100%", borderRadius: "12px" }}>
-        <div className="text-center mb-4">
-          <div className="mt-3 text-end">
-            <img
-              src={"https://i.imgur.com/24t1SYU.jpeg"}
-              className="rounded-circle img-fluid"
-              alt="Owner"
-              style={{ width: "60px", height: "60px" }}
-            />
-            <h3 className="mt-2 fw-bold text-center">Perfil de Usuario</h3>
+    <div className="container mt-5 p-4 d-flex justify-content-center card p-4 shadow-lg border-0" style={{ maxWidth: "600px", width: "100%", borderRadius: "12px" }}>
+      <div className="text-center mb-4">
+        <div className="mt-3 text-end">
+          <img
+            src={"https://i.imgur.com/24t1SYU.jpeg"}
+            className="rounded-circle img-fluid"
+            alt="Owner"
+            style={{ width: "60px", height: "60px" }}
+          />
+          <h3 className="mt-2 fw-bold text-center">Perfil de Usuario</h3>
+        </div>
+      </div>
+      <form onSubmit={handleSubmit} className="row g-3">
+
+        {/* Campos del formulario */}
+        <div className="col-md-4">
+          <label className="form-label fw-semibold">Nombre</label>
+          <input type="text" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} />
+        </div>
+        <div className="col-md-4">
+          <label className="form-label fw-semibold">Apellido</label>
+          <input type="text" name="lastName" className="form-control" value={last_name} onChange={(event) => setLastName(event.target.value)} />
+        </div>
+        <div className="col-md-4">
+          <label className="form-label fw-semibold">Username</label>
+          <input type="text" name="username" className="form-control" value={username} onChange={(event) => setUsername(event.target.value)} required />
+        </div>
+        <div className="col-md-6">
+          <label className="form-label fw-semibold">Correo Electrónico</label>
+          <input type="email" name="email" className="form-control" value={email} onChange={(event) => setEmail(event.target.value)} required />
+        </div>
+        <div className="col-md-6">
+          <label className="form-label fw-semibold">Teléfono</label>
+          <input type="text" name="phone" className="form-control" value={phone} onChange={(event) => setPhone(event.target.value)} />
+        </div>
+        <div className="col-md-8">
+          <label className="form-label fw-semibold">Dirección</label>
+          <input type="text" name="address" className="form-control" value={address} onChange={(event) => setAddress(event.target.value)} />
+        </div>
+        <div className="col-md-4">
+          <label className="form-label fw-semibold">País</label>
+          <input type="text" className="form-control" value={country} onChange={(event) => setCountry(event.target.value)} />
+        </div>
+        {store.usuario.is_buyer ? (
+          <div className="col-md-12">
+            <label className="form-label fw-semibold">Dirección de Envío</label>
+            <input type="text" name="address" className="form-control" value={sending_address_buyer} onChange={(event) => setSendingAddress(event.target.value)} />
+          </div>
+        ) : (
+          <div className="col-md-12">
+            <label className="form-label fw-semibold">Biografía</label>
+            <textarea name="content" placeholder="Descripción del Evento" onChange={(event) => setBiography(event.target.value)} value={biography} className="form-control mb-2" required></textarea>
+          </div>
+        )}
+
+        {/* Botones de acción */}
+        <div className="d-flex">
+          <div className="col-7">
+            <button className="btn btn-primary w-50 fw-bold m-3" type="submit">Guardar Cambios</button>
           </div>
         </div>
-        <form onSubmit={handleSubmit} className="row g-3">
-
-          {/* Campos del formulario */}
-          <div className="col-md-4">
-            <label className="form-label fw-semibold">Nombre</label>
-            <input type="text" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} />
-          </div>
-          <div className="col-md-4">
-            <label className="form-label fw-semibold">Apellido</label>
-            <input type="text" name="lastName" className="form-control" value={last_name} onChange={(event) => setLastName(event.target.value)} />
-          </div>
-          <div className="col-md-4">
-            <label className="form-label fw-semibold">Username</label>
-            <input type="text" name="username" className="form-control" value={username} onChange={(event) => setUsername(event.target.value)} required />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label fw-semibold">Correo Electrónico</label>
-            <input type="email" name="email" className="form-control" value={email} onChange={(event) => setEmail(event.target.value)} required />
-          </div>
-          <div className="col-md-6">
-            <label className="form-label fw-semibold">Teléfono</label>
-            <input type="text" name="phone" className="form-control" value={phone} onChange={(event) => setPhone(event.target.value)} />
-          </div>
-          <div className="col-md-8">
-            <label className="form-label fw-semibold">Dirección</label>
-            <input type="text" name="address" className="form-control" value={address} onChange={(event) => setAddress(event.target.value)} />
-          </div>
-          <div className="col-md-4">
-            <label className="form-label fw-semibold">País</label>
-            <input type="text" className="form-control" value={country} onChange={(event) => setCountry(event.target.value)} />
-          </div>
-          {store.usuario.is_buyer ? (
-            <div className="col-md-12">
-              <label className="form-label fw-semibold">Dirección de Envío</label>
-              <input type="text" name="address" className="form-control" value={sending_address_buyer} onChange={(event) => setSendingAddress(event.target.value)} />
-            </div>
-          ) : (
-            <div className="col-md-12">
-              <label className="form-label fw-semibold">Biografía</label>
-              <textarea name="content" placeholder="Descripción del Evento" onChange={(event) => setBiography(event.target.value)} value={biography} className="form-control mb-2" required></textarea>
-            </div>
-          )}
-
-          {/* Botones de acción */}
-          <div className="d-flex">
-            <div className="col-7">
-              <button className="btn btn-primary w-50 fw-bold m-3" type="submit">Guardar Cambios</button>
-            </div>
-          </div>
-        </form>
-      </div>
+      </form>
     </div>
   );
 };

@@ -84,20 +84,24 @@ class Incidencias(db.Model):
 class Mascotas(db.Model):
     __tablename__ = 'mascotas'
     id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(), unique=True, nullable=False, default=" ")
+    password = db.Column(db.String(), unique=False, nullable=False, default=" ")
     raza = db.Column(db.String(), unique=False, nullable=False, default=" ")
     is_mix = db.Column(db.Boolean(), nullable=False, default=False)
     birth_date = db.Column(db.DateTime(), unique=False, nullable=True)
     gender = db.Column(db.String(), unique=False, nullable=False, default=" ")
     is_Esterilizado = db.Column(db.Boolean(), nullable=False, default=False)
-    foto_mascot = db.Column(db.String(), unique=False, nullable=False, default=" ")
+    foto_mascot = db.Column(db.String(), unique=False, nullable=True, default=" ")
     name_mascot = db.Column(db.String(), unique=False, nullable=False, default=" ")
-    patologia = db.Column(db.String(), unique=False, nullable=False, default=" ")
+    patologia = db.Column(db.String(), unique=False, nullable=True, default=" ")
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('user_to'), lazy='select')
 
     
     def serialize(self):
         return {'id': self.id,
+                'username': self.username,
+                'password': self.password,
                 'raza': self.raza,
                 'is_mix': self.is_mix,
                 'birth_date': self.birth_date,

@@ -7,10 +7,11 @@ import { Navbar } from "./component/Navbar.jsx";
 import { Footer } from "./component/Footer.jsx";
 import ScrollToTop from "./component/ScrollToTop.jsx";
 import { BackendURL } from "./component/BackendURL.jsx";
+import { SignUp } from "./component/SignUp.jsx";
+import { SignUpVets } from "./component/SignUpVets.jsx";
+import { Login } from "./component/Login.jsx";
 // Custom pages or views
 import { Home } from "./pages/Home.jsx";
-import { SignUp } from "./pages/SignUp.jsx";
-import { Login } from "./component/Login.jsx";
 import { Explore } from "./pages/Explore.jsx";
 import { UserProfile } from "./pages/UserProfile.jsx";
 import { Alert } from "./component/Alert.jsx";
@@ -41,23 +42,24 @@ const Layout = () => {
                     <Navbar />
                     <Alert />
                     <Elements stripe={key}>
-                    <Routes>
-                        <Route path="/" element={<Navigate to="/" />} />
-                        <Route element={<Home />} path="/home" />
-                        <Route element={<SignUp />} path="/sign-up" />
-                        <Route element={<Login />} path="/login" />
-                        <Route element={<Explore />} path="/explore" />
-                        <Route element={<UserProfile />} path="/user-profile" />
-                        <Route element={<MascotaDetalles />} path="/mascota-profile" />  
-                        <Route element={<AboutUs />} path="/about-us" />
-                        <Route element={<Cart />} path="/cart" />
-                        <Route element={<Payment />} path="/payment" />
-                        <Route element={<PaymentSuccess />} path="/success" />
-                        <Route element={<PaymentFail />} path="/fail" />                        
-                        {/* <Route element={<Demo />} path="/demo" /> */}
-                        {/* <Route element={<Single />} path="/single/:theid" /> */}
-                        <Route element={<h1>Not    found!</h1>} path='*' />
-                    </Routes>
+                        <Routes>
+                            <Route path="/" element={<Navigate to="/" />} />
+                            <Route element={<Home />} path="/home" />
+                            <Route element={<SignUp />} path="/sign-up" />
+                            <Route element={<SignUpVets />} path="/sign-up-vets" />
+                            <Route element={<Login />} path="/login" />
+                            <Route element={<Explore />} path="/explore" />
+                            <Route element={<UserProfile />} path="/user-profile" />
+                            <Route element={<MascotaDetalles />} path="/mascota-profile" />
+                            <Route element={<AboutUs />} path="/about-us" />
+                            <Route element={<Cart />} path="/cart" />
+                            <Route element={<Payment />} path="/payment" />
+                            <Route element={<PaymentSuccess />} path="/success" />
+                            <Route element={<PaymentFail />} path="/fail" />
+                            {/* <Route element={<Demo />} path="/demo" /> */}
+                            {/* <Route element={<Single />} path="/single/:theid" /> */}
+                            <Route element={<h1>Not    found!</h1>} path='*' />
+                        </Routes>
                     </Elements>
                     <Footer />
                 </ScrollToTop>

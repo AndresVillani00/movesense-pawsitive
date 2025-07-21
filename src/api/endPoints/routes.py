@@ -23,9 +23,9 @@ def login():
         response_body['message'] = f'El usuario no existe'
         return response_body, 401
     user = row.serialize()
-    # Buscar si el usuario tiene Order
-    mascotas = db.session.execute(db.select(Mascotas).where(Mascotas.id == user['mascotas_id'])).scalar()
-    user['mascotas_id'] = mascotas.get('id') if mascotas else None
+    # Buscar si el usuario tiene Mascotas
+    mascotas = db.session.execute(db.select(Mascotas).where(Mascotas.user_id == user['id'])).scalar()
+    # user['id'] = mascotas.get('id') if mascotas else None
     claims = {'user_id': user['id'],
               'user_username': user['username'],
               'is_veterinario': user['is_veterinario']}

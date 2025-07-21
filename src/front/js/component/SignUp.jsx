@@ -7,50 +7,26 @@ export const SignUp = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
 
-    const [selectedRole, setSelectedRole] = useState(null);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [is_buyer, setBuyer] = useState(false);
-    const [is_seller, setSeller] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!selectedRole) {
-            store.alert = { text: "Seleccione un rol", background: "danger", visible: true };
-            return;
-        }
-
         const dataToSend = {
             username,
             email,
             password,
-            is_buyer,
-            is_seller
         }
 
         await actions.signup(dataToSend);
 
-        if (store.isLogged) {
+        if (store.isLogged && !store.isVeterinario) {
             store.alert = { text: "", background: "primary", visible: false };
             navigate('/home');
         }
-    }
-
-    const handleBuyer = (event) => {
-        event.preventDefault();
-        setSelectedRole("buyer");
-        setBuyer(true);
-        setSeller(false);
-    }
-
-    const handleSeller = (event) => {
-        event.preventDefault();
-        setSelectedRole("seller");
-        setBuyer(false);
-        setSeller(true);
     }
 
     return (
@@ -59,46 +35,43 @@ export const SignUp = () => {
                 {/* Sección Izquierda */}
                 <div className="col-md-6 d-flex flex-column justify-content-center align-items-center text-white p-5 text-center"
                     style={{
-                        background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",
+                        background: "linear-gradient(135deg, #1B365D, #4A69BB, #F5EFDE)",
                         minHeight: "100vh",
                         fontFamily: "'Poppins', sans-serif"
                     }}>
 
-                    <h1 className="fw-bold display-4">Únete a la comunidad de Pawsitive</h1>
-                    <p className="fs-5 mt-3">
-                        Añade a tus mascotas, controla sus cambios de estado y contacta con veterinarios en caso de emergencias
+                    <h1 className="fw-bold display-4" style={{ color: "#F5EFDE" }}>Join our community</h1>
+                    <p className="fs-5 mt-3" style={{ color: "#F5EFDE" }}>
+                        Pawsitive, the wellness platform for your pets
                     </p>
-                    <button className="btn btn-lg btn-light text-dark mt-4 px-5 py-3 fw-bold rounded-pill shadow-lg">
-                        ¡Empieza hoy!
-                    </button>
                 </div>
 
                 {/* Sección Derecha - Formulario */}
                 <div className="col-md-6 d-flex flex-column justify-content-center align-items-center"
-                    style={{ fontFamily: "'Montserrat', sans-serif", background: "#F8F9FA", minHeight: "100vh" }}>
+                    style={{ fontFamily: "'Montserrat', sans-serif", background: "#F5EFDE", minHeight: "100vh" }}>
 
                     {/* Formulario */}
                     <div className="card p-5 shadow-lg border-0" style={{ maxWidth: "400px", width: "100%", borderRadius: "12px" }}>
-                        <h3 className="text-center fw-bold mb-4">Crea tu cuenta</h3>
+                        <h3 className="text-center fw-bold mb-4" style={{ color: "#1B365D" }}>Create your account</h3>
                         <form onSubmit={handleSubmit} className="row g-3">
                             {/* Campo Username */}
                             <div className="col-12">
                                 <label className="form-label fw-semibold">Username</label>
                                 <div className="input-group">
                                     <span className="input-group-text">@</span>
-                                    <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control" placeholder="Elige el username más original" required />
+                                    <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control" placeholder="Write your username" required />
                                 </div>
                             </div>
 
                             {/* Campo Email */}
                             <div className="col-12">
-                                <label className="form-label fw-semibold">Correo Electrónico</label>
+                                <label className="form-label fw-semibold">Email</label>
                                 <input onChange={(event) => setEmail(event.target.value)} value={email} type="email" className="form-control" placeholder="name@example.com" required />
                             </div>
 
                             {/* Campo Password */}
                             <div className="col-12">
-                                <label className="form-label fw-semibold">Contraseña</label>
+                                <label className="form-label fw-semibold">Password</label>
                                 <div className="input-group">
                                     <input
                                         onChange={(event) => setPassword(event.target.value)}
@@ -113,9 +86,23 @@ export const SignUp = () => {
                                 </div>
                             </div>
 
-                            <button className="btn btn-dark mt-3" type="submit">Registrarse</button>
-                            <button className="btn btn-outline-danger d-flex justify-content-center align-items-center rounded-pill mt-3" type="button">
-                                <i className="fab fa-google me-2"></i> Registrarse con Google
+                            <div className="col-12 text-center">
+                                <div className="d-flex justify-content-center gap-3">
+                                    <button
+                                        className="btn fw-bold" type="submit"
+                                        style={{
+                                            background: "#1B365D",
+                                            color: "#F5EFDE",
+                                            borderRadius: "30px",
+                                            padding: "10px 20px"
+                                        }}>
+                                        Sign Up
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button className="btn d-flex justify-content-center align-items-center rounded-pill mt-3" style={{ color: "#1B365D" }} type="button">
+                                <i className="fab fa-google me-2" ></i> Sign up with Google
                             </button>
                         </form>
                     </div>

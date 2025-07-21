@@ -28,17 +28,15 @@ def postMascotas():
     additional_claims = get_jwt()  
     if request.method == 'POST':
         data = request.json 
-        id = additional_claims['mascota_id']
+        user_id = additional_claims['user_id']
         is_veterinario = additional_claims['is_veterinario']
         if is_veterinario:
             response_body['message'] = f'El usuario es Veterinario'
             return response_body, 404
-        row = Mascotas(id=id,
-                    raza=data.get('raza'), 
-                    mix_raza=data.get('mix_raza'),
-                    is_mix=data.get('is_mix'),
-                    age=data.get('age'),
-                    birth_date=data.get('birth_date'))
+        row = Mascotas(raza=data.get('raza'),
+                    gender=data.get('gender'),
+                    birth_date=data.get('birth_date'),
+                    user_id=user_id)
         db.session.add(row)
         db.session.commit()
         response_body['message'] = f'Agregar nueva Mascota'
@@ -74,9 +72,12 @@ def mascota(id):
         return response_body, 200
 
 
-@mascotas_api.route('/users/<int:user_id>/mascotas', methods=['GET'])
-def user_mascotas(user_id):
+@mascotas_api.route('/users/mascotas', methods=['GET'])
+@jwt_required()
+def user_mascotas():
     response_body = {}
+    additional_claims = get_jwt()
+    user_id = additional_claims['user_id']
     usuario = db.session.execute(db.select(Users).where(Users.id == user_id)).scalar()
     if not usuario:
         response_body['message'] = f'El usuario con id: {user_id} no existe'

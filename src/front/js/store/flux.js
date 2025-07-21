@@ -2,6 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			isLogged: false,
+			isNuevaMascota: false,
 			isVeterinario: false,
 			usuario: {},
 			incidenciaId: null,
@@ -50,7 +51,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const data = await response.json();
-				getActions().getMascotas();
+				getActions().getMascotas(data.user_id);
 			},
 			getIncidencias: async () => {
 				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
@@ -67,7 +68,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getMascotas: async () => {
-				const uri = `${process.env.BACKEND_URL}/api/users/mascotas`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas`;
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
@@ -124,11 +125,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 401) {
-						setStore({ alert: { text: 'El Producto que intenta registrar ya existe', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'La Mascota que intenta registrar ya existe', background: 'danger', visible: true } })
 					}
 					return
 				}
-				const datos = await response.json();
+
 				getActions().getMascotas()
 			},
 			signup: async (dataToSend) => {
@@ -176,7 +177,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const datos = await response.json();
 				setStore({
 					isLogged: true,
-					incidenciaId: datos.results.incidencia_id,
 					usuario: datos.results
 				})
 				if (getStore().usuario.is_veterinario) {
@@ -194,6 +194,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			setIsLogged: (value) => {
 				setStore({ isLogged: value })
+			},
+			setNuevaMascota: (value) => {
+				setStore({ isNuevaMascota: value })
 			},
 			updateUsuario: async (dataToSend, id) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users/${id}`;

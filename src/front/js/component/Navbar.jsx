@@ -7,32 +7,32 @@ export const Navbar = () => {
     const { store, actions } = useContext(Context);
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <nav className="navbar navbar-expand-lg navbar-light shadow-sm" style={{ background: "#1B365D" }}>
             <div className="container">
                 {/* Logo */}
-                <Link to="/home" className="navbar-brand fw-bold" style={{ color: "#1E1E50", fontSize: "1.5rem" }}>
+                <Link to="/home" className="navbar-brand fw-bold" style={{ color: "#F5EFDE", fontSize: "1.5rem" }}>
                     Pawsitive
                 </Link>
-                
+
                 {/* Botón de menú en móviles */}
-                <button 
-                    className="navbar-toggler" 
-                    type="button" 
-                    data-bs-toggle="collapse" 
-                    data-bs-target="#navbarNav" 
-                    aria-controls="navbarNav" 
-                    aria-expanded="false" 
+                <button
+                    className="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
                     aria-label="Toggle navigation"
                 >
                     <span className="navbar-toggler-icon"></span>
                 </button>
 
                 {/* Menú colapsable */}
-                <div className="collapse navbar-collapse" id="navbarNav">
+                <div className="collapse navbar-collapse" id="navbarNav" >
                     <ul className="navbar-nav mx-auto text-center">
                         {["Home", "Mis Mascotas", "About Us"].map((item, index) => (
                             <li className="nav-item" key={index}>
-                                <Link className="nav-link text-dark mx-2 fw-medium" to={`/${item.toLowerCase()}`}>
+                                <Link className="nav-link mx-2 fw-medium" style={{ color:"#F5EFDE" }} to={`/${item.toLowerCase()}`}>
                                     {item}
                                 </Link>
                             </li>
@@ -41,17 +41,6 @@ export const Navbar = () => {
 
                     {/* Sección de usuario y carrito */}
                     <div className="d-flex align-items-center">
-                        {/* Carrito */}
-                        {store.isLogged && (
-                            <Link to="/cart" className="position-relative me-3">
-                                <i className="fas fa-shopping-bag fs-2" style={{ color: "#1E1E50" }}></i>
-                                {store.cart?.length > 0 && (
-                                    <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                        {store.cart.length}
-                                    </span>
-                                )}
-                            </Link>
-                        )}
 
                         {/* Dropdown de usuario */}
                         {store.isLogged ? (
@@ -71,11 +60,18 @@ export const Navbar = () => {
                         ) : (
                             <div className="d-flex ms-3">
                                 <Link to="/login">
-                                    <button className="btn btn-outline-primary me-2 fw-bold">Log In</button>
+                                    <button className="btn me-2 fw-bold" style={{
+                                        color: "#1B365D",
+                                        background: "#F5EFDE",
+                                        borderRadius: "8px",
+                                        padding: "8px 16px"
+                                    }}>
+                                        Log In</button>
                                 </Link>
                                 <Link to="/sign-up">
-                                    <button className="btn text-white fw-bold" style={{
-                                        background: "linear-gradient(135deg, #1E3A5F, #4A69BB, #8FAADC)",
+                                    <button className="btn fw-bold" style={{
+                                        color: "#1B365D",
+                                        background: "#F5EFDE",
                                         borderRadius: "8px",
                                         padding: "8px 16px"
                                     }}>
