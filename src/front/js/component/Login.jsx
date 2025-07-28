@@ -52,9 +52,9 @@ export const Login = () => {
                         <Link to="/home" className="text-decoration-none" style={{ color: "#1B365D" }}>Forgot password?</Link>
                     </div>
                     <div className="text-center">
-                        <button type="submit" className="btn w-50 mt-4 fw-bold" style={{
-                            background: "#1B365D",
-                            color: "#F5EFDE",
+                        <button type="submit" className="btn w-50 mt-4 fw-bold" style={{ color: "white", 
+                            background:"#ff6100", 
+                            border: "#ff6100",
                             borderRadius: "8px",
                             padding: "10px"
                         }}>Log In</button>

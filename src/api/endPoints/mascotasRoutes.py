@@ -33,9 +33,14 @@ def postMascotas():
         if is_veterinario:
             response_body['message'] = f'El usuario es Veterinario'
             return response_body, 404
-        row = Mascotas(raza=data.get('raza'),
+        row = Mascotas(username=data.get('username'),
+                    password=data.get('password'),
+                    name_mascot=data.get('name_mascot'),
+                    foto_mascot=data.get('foto_mascot'),
+                    raza=data.get('raza'),
                     gender=data.get('gender'),
                     birth_date=data.get('birth_date'),
+                    patologia=data.get('patologia'),
                     user_id=user_id)
         db.session.add(row)
         db.session.commit()
@@ -56,6 +61,8 @@ def mascota(id):
         return response_body, 200
     if request.method == 'PUT':
         data = request.json
+        row.username = data.get('username', row.username)
+        row.password = data.get('password', row.password)
         row.raza = data.get('raza', row.raza)
         row.mix_raza = data.get('mix_raza', row.mix_raza)
         row.is_mix = data.get('is_mix', row.is_mix)

@@ -90,9 +90,9 @@ export const SignUp = () => {
                                 <div className="d-flex justify-content-center gap-3">
                                     <button
                                         className="btn fw-bold" type="submit"
-                                        style={{
-                                            background: "#1B365D",
-                                            color: "#F5EFDE",
+                                        style={{ color: "white", 
+                                            background:"#ff6100", 
+                                            border: "#ff6100",
                                             borderRadius: "30px",
                                             padding: "10px 20px"
                                         }}>

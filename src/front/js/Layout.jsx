@@ -36,7 +36,7 @@ const Layout = () => {
     const key = loadStripe(process.env.FRONTSTRIPEKEY);
 
     return (
-        <div className="d-flex flex-column min-vh-100">
+        <div className="d-flex flex-column min-vh-100" style={{ background: "#F5EFDE" }}>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
@@ -50,14 +50,12 @@ const Layout = () => {
                             <Route element={<Login />} path="/login" />
                             <Route element={<Explore />} path="/explore" />
                             <Route element={<UserProfile />} path="/user-profile" />
-                            <Route element={<MascotaDetalles />} path="/mascota-profile" />
+                            <Route element={<MascotaDetalles />} path="/mascota-profile/:id" />
                             <Route element={<AboutUs />} path="/about-us" />
                             <Route element={<Cart />} path="/cart" />
                             <Route element={<Payment />} path="/payment" />
                             <Route element={<PaymentSuccess />} path="/success" />
                             <Route element={<PaymentFail />} path="/fail" />
-                            {/* <Route element={<Demo />} path="/demo" /> */}
-                            {/* <Route element={<Single />} path="/single/:theid" /> */}
                             <Route element={<h1>Not    found!</h1>} path='*' />
                         </Routes>
                     </Elements>

@@ -24,8 +24,9 @@ def incidencias():
         data = request.json
         row = Incidencias(title=data.get('title'),
                      description=data.get('description'),
-                     initial_date=datetime.now(timezone.utc),
+                     initial_date=data.get('initial_date'),
                      final_date=data.get('final_date'),
+                     alert_status=data.get('alert_status'),
                      ia_description=data.get('ia_description'))
         db.session.add(row)
         db.session.commit()

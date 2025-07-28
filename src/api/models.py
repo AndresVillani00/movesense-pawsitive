@@ -69,7 +69,8 @@ class Incidencias(db.Model):
     initial_date = db.Column(db.DateTime(), unique=False, nullable=False)
     final_date = db.Column(db.DateTime(), unique=False, nullable=False)
     ia_description = db.Column(db.Text(), unique=False, nullable=False, default=" ")
-    alert_status = db.Column(db.Enum('en proceso', 'pendiente', 'completado', 'cancelado', name='alert_status'), nullable=False)
+    alert_status = db.Column(db.String(), unique=False, nullable=False, default=" ")
+    #alert_status = db.Column(db.Enum('Good', 'Bad', name='alert_status'), nullable=False)
     
     def serialize(self):
         return {'id': self.id,
@@ -88,7 +89,7 @@ class Mascotas(db.Model):
     password = db.Column(db.String(), unique=False, nullable=False, default=" ")
     raza = db.Column(db.String(), unique=False, nullable=False, default=" ")
     is_mix = db.Column(db.Boolean(), nullable=False, default=False)
-    birth_date = db.Column(db.DateTime(), unique=False, nullable=True)
+    birth_date = db.Column(db.Date(), unique=False, nullable=True)
     gender = db.Column(db.String(), unique=False, nullable=False, default=" ")
     is_Esterilizado = db.Column(db.Boolean(), nullable=False, default=False)
     foto_mascot = db.Column(db.String(), unique=False, nullable=True, default=" ")

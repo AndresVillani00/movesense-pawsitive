@@ -7,7 +7,7 @@ export const Navbar = () => {
     const { store, actions } = useContext(Context);
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light shadow-sm" style={{ background: "#1B365D" }}>
+        <nav className="navbar navbar-expand-lg navbar-light shadow-sm sticky-top" style={{ background: "#1B365D" }}>
             <div className="container">
                 {/* Logo */}
                 <Link to="/home" className="navbar-brand fw-bold" style={{ color: "#F5EFDE", fontSize: "1.5rem" }}>
@@ -30,7 +30,7 @@ export const Navbar = () => {
                 {/* Menú colapsable */}
                 <div className="collapse navbar-collapse" id="navbarNav" >
                     <ul className="navbar-nav mx-auto text-center">
-                        {["Home", "Mis Mascotas", "About Us"].map((item, index) => (
+                        {["Home", "Mis Mascotas", "Incidencias", "About Us"].map((item, index) => (
                             <li className="nav-item" key={index}>
                                 <Link className="nav-link mx-2 fw-medium" style={{ color:"#F5EFDE" }} to={`/${item.toLowerCase()}`}>
                                     {item}
@@ -39,8 +39,8 @@ export const Navbar = () => {
                         ))}
                     </ul>
 
-                    {/* Sección de usuario y carrito */}
-                    <div className="d-flex align-items-center">
+                    {/* Sección de usuario */}
+                    <div className="d-flex justify-content-center">
 
                         {/* Dropdown de usuario */}
                         {store.isLogged ? (

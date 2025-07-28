@@ -6,15 +6,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isVeterinario: false,
 			usuario: {},
 			incidenciaId: null,
-			incidencias: {},
-			mascota: {},
+			incidencia: {},
+			incidencias: [],
 			mascotas: [],
 			currentMascota: null,
+			fotoMascota: null,
+			fotoJsonIncidencia: null,
 			alert: { text: '', background: 'primary', visible: false },
 			message: null,
 		},
 		actions: {
 			setCurrentMascota: (item) => { setStore({ currentMascota: item }) },
+			setFotoMascota: (item) => { setStore({ fotoMascota: item }) },
+			setFotoJsonIncidencia: (item) => { setStore({ fotoJsonIncidencia: item }) },
 			getUserProfile: async () => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
@@ -55,10 +59,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getIncidencias: async () => {
 				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
-						headers: { "Content-Type": "application/json" }
+						headers: { 
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
+						 }
 					});
 					if (!response.ok) throw new Error("Error obteniendo incidencias");
 					const data = await response.json();
@@ -68,12 +78,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getMascotas: async () => {
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/users/mascotas`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
@@ -87,7 +101,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getMascotaById: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/api/users/mascotas/${id}`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
@@ -131,6 +145,29 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 				getActions().getMascotas()
+			},
+			postIncidencia: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'La Incidencia que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+
+				getActions().getIncidencias()
 			},
 			signup: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
@@ -183,12 +220,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ isVeterinario: true })
 				}
 				localStorage.setItem('token', datos.access_token)
+				getActions().getMascotas()
 			},
 			logout: () => {
 				setStore({
 					isLogged: false,
 					isVeterinario: false,
-					usuario: {}
+					usuario: {},
+					mascotas:[]
 				})
 				localStorage.removeItem('token')
 			},
