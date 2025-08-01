@@ -33,7 +33,7 @@ def postMascotas():
         if is_veterinario:
             response_body['message'] = f'El usuario es Veterinario'
             return response_body, 404
-        row = Mascotas(username=data.get('username'),
+        row = Mascotas(mascota_name_id=data.get('mascota_name_id'),
                     password=data.get('password'),
                     name_mascot=data.get('name_mascot'),
                     foto_mascot=data.get('foto_mascot'),
@@ -41,6 +41,8 @@ def postMascotas():
                     gender=data.get('gender'),
                     birth_date=data.get('birth_date'),
                     patologia=data.get('patologia'),
+                    is_mix=data.get('is_mix'),
+                    is_Esterilizado=data.get('is_Esterilizado'),
                     user_id=user_id)
         db.session.add(row)
         db.session.commit()
@@ -61,13 +63,15 @@ def mascota(id):
         return response_body, 200
     if request.method == 'PUT':
         data = request.json
-        row.username = data.get('username', row.username)
+        row.mascota_name_id = data.get('mascota_name_id', row.mascota_name_id)
         row.password = data.get('password', row.password)
+        row.name_mascot = data.get('name_mascot', row.name_mascot)
+        row.foto_mascot = data.get('foto_mascot', row.foto_mascot)
         row.raza = data.get('raza', row.raza)
-        row.mix_raza = data.get('mix_raza', row.mix_raza)
-        row.is_mix = data.get('is_mix', row.is_mix)
-        row.age = data.get('age', row.age)
         row.birth_date = data.get('birth_date', row.birth_date)
+        row.patologia = data.get('patologia', row.patologia)
+        row.is_mix = data.get('is_mix', row.is_mix)
+        row.is_Esterilizado = data.get('is_Esterilizado', row.is_Esterilizado)
         db.session.commit()
         response_body['message'] = f'Mascota con id: {id}. Actualizado'
         response_body["results"] = row.serialize()

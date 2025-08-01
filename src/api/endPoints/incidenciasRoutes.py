@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt
 from flask_cors import CORS
 from datetime import datetime, timezone
-from api.models import db, Incidencias
+from api.models import db, Incidencias, Mascotas
 
 
 incidencias_api = Blueprint('incidenciasApi', __name__)
@@ -27,7 +27,8 @@ def incidencias():
                      initial_date=data.get('initial_date'),
                      final_date=data.get('final_date'),
                      alert_status=data.get('alert_status'),
-                     ia_description=data.get('ia_description'))
+                     ia_description=data.get('ia_description'),
+                     mascota_incidencia_id=data.get('mascota_incidencia_id'))
         db.session.add(row)
         db.session.commit()
         response_body['message'] = f'Agregar nueva incidencia'
@@ -76,3 +77,20 @@ def buyers_orders(veterinarios_id):
         response_body['message'] = f'Incidencias del veterinario con id: {veterinarios_id}'
         response_body["results"] = row.serialize()
 
+
+@incidencias_api.route('/mascotas/<int:id>/incidencias', methods=['GET'])
+def mascotas_incidencias(id):
+    response_body = {}
+    mascota = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
+    if not mascota:
+        response_body['message'] = f'La mascota con id: {id} no existe'
+        return response_body, 404    
+    mascotas = db.session.execute(db.select(Incidencias).where(Incidencias.mascota_incidencia_id == id)).scalars()    
+    incidencias_list = [mascota.serialize() for mascota in mascotas]    
+    if not incidencias_list:
+        response_body['message'] = f'No hay incidencias para la mascota con id: {id}'
+        response_body['results'] = []
+        return response_body, 200
+    response_body['message'] = f'Incidencias de la mascota con id: {id}'
+    response_body['results'] = incidencias_list
+    return response_body, 200

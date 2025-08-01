@@ -17,8 +17,6 @@ class Users(db.Model):
     address = db.Column(db.String(), unique=False, nullable=True, default=" ")
     phone = db.Column(db.String(), unique=False, nullable=True, default=" ")
     is_veterinario = db.Column(db.Boolean(), nullable=False, default=False)
-    veterinario_id = db.Column(db.Integer, db.ForeignKey('veterinarios.id'))
-    veterinario_to = db.relationship('Veterinarios', foreign_keys=[veterinario_id], backref=db.backref('veterinarios_to'), lazy='select')
 
     def serialize(self):
         return {'id': self.id,
@@ -61,31 +59,12 @@ class Veterinarios(db.Model):
                 'phone_doctor': self.phone_doctor}
 
 
-class Incidencias(db.Model):
-    __tablename__ = 'incidencias'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(), unique=False, nullable=False, default=" ")
-    description = db.Column(db.Text(), unique=False, nullable=False, default=" ")
-    initial_date = db.Column(db.DateTime(), unique=False, nullable=False)
-    final_date = db.Column(db.DateTime(), unique=False, nullable=False)
-    ia_description = db.Column(db.Text(), unique=False, nullable=False, default=" ")
-    alert_status = db.Column(db.String(), unique=False, nullable=False, default=" ")
-    #alert_status = db.Column(db.Enum('Good', 'Bad', name='alert_status'), nullable=False)
-    
-    def serialize(self):
-        return {'id': self.id,
-                'title': self.title,
-                'description': self.description,
-                'initial_date': self.initial_date,
-                'final_date': self.final_date,
-                'ia_description': self.ia_description,
-                'alert_status': self.alert_status}
     
 
 class Mascotas(db.Model):
     __tablename__ = 'mascotas'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(), unique=True, nullable=False, default=" ")
+    mascota_name_id = db.Column(db.String(), unique=True, nullable=False, default=" ") # Username de la Mascota unico
     password = db.Column(db.String(), unique=False, nullable=False, default=" ")
     raza = db.Column(db.String(), unique=False, nullable=False, default=" ")
     is_mix = db.Column(db.Boolean(), nullable=False, default=False)
@@ -101,7 +80,7 @@ class Mascotas(db.Model):
     
     def serialize(self):
         return {'id': self.id,
-                'username': self.username,
+                'mascota_name_id': self.mascota_name_id,
                 'password': self.password,
                 'raza': self.raza,
                 'is_mix': self.is_mix,
@@ -111,6 +90,32 @@ class Mascotas(db.Model):
                 'foto_mascot': self.foto_mascot,
                 'name_mascot': self.name_mascot,
                 'patologia': self.patologia}
+
+
+class Incidencias(db.Model):
+    __tablename__ = 'incidencias'
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(), unique=False, nullable=False, default=" ")
+    description = db.Column(db.Text(), unique=False, nullable=False, default=" ")
+    initial_date = db.Column(db.DateTime(), unique=False, nullable=False)
+    final_date = db.Column(db.DateTime(), unique=False, nullable=False)
+    ia_description = db.Column(db.Text(), unique=False, nullable=False, default=" ")
+    alert_status = db.Column(db.String(), unique=False, nullable=False, default=" ")
+    json_incidencia =db.Column(db.JSON(), unique=False, nullable=True, default=" ")
+    mascota_incidencia_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
+    mascota_incidencia_to = db.relationship('Mascotas', foreign_keys=[mascota_incidencia_id], backref=db.backref('mascota_incidencia_to'), lazy='select')
+    #alert_status = db.Column(db.Enum('Good', 'Bad', name='alert_status'), nullable=False)
+    
+    def serialize(self):
+        return {'id': self.id,
+                'title': self.title,
+                'description': self.description,
+                'initial_date': self.initial_date,
+                'final_date': self.final_date,
+                'ia_description': self.ia_description,
+                'alert_status': self.alert_status,
+                'json_incidencia': self.json_incidencia,
+                'mascota_incidencia_id':self.mascota_incidencia_id}
         
 
 class Metrica(db.Model):
@@ -118,74 +123,69 @@ class Metrica(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     valor_diario = db.Column(db.String(), unique=False, nullable=True, default="")
     valor_mensual = db.Column(db.String(), unique=False, nullable=True, default="")
+    note = db.Column(db.Text(), unique=False, nullable=True, default="")
+    ts_init = db.Column(db.DateTime(), unique=False, nullable=True, default="")
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'))
     sensor_to = db.relationship('Sensor', foreign_keys=[sensor_id], backref=db.backref('sensor_to'), lazy='select')
-    details_id = db.Column(db.Integer, db.ForeignKey('incidencias.id'))
-    details_to = db.relationship('Incidencias', foreign_keys=[details_id], backref=db.backref('details_to'), lazy='select')
-    mascotas_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
-    mascotas_to = db.relationship('Mascotas', foreign_keys=[mascotas_id], backref=db.backref('mascotas_to'), lazy='select')
-    tipo_metrica_id = db.Column(db.Integer, db.ForeignKey('tipo_metrica.id'))
+    mascota_metrica_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
+    mascota_metrica_to = db.relationship('Mascotas', foreign_keys=[mascota_metrica_id], backref=db.backref('mascota_metrica_to'), lazy='select')
+    tipo_metrica_id = db.Column(db.String, db.ForeignKey('tipo_metrica.metrica_name'))
     tipo_metrica_to = db.relationship('TipoMetrica', foreign_keys=[tipo_metrica_id], backref=db.backref('tipo_metrica_to'), lazy='select')
-    metrica_asin_id = db.Column(db.Integer, db.ForeignKey('metricas_asincronas.id'))
-    metrica_asin_to = db.relationship('MetricasAsincronas', foreign_keys=[metrica_asin_id], backref=db.backref('metrica_asin_to'), lazy='select')
-    comida_id = db.Column(db.Integer, db.ForeignKey('comida.id'))
-    comida_to = db.relationship('Comida', foreign_keys=[comida_id], backref=db.backref('comida_to'), lazy='select')
     
     def serialize(self):
         return {
             'id': self.id,
             'valor_diario': self.valor_diario,
             'valor_mensual': self.valor_mensual,
-            'details_id': self.details_id,
-            'mascotas_id': self.mascotas_id,
-            'tipo_metrica_id': self.tipo_metrica_id,
-            'metrica_asin_id': self.metrica_asin_id,
-            'comida_id': self.comida_id}
-
-
-class DetailsMetrica(db.Model):
-    __tablename__ = 'details_metrica'
-    id = db.Column(db.Integer, primary_key=True)
-    ts_metrica = db.Column(db.DateTime(), unique=False, nullable=True)
-    valor_metrica = db.Column(db.String(), unique=False, nullable=True, default="")
-    mascota_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
-    mascota_to = db.relationship('Mascotas', foreign_keys=[mascota_id], backref=db.backref('mascota_to'), lazy='select')
-    tipo_metricas_id = db.Column(db.Integer, db.ForeignKey('tipo_metrica.id'))
-    tipo_metricas_to = db.relationship('TipoMetrica', foreign_keys=[tipo_metricas_id], backref=db.backref('tipo_metricas_to'), lazy='select')
-    
-    def serialize(self):
-        return {
-            'id': self.id,
-            'ts_metrica': self.ts_metrica,
-            'valor': self.valor,
-            'mascota_id': self.mascota_id,
+            'note': self.note,
+            'ts_init': self.ts_init,
+            'mascota_metrica_id': self.mascota_metrica_id,
             'tipo_metrica_id': self.tipo_metrica_id}
     
 
 class TipoMetrica(db.Model):
     __tablename__ = 'tipo_metrica'
     id = db.Column(db.Integer, primary_key=True)
-    metrica_name = db.Column(db.String(), unique=False, nullable=True, default="")
-    
+    metrica_name = db.Column(db.String(), unique=True, nullable=False, default="")
+
     def serialize(self):
         return {
             'id': self.id,
             'metrica_name': self.metrica_name}
-    
 
-class MetricasAsincronas(db.Model):
-    __tablename__ = 'metricas_asincronas'
+
+class Analysis(db.Model):
+    __tablename__ = 'analysis'
     id = db.Column(db.Integer, primary_key=True)
-    foto = db.Column(db.String(), unique=False, nullable=True, default="")
-    interpretacion_IA = db.Column(db.String(), unique=False, nullable=True, default="")
-    ts_metrica_asin = db.Column(db.DateTime(), unique=False, nullable=True)
-    
+    blood = db.Column(db.String(), unique=False, nullable=True, default="")
+    bilirubin = db.Column(db.String(), unique=False, nullable=True, default="")
+    urobiling = db.Column(db.String(), unique=False, nullable=True, default="")
+    ketones = db.Column(db.String(), unique=False, nullable=True, default="")
+    glucose = db.Column(db.String(), unique=False, nullable=True, default="")
+    protein = db.Column(db.String(), unique=False, nullable=True, default="")
+    nitrite = db.Column(db.String(), unique=False, nullable=True, default="")
+    leukocytes = db.Column(db.String(), unique=False, nullable=True, default="")
+    ph = db.Column(db.String(), unique=False, nullable=True, default="")
+    json_analysis = db.Column(db.JSON(), unique=False, nullable=True, default=" ")
+    ts_init = db.Column(db.DateTime(), unique=False, nullable=True, default="")
+    mascota_analysis_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
+    mascota_analysis_to = db.relationship('Mascotas', foreign_keys=[mascota_analysis_id], backref=db.backref('mascota_analysis_to'), lazy='select')
+
     def serialize(self):
         return {
             'id': self.id,
-            'foto': self.foto,
-            'interpretacion_IA': self.interpretacion_IA,
-            'ts_metrica_asin': self.ts_metrica_asin}
+            'blood': self.blood,
+            'bilirubin': self.bilirubin,
+            'urobiling': self.urobiling,
+            'ketones': self.ketones,
+            'glucose': self.glucose,
+            'protein': self.protein,
+            'nitrite': self.nitrite,
+            'leukocytes': self.leukocytes,
+            'ph': self.ph,
+            'json_analysis': self.json_analysis,
+            'ts_init': self.ts_init,
+            'mascota_analysis_id':self.mascota_analysis_id}
 
 
 class Comida(db.Model):
@@ -197,7 +197,9 @@ class Comida(db.Model):
     proteina = db.Column(db.String(), unique=False, nullable=True, default="")
     fibra = db.Column(db.String(), unique=False, nullable=True, default="")
     food_in_a_day = db.Column(db.String(), unique=False, nullable=True, default="")
-    
+    mascota_comida_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
+    mascota_comida_to = db.relationship('Mascotas', foreign_keys=[mascota_comida_id], backref=db.backref('mascota_comida_to'), lazy='select')
+
     def serialize(self):
         return {
             'id': self.id,

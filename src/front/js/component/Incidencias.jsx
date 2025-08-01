@@ -15,7 +15,7 @@ export const Incidencias = () => {
     const bsModal = useRef(null);
     
     const checkform = ['Vomit', 'Diarrhea', 'Skin Issue', 'Fight', 'Inside Home', 'Outside Home', 'Others']
-    
+
     useEffect(() => {
         // Cargar modal de Bootstrap solo una vez
         if (modalRef.current) {
@@ -31,7 +31,11 @@ export const Incidencias = () => {
             showModal ? bsModal.current.show() : bsModal.current.hide();
         }
     }, [showModal]);
-    
+
+    useEffect(() => {
+        actions.getIncidencia(store.idParam);
+    }, [])
+
     const handleCheckboxChange = (value) => {
         setSelected((prev) => (prev === value ? '' : value));
     };
@@ -61,7 +65,8 @@ export const Incidencias = () => {
             initial_date: startDate,
             final_date: endDate,
             description,
-            alertStatus: status
+            alertStatus: status,
+            mascota_incidencia_id: store.idParam
         }
     
         if (!selected) {
@@ -70,7 +75,7 @@ export const Incidencias = () => {
         }
     
         store.alert = { text: "", background: "primary", visible: false };
-    
+
         await actions.postIncidencia(dataToSend);
         setShowModal(false);
     };
@@ -140,13 +145,13 @@ export const Incidencias = () => {
                                         <label className="form-label fw-semibold">Description (Optional)</label>
                                         <textarea className="form-control" id="descriptionID" rows="3" value={description} onChange={(event) => setDescription(event.target.value)}></textarea>
                                     </div>
-                                    <div className="form-check form-switch">
+                                    <div className="form-check form-switch mb-3">
                                         <input className="form-check-input" type="checkbox" id="checkNativeSwitch" onChange={(event) => setStatus(event.target.checked ? 'Good' : 'Bad')} />
                                         <label className="form-check-label" htmlFor="checkNativeSwitch">
                                             This is a positive incident
                                         </label>
                                     </div>
-                                    <div className="modal-footer row">
+                                    <div className="row">
                                         <div className="d-flex justify-content-between">
                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
                                                 onClick={() => setShowModal(false)} style={{

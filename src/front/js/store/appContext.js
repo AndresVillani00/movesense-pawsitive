@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import getState from "./flux.js";
+import { useParams } from "react-router-dom";
 
 // Don't change, here is where we initialize our context, by default it's just going to be null.
 export const Context = React.createContext(null);
@@ -30,8 +31,6 @@ const injectContext = PassedComponent => {
 		useEffect(() => {
 			state.actions.getUserProfile();
 			state.actions.getMascotas();
-			state.actions.getIncidencias();
-		
 		}, []);
 
 		// The initial value for the context is not null anymore, but the current state of this component,

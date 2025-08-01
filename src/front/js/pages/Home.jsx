@@ -8,7 +8,7 @@ export const Home = () => {
   const navigate = useNavigate();
 
   const [activeKey, setActiveKey] = useState('existing');
-  const [username, setUsername] = useState('');
+  const [mascota_name_id, setMascotaId] = useState('');
   const [password, setPassword] = useState('');
   const [name_mascot, setNameMascot] = useState('');
   const [raza, setRaza] = useState('');
@@ -22,14 +22,16 @@ export const Home = () => {
     event.preventDefault();
         
     const dataToSend = {
-      username,
+      mascota_name_id,
       password,
       name_mascot,
       foto_mascot: store.fotoMascota.foto,
       raza,
       birth_date,
       gender,
-      patologia
+      patologia,
+      is_mix: isMix,
+      is_Esterilizado: isEsterilizado
     }
 
     await actions.postMascota(dataToSend);
@@ -49,8 +51,15 @@ export const Home = () => {
     reader.readAsDataURL(file);
   };
 
-  const handleDetails = (mascota) => {
+  const handleDetails = async (event, mascota) => {
+    event.preventDefault();
+
     actions.setCurrentMascota(mascota);
+    actions.setIdParam(mascota.id)
+    await actions.getAnalysis(mascota.id);
+    await actions.getMetrica(mascota.id);
+    await actions.getIncidencia(mascota.id);
+    
     navigate(`/mascota-profile/${mascota.id}`);
   };
 
@@ -90,7 +99,7 @@ export const Home = () => {
                         <h5 className="card-title" style={{ color: "#1E1E50" }}>
                           {item.name_mascot}
                         </h5>
-                        <button className="btn fw-bold" type="button" onClick={() => handleDetails(item)}
+                        <button className="btn fw-bold" type="button" onClick={(event) => handleDetails(event, item)}
                           style={{ color: "white", 
                             background:"#ff6100", 
                             border: "#ff6100",
@@ -121,7 +130,7 @@ export const Home = () => {
                   </div>
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">Mascot Username</label>
-                    <input type="text" name="username" className="form-control" value={username} onChange={(event) => setUsername(event.target.value)} />
+                    <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">Mascot Password</label>
@@ -152,11 +161,11 @@ export const Home = () => {
                     <input type="text" name="raza" className="form-control" value={raza} onChange={(event) => setRaza(event.target.value)} required />
                   </div>
                   <div className="col-md-6 mx-3 mb-3 form-check">
-                    <input type="checkbox" className="form-check-input" id="is_mix"/>
+                    <input type="checkbox" className="form-check-input" id="is_mix" onChange={(event) => setMix(event.target.checked)}/>
                     <label className="form-check-label" htmlFor="is_mix">Your mascot is mix ?</label>
                   </div>
                   <div className="col-md-6 mx-3 mb-3 form-check">
-                    <input type="checkbox" className="form-check-input" id="is_esterilizado"/>
+                    <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setEsterilizado(event.target.checked)}/>
                     <label className="form-check-label" htmlFor="is_esterilizado">Your mascot is Esterilizado ?</label>
                   </div>
                   {/* Botones de acción */}

@@ -1,24 +1,30 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			idParam: null,
 			isLogged: false,
 			isNuevaMascota: false,
 			isVeterinario: false,
 			usuario: {},
+			analysis: [],
+			metrica: [],
 			incidenciaId: null,
 			incidencia: {},
 			incidencias: [],
 			mascotas: [],
 			currentMascota: null,
 			fotoMascota: null,
+			fotoJsonAnalysis: null,
 			fotoJsonIncidencia: null,
 			alert: { text: '', background: 'primary', visible: false },
 			message: null,
 		},
 		actions: {
+			setIdParam: (item) => { setStore({ idParam: item }) },
 			setCurrentMascota: (item) => { setStore({ currentMascota: item }) },
 			setFotoMascota: (item) => { setStore({ fotoMascota: item }) },
 			setFotoJsonIncidencia: (item) => { setStore({ fotoJsonIncidencia: item }) },
+			setFotoJsonAnalysis: (item) => { setStore({ fotoJsonAnalysis: item }) },
 			getUserProfile: async () => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
@@ -56,26 +62,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				const data = await response.json();
 				getActions().getMascotas(data.user_id);
-			},
-			getIncidencias: async () => {
-				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
-				const token = localStorage.getItem("token");
-				if (!token) return;
-
-				try {
-					const response = await fetch(uri, {
-						method: "GET",
-						headers: { 
-							"Content-Type": "application/json",
-							Authorization: `Bearer ${token}`
-						 }
-					});
-					if (!response.ok) throw new Error("Error obteniendo incidencias");
-					const data = await response.json();
-					setStore({ incidencias: data.results });
-				} catch (error) {
-					console.log("Error en getIncidencias:", error);
-				}
 			},
 			getMascotas: async () => {
 				const uri = `${process.env.BACKEND_URL}/mascotasApi/users/mascotas`;
@@ -146,6 +132,112 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				getActions().getMascotas()
 			},
+			getAnalysis: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/analysisApi/mascotas/${id}/analysis`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de analysis");
+						return;
+					}
+					const data = await response.json();
+					setStore({ analysis: data.results });
+				} catch (error) {
+					console.log("Error en getAnalysis:", error);
+				}
+			},
+			postAnalysis: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
+				const uri = `${process.env.BACKEND_URL}/analysisApi/analysis`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'La Analysis que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+
+				getActions().getAnalysis(dataToSend.mascota_analysis_id);
+			},
+			getMetrica: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/metricasApi/mascotas/${id}/metricas`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de metricas");
+						return;
+					}
+					const data = await response.json();
+					setStore({ metrica: data.results });
+				} catch (error) {
+					console.log("Error en getMetrica:", error);
+				}
+			},
+			postMetrica: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
+				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'La Metrica que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+
+				getActions().getMetrica(dataToSend.mascota_metrica_id);
+			},
+			getIncidencia: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/mascotas/${id}/incidencias`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de incidencias");
+						return;
+					}
+					const data = await response.json();
+					setStore({ incidencias: data.results });
+				} catch (error) {
+					console.log("Error en getIncidencias:", error);
+				}
+			},
 			postIncidencia: async (dataToSend) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
@@ -167,7 +259,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 
-				getActions().getIncidencias()
+				getActions().getIncidencia(dataToSend.mascota_incidencia_id);
 			},
 			signup: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
