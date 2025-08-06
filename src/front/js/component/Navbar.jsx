@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext.js";
 import { Dropdown } from "react-bootstrap";
@@ -11,7 +11,7 @@ export const Navbar = () => {
             <div className="container">
                 {/* Logo */}
                 <Link to="/home" className="navbar-brand fw-bold" style={{ color: "#F5EFDE", fontSize: "1.5rem" }}>
-                    Pawsitive
+                    <img src="LogoPawsitive.png" className="m-auto" width="70" height="70"></img>
                 </Link>
 
                 {/* Botón de menú en móviles */}
@@ -46,7 +46,6 @@ export const Navbar = () => {
                         {store.isLogged ? (
                             <Dropdown className="ms-3">
                                 <Dropdown.Toggle variant="light" className="d-flex align-items-center border-0">
-                                    <img src={store.usuario.image_url == null ? "https://i.imgur.com/24t1SYU.jpeg" : store.usuario.image_url} alt="Profile" className="rounded-circle m-1" width="30" height="30" />
                                     <span className="fw-bold text-dark ms-2">{store.usuario.username}</span>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu align="end">

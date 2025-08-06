@@ -35,36 +35,19 @@ def incidencias():
         response_body['results'] = row.serialize()
         return response_body, 201
 
-@incidencias_api.route('/incidencias/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-def incidencia(id):
-         response_body = {}
-         row = db.session.execute(db.select(Incidencias).where(Incidencias.id == id)).scalar()
-         if not row:
-            response_body['message'] = f'La incidencia con el id: {id} no existe en nuestros registros'
-            return response_body, 400
-         
-         if request.method == 'GET':
-            response_body['message'] = f'Response from the {request.method} para el id {id}'
-            response_body['results'] = row.serialize()    
-            return response_body, 200
-         
-         if request.method == 'PUT':
-            data = request.json
-            row.title = data['title']
-            row.description = data['description']
-            row.final_date = data['final_date']
-            row.ia_description = data['ia_description']
-            db.session.commit()
-            response_body['message'] = f'La incidencia con el id {id} se ha actualizado correctamente.'
-            response_body['results'] = row.serialize() 
-            return response_body, 201
-         
-         if request.method == 'DELETE':
-            db.session.delete(row)
-            db.session.commit()
-            response_body['message'] = f'La incidencia para el id {id} se ha eliminado correctamente.'
-            response_body['results'] = row.serialize() 
-            return response_body, 200 
+@incidencias_api.route('/incidencias/<int:id>', methods=['DELETE'])
+def delete_incidencias(id):
+    response_body = {}
+    row = db.session.execute(db.select(Incidencias).where(Incidencias.id == id)).scalar()
+    if not row:
+       response_body['message'] = f'La incidencia con el id: {id} no existe en nuestros registros'
+       return response_body, 400
+    if request.method == 'DELETE':
+       db.session.delete(row)
+       db.session.commit()
+       response_body['message'] = f'La incidencia con el id {id} se ha eliminado correctamente.'
+       response_body['results'] = row.serialize() 
+       return response_body, 200  
 
 # Para ver las ordenes del comprador
 @incidencias_api.route('/veterinarios/<int:veterinarios_id>/incidencia', methods=['GET'])

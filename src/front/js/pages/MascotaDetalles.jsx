@@ -18,10 +18,10 @@ export const MascotaDetalles = () => {
     };
 
     const analysis = store.analysis != null ? store.analysis.filter(analysis => analysis.mascota_analysis_id === store.idParam) : null;
-    const metricasActivity = store.metrica != null ? store.metrica.filter(metricas => metricas.tipo_metrica_id === 'activity' && metricas.mascota_metrica_id === store.idParam) : null;
-    const metricasWeight = store.metrica != null ? store.metrica.filter(metricas => metricas.tipo_metrica_id === 'weight' && metricas.mascota_metrica_id === store.idParam) : null;
-    const metricasTemperature = store.metrica != null ? store.metrica.filter(metricas => metricas.tipo_metrica_id === 'temperature' && metricas.mascota_metrica_id === store.idParam) : null;
-    const metricasHeartRate = store.metrica != null ? store.metrica.filter(metricas => metricas.tipo_metrica_id === 'heart_rate' && metricas.mascota_metrica_id === store.idParam) : null;
+    const metricasActivity = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'activity' && metricas.mascota_metrica_id === store.idParam) : null;
+    const metricasWeight = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'weight' && metricas.mascota_metrica_id === store.idParam) : null;
+    const metricasTemperature = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'temperature' && metricas.mascota_metrica_id === store.idParam) : null;
+    const metricasHeartRate = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'heart_rate' && metricas.mascota_metrica_id === store.idParam) : null;
        
     const formatDateTime = (value) => {
         if (!value) return null;
@@ -34,6 +34,12 @@ export const MascotaDetalles = () => {
         const min = String(date.getMinutes()).padStart(2, '0');
     
         return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    }
+    
+    const handleShareDelete = async (event, userId) => {
+        event.preventDefault();
+
+        await actions.deleteShareMascot(store.idParam, userId)
     }
 
     return (
@@ -68,7 +74,7 @@ export const MascotaDetalles = () => {
                                         <div className="card-body">
                                             Last analysis at: 
                                             <br></br>
-                                            {analysis[0] != null ? formatDateTime(analysis[0].ts_init) : ''}
+                                            {analysis[0] != null ? (analysis.length > 0 ? formatDateTime(analysis[analysis.length - 1].ts_init) : formatDateTime(analysis[0].ts_init)) : ''}
                                         </div>
                                     </div>
                                 </button>
@@ -78,7 +84,7 @@ export const MascotaDetalles = () => {
                                             Activity<i className="fa-solid fa-chart-line p-1"></i>
                                         </div>
                                         <div className="card-body">
-                                            {metricasActivity[0] != null ? metricasActivity[0].valor_diario + ' min' : ''}
+                                            {metricasActivity[0] != null ? (metricasActivity.length > 0 ? metricasActivity[metricasActivity.length - 1].valor_diario + ' min' : metricasActivity[0].valor_diario + ' min') : ''}
                                         </div>
                                     </div>
                                 </button>
@@ -88,7 +94,7 @@ export const MascotaDetalles = () => {
                                             Weight<i className="fa-solid fa-weight-hanging"></i>
                                         </div>
                                         <div className="card-body">
-                                            {metricasWeight[0] != null ? metricasWeight[0].valor_diario + ' kg' : ''}
+                                            {metricasWeight[0] != null ? (metricasWeight.length > 0 ? metricasWeight[metricasWeight.length - 1].valor_diario + ' kg' : metricasWeight[0].valor_diario + ' kg') : ''}
                                         </div>
                                     </div>
                                 </button>
@@ -98,7 +104,7 @@ export const MascotaDetalles = () => {
                                             Temperature<i className="fa-solid fa-temperature-full p-1"></i>
                                         </div>
                                         <div className="card-body">
-                                            {metricasTemperature[0] != null ? metricasTemperature[0].valor_diario + ' ºC' : ''}
+                                            {metricasTemperature[0] != null ? (metricasTemperature.length > 0 ? metricasTemperature[metricasTemperature.length - 1].valor_diario + ' ºC' : metricasTemperature[0].valor_diario + ' ºC') : ''}
                                         </div>
                                     </div>
                                 </button>
@@ -108,7 +114,7 @@ export const MascotaDetalles = () => {
                                             Heart Rate<i className="fa-solid fa-heart p-1" ></i>
                                         </div>
                                         <div className="card-body">
-                                            {metricasHeartRate[0] != null ? metricasHeartRate[0].valor_diario + ' bpm' : ''}
+                                            {metricasHeartRate[0] != null ? (metricasHeartRate.length > 0 ? metricasHeartRate[metricasHeartRate.length - 1].valor_diario + ' bpm' : metricasHeartRate[0].valor_diario + ' bpm') : ''}
                                         </div>
                                     </div>
                                 </button>
@@ -126,12 +132,26 @@ export const MascotaDetalles = () => {
                         </div>
                         <div className="col-md-2">
                             <div className="card border-0" style={{ borderRadius: "12px" }}>
-                                <div className="card-header" style={{ background: "#ffffffff" }}>
-                                    List of Profiles
-                                </div>
-                                <div className="card-body p-5">
-
-                                </div>
+                                <table className="table table-striped" >
+                                    <thead style={{ color: "secondary" }}>
+                                        <tr className="text-center">
+                                            <th scope="col-md-4">Profiles Sharing</th>
+                                            <th scope="col-md-4"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {store.mascotUsers.map((item, index) => (
+                                            <tr key={index} className="text-center">
+                                                <td>{item != null ? item.username : '-'}</td>
+                                                <td>
+                                                    <button type="button" className="btn border-0 bg-transparent p-0" onClick={(event) => handleShareDelete(event, item.id)}>
+                                                        <i className="fa-solid fa-trash-can text-danger"></i>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

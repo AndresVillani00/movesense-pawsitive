@@ -41,38 +41,19 @@ def analysis():
         return response_body, 201  
     
 
-@analysis_api.route('/analysis/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-def analysisById(id):
+@analysis_api.route('/analysis/<int:id>', methods=['DELETE'])
+def delete_analysis(id):
     response_body = {}
     row = db.session.execute(db.select(Analysis).where(Analysis.id == id)).scalar()
     if not row:
-        response_body['message'] = f'El Analysis de id: {id}, no existe'
-    if request.method == 'GET':
-        response_body['message'] = f'Analysis con id: {id}'
-        response_body["results"] = row.serialize()
-        return response_body, 200
-    if request.method == 'PUT':
-        data = request.json
-        row.blood = data.get('blood', row.blood)
-        row.bilirubin = data.get('bilirubin', row.bilirubin)
-        row.urobiling = data.get('urobiling', row.urobiling)
-        row.ketones = data.get('ketones', row.ketones)
-        row.glucose = data.get('glucose', row.glucose)
-        row.protein = data.get('protein', row.protein)
-        row.nitrite = data.get('nitrite', row.nitrite)
-        row.leukocytes = data.get('leukocytes', row.leukocytes)
-        row.ph = data.get('ph', row.ph)
-        row.json_analysis = data.get('json_analysis', row.json_analysis)
-        row.ts_init = data.get('ts_init', row.ts_init)
-        db.session.commit()
-        response_body['message'] = f'Analysis con id: {id}. Actualizado'
-        response_body["results"] = row.serialize()
-        return response_body, 200
+       response_body['message'] = f'El Analysis con el id: {id} no existe en nuestros registros'
+       return response_body, 400
     if request.method == 'DELETE':
-        db.session.delete(row)
-        db.session.commit()
-        response_body['message'] = f'Analysis con id: {id}. Eliminado'
-        return response_body, 200
+       db.session.delete(row)
+       db.session.commit()
+       response_body['message'] = f'El analysis con el id {id} se ha eliminado correctamente.'
+       response_body['results'] = row.serialize() 
+       return response_body, 200  
 
 
 @analysis_api.route('/mascotas/<int:id>/analysis', methods=['GET'])

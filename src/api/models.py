@@ -17,6 +17,8 @@ class Users(db.Model):
     address = db.Column(db.String(), unique=False, nullable=True, default=" ")
     phone = db.Column(db.String(), unique=False, nullable=True, default=" ")
     is_veterinario = db.Column(db.Boolean(), nullable=False, default=False)
+    mascotas = db.relationship('Mascotas', secondary='users_mascotas', back_populates='usuarios', lazy='subquery') # Relacion 1 --> n
+    mascotas_registradas = db.relationship('Mascotas', back_populates='user_register', lazy='select') # Relacion n --> n
 
     def serialize(self):
         return {'id': self.id,
@@ -28,7 +30,9 @@ class Users(db.Model):
                 'country': self.country,
                 'address': self.address,
                 'phone': self.phone,
-                'is_veterinario': self.is_veterinario}
+                'is_veterinario': self.is_veterinario,
+                'mascotas': [m.serialize_basic() for m in self.mascotas],
+                'mascotas_registradas': [m.serialize_basic() for m in self.mascotas_registradas]}
 
 
 class Veterinarios(db.Model):
@@ -41,7 +45,6 @@ class Veterinarios(db.Model):
     name_doctor = db.Column(db.String(), unique=False, nullable=True, default=" ")
     last_name_doctor = db.Column(db.String(), unique=False, nullable=True, default=" ")
     email_doctor = db.Column(db.String(), unique=True, nullable=True, default=" ")
-    address_doctor = db.Column(db.String(), unique=False, nullable=True, default=" ")
     phone_doctor = db.Column(db.String(), unique=False, nullable=True, default=" ")
     incidencias_id = db.Column(db.Integer, db.ForeignKey('incidencias.id'))
     incidencias_to = db.relationship('Incidencias', foreign_keys=[incidencias_id], backref=db.backref('incidencias_to'), lazy='select')
@@ -55,11 +58,8 @@ class Veterinarios(db.Model):
                 'name_doctor': self.name_doctor,
                 'last_name_doctor': self.last_name_doctor,
                 'email_doctor': self.email_doctor,
-                'address_doctor': self.address_doctor,
                 'phone_doctor': self.phone_doctor}
 
-
-    
 
 class Mascotas(db.Model):
     __tablename__ = 'mascotas'
@@ -75,9 +75,9 @@ class Mascotas(db.Model):
     name_mascot = db.Column(db.String(), unique=False, nullable=False, default=" ")
     patologia = db.Column(db.String(), unique=False, nullable=True, default=" ")
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user_to = db.relationship('Users', foreign_keys=[user_id], backref=db.backref('user_to'), lazy='select')
-
-    
+    user_register = db.relationship('Users', back_populates='mascotas_registradas', lazy='select')
+    usuarios = db.relationship('Users', secondary='users_mascotas', back_populates='mascotas', lazy='subquery')
+   
     def serialize(self):
         return {'id': self.id,
                 'mascota_name_id': self.mascota_name_id,
@@ -89,7 +89,30 @@ class Mascotas(db.Model):
                 'is_Esterilizado': self.is_Esterilizado,
                 'foto_mascot': self.foto_mascot,
                 'name_mascot': self.name_mascot,
-                'patologia': self.patologia}
+                'patologia': self.patologia,
+                'user_id': self.user_id,
+                'usuarios': [u.id for u in self.usuarios]}
+    
+    def serialize_basic(self):
+        return {
+            'id': self.id,
+            'name_mascot': self.name_mascot,
+            'mascota_name_id': self.mascota_name_id
+        }
+    
+
+class Users_Mascotas(db.Model):
+    __tablename__ = 'users_mascotas'
+    id = db.Column(db.Integer, primary_key=True)
+    usuario_mascota_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    usuario_mascota_to = db.relationship('Users', foreign_keys=[usuario_mascota_id], backref=db.backref('usuario_mascota_to'), lazy='select')
+    mascota_usuario_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
+    mascota_usuario_to = db.relationship('Mascotas', foreign_keys=[mascota_usuario_id], backref=db.backref('mascota_usuario_to'), lazy='select')
+
+    def serialize(self):
+        return {'id': self.id,
+                'usuario_mascota_id': self.usuario_mascota_id,
+                'mascota_usuario_id': self.mascota_usuario_id} 
 
 
 class Incidencias(db.Model):

@@ -35,38 +35,19 @@ def metricas():
         return response_body, 200 
     
 
-@metricas_api.route('/metricas/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-def metricas_mascota(id):
-         response_body = {}
-         row = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
-         if not row:
-            response_body['message'] = f'La mascota con el id: {id} no existe en nuestros registros'
-            return response_body, 400
-         if request.method == 'GET':
-            response_body['message'] = f'Mascota para el id {id}'
-            response_body['results'] = row.serialize()    
-            return response_body, 200
-         if request.method == 'POST':
-            data = request.json
-            db.session.add(row)
-            db.session.commit()
-            response_body['message'] = f'Agregar nuevo detalle de metrica'
-            response_body['results'] = row.serialize()
-            return response_body, 201
-         if request.method == 'PUT':
-            data = request.json
-            row.ts_metrica = data['ts_metrica']
-            row.valor = data['valor']
-            db.session.commit()
-            response_body['message'] = f'El detalle de la metrica con el id {id} se ha actualizado correctamente.'
-            response_body['results'] = row.serialize() 
-            return response_body, 201
-         if request.method == 'DELETE':
-            db.session.delete(row)
-            db.session.commit()
-            response_body['message'] = f'El detalle de la metrica con el id {id} se ha eliminado correctamente.'
-            response_body['results'] = row.serialize() 
-            return response_body, 200 
+@metricas_api.route('/metricas/<int:id>', methods=['DELETE'])
+def delete_metricas(id):
+    response_body = {}
+    row = db.session.execute(db.select(Metrica).where(Metrica.id == id)).scalar()
+    if not row:
+        response_body['message'] = f'La metrica con el id: {id} no existe en nuestros registros'
+        return response_body, 400
+    if request.method == 'DELETE':
+        db.session.delete(row)
+        db.session.commit()
+        response_body['message'] = f'El detalle de la metrica con el id {id} se ha eliminado correctamente.'
+        response_body['results'] = row.serialize() 
+        return response_body, 200 
          
 
 @metricas_api.route('/mascotas/<int:id>/metricas', methods=['GET'])

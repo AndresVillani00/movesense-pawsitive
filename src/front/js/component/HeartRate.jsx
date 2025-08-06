@@ -6,12 +6,15 @@ export const HeartRate = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [date, setDate] = useState('');
+    const [itemCheck, setItemCheck] = useState([]);
 
     const [value, setValue] = useState('');
     const [note, setNote] = useState('');
     
     const modalRef = useRef(null);
     const bsModal = useRef(null);
+    
+    const metricasHeartRate = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'heart_rate' && metricas.mascota_metrica_id === store.idParam) : null;
     
     useEffect(() => {
         // Cargar modal de Bootstrap solo una vez
@@ -32,6 +35,14 @@ export const HeartRate = () => {
     useEffect(() => {
         actions.getMetrica(store.idParam);
     }, [])
+
+    const toggleChecks = (id) => {
+        if (itemCheck.includes(id)) {
+            setItemCheck(itemCheck.filter((sid) => sid !== id));
+        } else {
+            setItemCheck([...itemCheck, id]);
+        }
+    };
     
     const formatDateTime = (value) => {
         if (!value) return null;
@@ -63,15 +74,26 @@ export const HeartRate = () => {
         setShowModal(false);
     };
 
-    const metricasHeartRate = store.metrica != null ? store.metrica.filter(metricas => metricas.tipo_metrica_id === 'heart_rate' && metricas.mascota_metrica_id === store.idParam) : null;
+    const handleDelete = async (event) => {
+        event.preventDefault();
+
+        for(var i = 0; i < itemCheck.length; i++){
+            actions.deleteMetrica(itemCheck[i]);
+        }
+
+        setItemCheck([]); // Limpiar selección
+    };
 
     return (
         <section className="col-md-12 p-5">
             <h3>Weight History</h3>
             <br></br>
             <div className="card p-2 border-0" style={{ borderRadius: "12px" }}>
-                <div className="text-end p-2">
-                    <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                <div className="d-flex justify-content-end p-2">
+                    <div className="mx-3">
+                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                    </div>
+                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Delete</button>
                 </div>
                 <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered">
@@ -129,7 +151,13 @@ export const HeartRate = () => {
                     <tbody>
                         {metricasHeartRate.map((item, index) => (
                             <tr key={index} className="text-center">
-                                <td></td>
+                                <td>
+                                    <input
+                                    type="checkbox"
+                                    checked={itemCheck.includes(item.id)}
+                                    onChange={() => toggleChecks(item.id)}
+                                    />
+                                </td>
                                 <td>{item.ts_init != null ? formatDateTime(item.ts_init) : '-'}</td>
                                 <td>{item.valor_diario != null ? item.valor_diario : '-'}</td>
                                 <td>{item.note != null ? item.note : '-'}</td>

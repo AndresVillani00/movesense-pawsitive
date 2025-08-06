@@ -23,6 +23,7 @@ export const SignUpVets = () => {
         }
 
         await actions.signup(dataToSend);
+        actions.setIsVeterinario(true);
 
         if (store.isLogged && store.isVeterinario) {
             store.alert = { text: "", background: "primary", visible: false };

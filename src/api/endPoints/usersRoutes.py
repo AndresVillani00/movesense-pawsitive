@@ -47,7 +47,6 @@ def users():
                                             name_doctor = '',
                                             last_name_doctor = '',
                                             email_doctor = '',
-                                            address_doctor = '',
                                             phone_doctor = '')
             db.session.add(rowveterinario)
             db.session.commit()
@@ -62,19 +61,17 @@ def users():
         return response_body, 200  
 
 
-@users_api.route('/users/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-def user(id):
+@users_api.route('/users', methods=['PUT'])
+@jwt_required()
+def user():
     response_body = {}
-    row = db.session.execute(db.select(Users).where(Users.id == id)).scalar()
+    additional_claims = get_jwt()
+    user_id = additional_claims['user_id']
+    row = db.session.execute(db.select(Users).where(Users.id == user_id)).scalar()
     if not row:
-        response_body['message'] = f'El Usuario con id: {id}, no existe'
-    if request.method == 'GET':
-        response_body['message'] = f'Usuario con id: {id}'
-        response_body["results"] = row.serialize()
-        return response_body, 200
+        response_body['message'] = f'El Usuario con id: {user_id}, no existe'
     if request.method == 'PUT':
         data = request.json
-        row.username=data.get('username'),
         row.name=data.get('name'),
         row.last_name=data.get('last_name'),
         row.email=data.get('email'),
@@ -83,13 +80,8 @@ def user(id):
         row.phone=data.get('phone'),
         db.session.add(row)
         db.session.commit()  
-        response_body['message'] = f'Usuario con id: {id}. Actualizado'
+        response_body['message'] = f'Usuario con id: {user_id}. Actualizado'
         response_body["results"] = row.serialize()
-        return response_body, 200
-    if request.method == 'DELETE':
-        db.session.delete(row)
-        db.session.commit()
-        response_body['message'] = f'Usuario con id: {id}. Eliminado'
         return response_body, 200
     
 

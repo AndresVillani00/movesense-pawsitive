@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt                
 from flask_jwt_extended import get_jwt_identity         
 from flask_cors import CORS
-from api.models import db, Mascotas, Users
+from api.models import db, Mascotas, Users, Users_Mascotas
 
 
 mascotas_api = Blueprint('mascotasApi', __name__)
@@ -25,7 +25,7 @@ def mascotas():
 @jwt_required()
 def postMascotas():
     response_body = {}
-    additional_claims = get_jwt()  
+    additional_claims = get_jwt() 
     if request.method == 'POST':
         data = request.json 
         user_id = additional_claims['user_id']
@@ -51,16 +51,86 @@ def postMascotas():
         return response_body, 200  
     
 
-@mascotas_api.route('/mascotas/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@mascotas_api.route('/mascotas/<string:mascota_name_id>/usuarios', methods=['GET'])
+def get_usuarios_de_mascota(mascota_name_id):
+    response_body = {}
+    mascota = db.session.execute(db.select(Mascotas).where(Mascotas.mascota_name_id == mascota_name_id)).scalar()
+    if not mascota:
+        response_body['message'] = f'La Mascota con id: {mascota_name_id} no existe'
+        return response_body, 404
+    if request.method == 'GET':
+        share = db.session.execute(db.select(Users).join(Users_Mascotas).where(Users_Mascotas.mascota_usuario_id == mascota.id)).scalars().all()
+        response_body['message'] = f'Usuarios asociados a la mascota con id: {mascota.id}'
+        response_body['results'] = [usuario.serialize() for usuario in share]
+        return response_body, 200
+    
+
+@mascotas_api.route('/usuarios/<int:id>/share-mascot', methods=['GET'])
+def get_mascotas_ajenas(id):
+    response_body = {}
+    usuario = db.session.execute(db.select(Users).where(Users.id == id)).scalar()
+    if not usuario:
+        response_body['message'] = f'El usuario con id {id} no existe'
+        return response_body, 404
+    if request.method == 'GET':
+        mascotas_share = usuario.mascotas  # relación many-to-many
+        mascotas_ajenas = [m for m in mascotas_share if m.user_id != id]
+        response_body['message'] = f'Mascotas ajenas asociadas al usuario con id: {id}'
+        response_body['results'] = [m.serialize() for m in mascotas_ajenas]
+        return response_body, 200
+
+
+@mascotas_api.route('/mascotas/<string:mascota_name_id>/share', methods=['POST'])
+def share_mascot(mascota_name_id):
+    response_body = {}
+    data = request.json
+    user_id = data.get('usuario_mascota_id')
+    password = data.get('password')
+    mascota = Mascotas.query.filter_by(mascota_name_id=mascota_name_id, password=password).first()
+    if not mascota:
+        response_body['message'] = 'Mascota no encontrada o contraseña incorrecta'
+        return response_body, 404
+    existing = db.session.execute(db.select(Users_Mascotas).where(Users_Mascotas.usuario_mascota_id == data.get('usuario_mascota_id'), Users_Mascotas.mascota_usuario_id == mascota.id)).scalar()
+    if existing:
+        response_body['message'] = 'El usuario ya tiene acceso a esta mascota'
+        return response_body, 409
+    if request.method == 'POST':
+        share = Users_Mascotas(usuario_mascota_id=user_id, 
+                                mascota_usuario_id=mascota.id)
+        db.session.add(share)
+        db.session.commit()
+        response_body['message'] = 'Mascota agregada a tu cuenta'
+        return response_body, 200
+    
+
+@mascotas_api.route('/mascotas/<int:id>/delete-share/<int:usuario_id>', methods=['DELETE'])
+@jwt_required()
+def delete_share_mascot(id, usuario_id):
+    response_body = {}
+    user_log_id = get_jwt()['user_id']
+    row = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
+    if not row:
+        response_body['message'] = f'La Mascota de id: {id}, no existe'
+        return response_body, 404
+    if row.user_id != user_log_id:
+        response_body['message'] = 'No tienes permisos para eliminar usuarios de esta mascota'
+        return response_body, 403
+    if request.method == 'DELETE':
+        share_mascot = db.session.execute(db.select(Users_Mascotas).where(Users_Mascotas.usuario_mascota_id == usuario_id, Users_Mascotas.mascota_usuario_id == id)).scalar()
+        if not share_mascot:
+            response_body['message'] = 'Este usuario no está asociado a la mascota'
+            return response_body, 404
+        db.session.delete(share_mascot)
+        db.session.commit()
+        response_body['message'] = 'Usuario eliminado correctamente de la mascota'
+        return response_body, 200
+
+@mascotas_api.route('/mascotas/<int:id>', methods=['PUT', 'DELETE'])
 def mascota(id):
     response_body = {}
     row = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
     if not row:
         response_body['message'] = f'La Mascota de id: {id}, no existe'
-    if request.method == 'GET':
-        response_body['message'] = f'Mascota con id: {id}'
-        response_body["results"] = row.serialize()
-        return response_body, 200
     if request.method == 'PUT':
         data = request.json
         row.mascota_name_id = data.get('mascota_name_id', row.mascota_name_id)
@@ -79,7 +149,7 @@ def mascota(id):
     if request.method == 'DELETE':
         db.session.delete(row)
         db.session.commit()
-        response_body['message'] = f'Producto con id: {id}. Eliminado'
+        response_body['message'] = f'Mascota con id: {id}. Eliminado'
         return response_body, 200
 
 

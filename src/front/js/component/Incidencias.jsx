@@ -5,7 +5,9 @@ export const Incidencias = () => {
     const { store, actions } = useContext(Context);
 
     const [showModal, setShowModal] = useState(false);
+    const [itemCheck, setItemCheck] = useState([]);
     const [selected, setSelected] = useState('');
+
     const [status, setStatus] = useState('Bad');
     const [initialDate, setInitialDate] = useState('');
     const [finalDate, setFinalDate] = useState('');
@@ -38,6 +40,14 @@ export const Incidencias = () => {
 
     const handleCheckboxChange = (value) => {
         setSelected((prev) => (prev === value ? '' : value));
+    };
+
+    const toggleChecks = (id) => {
+        if (itemCheck.includes(id)) {
+        setItemCheck(itemCheck.filter((sid) => sid !== id));
+        } else {
+        setItemCheck([...itemCheck, id]);
+        }
     };
     
     const formatDateTime = (value) => {
@@ -92,13 +102,26 @@ export const Incidencias = () => {
         reader.readAsDataURL(file);
     };
 
+    const handleDelete = async (event) => {
+        event.preventDefault();
+
+        for(var i = 0; i < itemCheck.length; i++){
+            actions.deleteIncidencia(itemCheck[i]);
+        }
+
+        setItemCheck([]); // Limpiar selección
+    };
+
     return (
         <section className="col-md-12 p-5">
             <h3>Incidents History</h3>
             <br></br>
             <div className="card p-2 border-0" style={{ borderRadius: "12px" }}>
-                <div className="text-end p-2">
-                    <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                <div className="d-flex justify-content-end p-2">
+                    <div className="mx-3">
+                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                    </div>
+                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Delete</button>
                 </div>
                 <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered">
@@ -185,7 +208,13 @@ export const Incidencias = () => {
                     <tbody>
                         {store.incidencias.map((item, index) => (
                             <tr key={index} className="text-center">
-                                <td></td>
+                                <td>
+                                    <input
+                                    type="checkbox"
+                                    checked={itemCheck.includes(item.id)}
+                                    onChange={() => toggleChecks(item.id)}
+                                    />
+                                </td>
                                 <td>{item.title != null ? item.title : '-'}</td>
                                 <td>{item.initial_date != null ? formatDateTime(item.initial_date) : '-'}</td>
                                 <td>{item.final_date != null ? formatDateTime(item.final_date) : '-'}</td>

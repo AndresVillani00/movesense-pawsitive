@@ -6,6 +6,7 @@ export const Analysis = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [date, setDate] = useState('');
+    const [itemCheck, setItemCheck] = useState([]);
 
     const [blood, setBlood] = useState('');
     const [bilirubin, setBilirubin] = useState('');
@@ -39,6 +40,14 @@ export const Analysis = () => {
     useEffect(() => {
         actions.getAnalysis(store.idParam);
     }, [])
+
+    const toggleChecks = (id) => {
+        if (itemCheck.includes(id)) {
+        setItemCheck(itemCheck.filter((sid) => sid !== id));
+        } else {
+        setItemCheck([...itemCheck, id]);
+        }
+    };
     
     const formatDateTime = (value) => {
         if (!value) return null;
@@ -88,13 +97,26 @@ export const Analysis = () => {
         reader.readAsDataURL(file);
     };
 
+    const handleDelete = async (event) => {
+        event.preventDefault();
+
+        for(var i = 0; i < itemCheck.length; i++){
+            actions.deleteAnalysis(itemCheck[i]);
+        }
+
+        setItemCheck([]); // Limpiar selección
+    };
+
     return (
         <section className="col-md-12 p-5">
             <h3>Anlysis History</h3>
             <br></br>
             <div className="card p-2 border-0" style={{ borderRadius: "12px" }}>
-                <div className="text-end p-2">
-                    <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                <div className="d-flex justify-content-end p-2">
+                    <div className="mx-3">
+                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                    </div>
+                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Delete</button>
                 </div>
                 <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered">
@@ -203,7 +225,13 @@ export const Analysis = () => {
                     <tbody>
                         {store.analysis.map((item, index) => (
                             <tr key={index} className="text-center">
-                                <td></td>
+                                <td>
+                                    <input
+                                    type="checkbox"
+                                    checked={itemCheck.includes(item.id)}
+                                    onChange={() => toggleChecks(item.id)}
+                                    />
+                                </td>
                                 <td>{item.blood != null ? item.blood : '-'}</td>
                                 <td>{item.bilirubin != null ? item.bilirubin : '-'}</td>
                                 <td>{item.urobiling != null ? item.urobiling : '-'}</td>

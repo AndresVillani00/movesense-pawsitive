@@ -6,12 +6,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isNuevaMascota: false,
 			isVeterinario: false,
 			usuario: {},
+			veterinario: {},
 			analysis: [],
-			metrica: [],
+			metricas: [],
 			incidenciaId: null,
 			incidencia: {},
 			incidencias: [],
 			mascotas: [],
+			userMascotas: [],
+			mascotUsers: [],
 			currentMascota: null,
 			fotoMascota: null,
 			fotoJsonAnalysis: null,
@@ -64,6 +67,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getMascotas(data.user_id);
 			},
 			getMascotas: async () => {
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de mascotas");
+						return;
+					}
+					const data = await response.json();
+					setStore({ mascotas: data.results });
+				} catch (error) {
+					console.log("Error en getMascotas:", error);
+				}
+			},
+			getUsersMascotas: async () => {
 				const uri = `${process.env.BACKEND_URL}/mascotasApi/users/mascotas`;
 				const token = localStorage.getItem("token");
 				if (!token) return;
@@ -81,10 +104,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return;
 					}
 					const data = await response.json();
-					setStore({ mascotas: data.results });
+					setStore({ userMascotas: data.results });
 				} catch (error) {
-					console.log("Error en getMascotas:", error);
+					console.log("Error en getUsersMascotas:", error);
 				}
+				getActions().getMascotShareUsers(getStore().userMascotas.userId);
 			},
 			getMascotaById: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;
@@ -130,7 +154,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 
-				getActions().getMascotas()
+				getActions().getUsersMascotas()
 			},
 			getAnalysis: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/analysisApi/mascotas/${id}/analysis`;
@@ -175,6 +199,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				getActions().getAnalysis(dataToSend.mascota_analysis_id);
 			},
+			deleteAnalysis: async (id) => {
+				const token = localStorage.getItem("token");
+				if (!token) return false;  
+			
+				const uri = `${process.env.BACKEND_URL}/analysisApi/analysis/${id}`;  
+				const options = {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				};
+			
+				try {
+					const response = await fetch(uri, options);
+					if (!response.ok) throw new Error("No tienes permisos para eliminar este analysis");
+			
+					const updatedAnalysis = getStore().analysis.filter(analysis => analysis.id !== id);
+					setStore({ analysis: updatedAnalysis });
+			
+					return true; 
+				} catch (error) {
+					console.log("Error en deleteAnalysis:", error);
+					return false; 
+				}
+			},
 			getMetrica: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/metricasApi/mascotas/${id}/metricas`;
 
@@ -190,7 +240,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return;
 					}
 					const data = await response.json();
-					setStore({ metrica: data.results });
+					setStore({ metricas: data.results });
 				} catch (error) {
 					console.log("Error en getMetrica:", error);
 				}
@@ -217,6 +267,52 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 				getActions().getMetrica(dataToSend.mascota_metrica_id);
+			},
+			deleteMetrica: async (id) => {
+				const token = localStorage.getItem("token");
+				if (!token) return false;  
+			
+				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas/${id}`;  
+				const options = {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				};
+			
+				try {
+					const response = await fetch(uri, options);
+					if (!response.ok) throw new Error("No tienes permisos para eliminar esta metrica");
+			
+					const updatedMetricas = getStore().metricas.filter(metrica => metrica.id !== id);
+					setStore({ metricas: updatedMetricas });
+			
+					return true; 
+				} catch (error) {
+					console.log("Error en deleteMetrica:", error);
+					return false; 
+				}
+			},
+			getIncidencias: async () => {
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de incidencias");
+						return;
+					}
+					const data = await response.json();
+					setStore({ incidencias: data.results });
+				} catch (error) {
+					console.log("Error en getIncidencias:", error);
+				}
 			},
 			getIncidencia: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/incidenciasApi/mascotas/${id}/incidencias`;
@@ -261,6 +357,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				getActions().getIncidencia(dataToSend.mascota_incidencia_id);
 			},
+			deleteIncidencia: async (id) => {
+				const token = localStorage.getItem("token");
+				if (!token) return false;  
+			
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias/${id}`;  
+				const options = {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				};
+			
+				try {
+					const response = await fetch(uri, options);
+					if (!response.ok) throw new Error("No tienes permisos para eliminar esta incidencia");
+			
+					const updatedIncidencias = getStore().incidencias.filter(incidencia => incidencia.id !== id);
+					setStore({ incidencias: updatedIncidencias });
+			
+					return true; 
+				} catch (error) {
+					console.log("Error en deleteIncidencia:", error);
+					return false; 
+				}
+			},
 			signup: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
 				const options = {
@@ -286,6 +408,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ isVeterinario: true })
 				}
 				localStorage.setItem('token', datos.access_token)
+				getActions().getUsersMascotas()
 			},
 			login: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/login`;
@@ -312,29 +435,37 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ isVeterinario: true })
 				}
 				localStorage.setItem('token', datos.access_token)
-				getActions().getMascotas()
+				getActions().getUsersMascotas()
+				getActions().getMascotShareUsers(getStore().usuario.id);
 			},
 			logout: () => {
 				setStore({
 					isLogged: false,
 					isVeterinario: false,
 					usuario: {},
-					mascotas:[]
+					userMascotas:[]
 				})
 				localStorage.removeItem('token')
 			},
 			setIsLogged: (value) => {
 				setStore({ isLogged: value })
 			},
+			setIsVeterinario: (value) => {
+				setStore({ isVeterinario: value })
+			},
 			setNuevaMascota: (value) => {
 				setStore({ isNuevaMascota: value })
 			},
-			updateUsuario: async (dataToSend, id) => {
-				const uri = `${process.env.BACKEND_URL}/usersApi/users/${id}`;
+			updateUsuario: async (dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
 				const options = {
 					method: 'PUT',
 					headers: {
-						'Content-Type': 'application/json'
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
 					},
 					body: JSON.stringify(dataToSend)
 				};
@@ -347,6 +478,117 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				const datos = await response.json();
 				setStore({ usuario: datos.results })
+			},
+			updateVeterinario: async (dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/veterinariosApi/veterinarios`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
+				const options = {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'Los datos del Veterinario no se han podido guardar', background: 'danger', visible: true } })
+					}
+					return
+				}
+				const datos = await response.json();
+				setStore({ 
+					veterinario: datos.results,
+					isVeterinario: true
+				})
+			},
+			getShareUsers: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}/usuarios`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de usuarios de la mascota");
+						return;
+					}
+					const data = await response.json();
+					setStore({ mascotUsers: data.results });
+				} catch (error) {
+					console.log("Error en getShareUsers:", error);
+				}
+			},
+			getMascotShareUsers: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/usuarios/${id}/share-mascot`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de mascotas del usuario");
+						return;
+					}
+					const data = await response.json();
+					setStore({ userMascotas: data.results });
+				} catch (error) {
+					console.log("Error en getMascotShareUsers:", error);
+				}
+			},
+			shareMascot: async (dataToSend, mascotId, userId) => {
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${mascotId}/share`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'La Mascota que intenta compartir ya se compartio con este usuario', background: 'danger', visible: true } })
+					}
+					return
+				}
+
+				getActions().getShareUsers(mascotId);
+				getActions().getMascotShareUsers(userId);
+			},
+			deleteShareMascot: async (mascotaId, userId) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${mascotaId}/delete-share/${userId}`;
+				const options = {
+					method: 'DELETE',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+				};
+				try {
+					const response = await fetch(uri, options);
+					if (!response.ok) throw new Error("No tienes permisos para eliminar esta usuario");
+			
+					const updatedMascotUsers = getStore().mascotUsers.filter(users => users.id !== userId);
+					setStore({ mascotUsers: updatedMascotUsers });
+			
+					return true; 
+				} catch (error) {
+					console.log("Error en deleteShareMascot:", error);
+					return false; 
+				}
 			},
 			uploadImage: async (file) => {
 				const cloud_name = "diakkcdpm";
