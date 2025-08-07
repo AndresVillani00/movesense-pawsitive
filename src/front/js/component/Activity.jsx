@@ -49,6 +49,15 @@ export const Activity = () => {
                         }));
     }, [metricasActivity, daysRange]);
 
+    const values = filteredData.map(d => d.value);
+    const min = Math.floor(Math.min(...values) / 5) * 5;
+    const max = Math.ceil(Math.max(...values) / 5) * 5;
+
+    const ticks = [];
+    for (let i = min; i <= max; i += 5) {
+        ticks.push(i);
+    }
+
     const toggleChecks = (id) => {
         if (itemCheck.includes(id)) {
         setItemCheck(itemCheck.filter((sid) => sid !== id));
@@ -157,7 +166,7 @@ export const Activity = () => {
                         <LineChart data={filteredData}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="date" />
-                            <YAxis unit="min" domain={['auto', 'auto']} tickFormatter={(v) => `${v}`} />
+                            <YAxis unit="min" domain={['auto', 'auto']} ticks={ticks} tickFormatter={(v) => `${v}`} />
                             <Tooltip formatter={(v) => `${v} min`} />
                             <Line
                                 type="monotone"

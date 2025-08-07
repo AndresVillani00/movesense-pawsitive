@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Context } from "../store/appContext.js";
+import logo from '../../img/LogoPawsitive.png';
 import { Dropdown } from "react-bootstrap";
 
 export const Navbar = () => {
@@ -11,7 +12,7 @@ export const Navbar = () => {
             <div className="container">
                 {/* Logo */}
                 <Link to="/home" className="navbar-brand fw-bold" style={{ color: "#F5EFDE", fontSize: "1.5rem" }}>
-                    <img src="LogoPawsitive.png" className="m-auto" width="70" height="70"></img>
+                    <img src={logo} className="m-auto" width="70" height="70"></img>
                 </Link>
 
                 {/* Botón de menú en móviles */}
@@ -67,7 +68,7 @@ export const Navbar = () => {
                                     }}>
                                         Log In</button>
                                 </Link>
-                                <Link to="/sign-up">
+                                {/*<Link to="/sign-up">
                                     <button className="btn fw-bold" style={{
                                         color: "#1B365D",
                                         background: "#F5EFDE",
@@ -76,7 +77,7 @@ export const Navbar = () => {
                                     }}>
                                         Sign Up
                                     </button>
-                                </Link>
+                                </Link>*/}
                             </div>
                         )}
                     </div>

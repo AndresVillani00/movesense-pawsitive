@@ -31,6 +31,8 @@ const injectContext = PassedComponent => {
 		useEffect(() => {
 			state.actions.getUserProfile();
 			state.actions.getUsersMascotas();
+			state.actions.defaultUsuarios()
+			state.actions.defaultMetricas()
 		}, []);
 
 		// The initial value for the context is not null anymore, but the current state of this component,

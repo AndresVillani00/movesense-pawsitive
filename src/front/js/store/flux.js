@@ -384,7 +384,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			signup: async (dataToSend) => {
-				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
+				/*const uri = `${process.env.BACKEND_URL}/usersApi/users`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -408,7 +408,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ isVeterinario: true })
 				}
 				localStorage.setItem('token', datos.access_token)
-				getActions().getUsersMascotas()
+				getActions().getUsersMascotas()*/
 			},
 			login: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/login`;
@@ -640,6 +640,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error en removeMascota:", error);
 					return false;
 				}
+			},
+			defaultUsuarios: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/default-users`;
+				const options = {
+					method: 'POST',
+				};
+				
+				await fetch(uri, options);
+			},
+			defaultMetricas: async () => {
+				const uri = `${process.env.BACKEND_URL}/api/default-metricas`;
+				const options = {
+					method: 'POST',
+				};
+				
+				await fetch(uri, options);
 			}
 		}
 	};

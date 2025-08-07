@@ -22,7 +22,7 @@ export const SignUpVets = () => {
             is_veterinario: true
         }
 
-        await actions.signup(dataToSend);
+        //await actions.signup(dataToSend);
         actions.setIsVeterinario(true);
 
         if (store.isLogged && store.isVeterinario) {

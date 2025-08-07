@@ -4,7 +4,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import jwt_required
 from flask_cors import CORS
-from api.models import db, Users, Mascotas
+from api.models import db, Users, Mascotas, TipoMetrica
 from flask import jsonify
 
 
@@ -73,5 +73,62 @@ def get_artist_by_id(mascotas_id):
         return response_body, 404
     response_body['message'] = 'Maascota de un usuario obtenida con éxito'
     response_body['results'] = mascotas.serialize()
+    return response_body, 200
+
+@api.route('/default-metricas', methods=['POST'])
+def default_metricas():
+    response_body = {}
+    valores_por_defecto = [
+        "weight",
+        "temperature",
+        "heart_rate",
+        "activity"
+    ]
+    if request.method == 'POST':
+        for metrica_name in valores_por_defecto:
+            existe = db.session.execute(db.select(TipoMetrica).where(TipoMetrica.metrica_name == metrica_name)).scalar()
+            if not existe:
+                tipo = TipoMetrica(metrica_name=metrica_name)
+                db.session.add(tipo)
+
+        db.session.commit()
+    response_body['message'] = 'Metricas por defecto insertados con éxito'
+    return response_body, 200
+
+@api.route('/default-users', methods=['POST'])
+def default_usuarios():
+    response_body = {}
+    usuarios_default = [
+        {
+            "username": "veterinarioadmin",
+            "password": "pawsitivevetadmin25",
+            "email": "veterinario@example.com",
+            "is_veterinario": True
+        },
+        {
+            "username": "usuarioadmin",
+            "password": "pawsitiveuseradmin25",
+            "email": "usuario@example.com",
+            "is_veterinario": False
+        }
+    ]
+
+    if request.method == 'POST':
+        for usuario_data in usuarios_default:
+            username = usuario_data["username"]
+            password = usuario_data["password"]
+            existing_user = db.session.execute(db.select(Users).where(Users.username == username, Users.password == password)).scalar()
+
+            if not existing_user:
+                nuevo_usuario = Users(
+                    username=username,
+                    password=password,
+                    email=usuario_data["email"],
+                    is_veterinario=usuario_data["is_veterinario"]
+                )
+        db.session.add(nuevo_usuario)
+        db.session.commit()
+    response_body['message'] = 'Usuarios por defecto insertados con éxito'
+    response_body['results'] = nuevo_usuario.serialize()
     return response_body, 200
 

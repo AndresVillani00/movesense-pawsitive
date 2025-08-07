@@ -1,4 +1,6 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import moment from "moment";
 import { Context } from "../store/appContext";
 
 export const HeartRate = () => {
@@ -6,6 +8,7 @@ export const HeartRate = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [date, setDate] = useState('');
+    const [daysRange, setDaysRange] = useState(5);
     const [itemCheck, setItemCheck] = useState([]);
 
     const [value, setValue] = useState('');
@@ -35,6 +38,25 @@ export const HeartRate = () => {
     useEffect(() => {
         actions.getMetrica(store.idParam);
     }, [])
+
+    const filteredData = useMemo(() => {
+        const now = moment();
+        const cutoff = now.clone().subtract(daysRange, "days");
+
+        return metricasHeartRate.filter((item) => moment(item.ts_init).isAfter(cutoff)).map((item) => ({
+                            date: moment(item.ts_init).format("MM/DD HH:mm"),
+                            value: item.valor_diario,
+                        }));
+    }, [metricasHeartRate, daysRange]);
+
+    const values = filteredData.map(d => d.value);
+    const min = Math.floor(Math.min(...values) / 5) * 5;
+    const max = Math.ceil(Math.max(...values) / 5) * 5;
+
+    const ticks = [];
+    for (let i = min; i <= max; i += 5) {
+        ticks.push(i);
+    }
 
     const toggleChecks = (id) => {
         if (itemCheck.includes(id)) {
@@ -137,6 +159,35 @@ export const HeartRate = () => {
                                 </form>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div className="card p-4">
+                    <ResponsiveContainer width="100%" height={200}>
+                        <LineChart data={filteredData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="date" />
+                            <YAxis unit="bpm" domain={['auto', 'auto']} ticks={ticks} tickFormatter={(v) => `${v}`} />
+                            <Tooltip formatter={(v) => `${v} bpm`} />
+                            <Line
+                                type="monotone"
+                                dataKey="value"
+                                stroke="#00b3b3"
+                                strokeWidth={2}
+                                dot={{ r: 4 }}
+                                activeDot={{ r: 6 }}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                    <div className="mt-3 d-flex gap-2 justify-content-end">
+                        {[1, 5, 30, 90].map((d) => (
+                            <button
+                                key={d}
+                                className={`btn btn-sm ${daysRange === d ? "btn-primary" : "btn-outline-secondary"}`}
+                                onClick={() => setDaysRange(d)}
+                            >
+                                {d}d
+                            </button>
+                        ))}
                     </div>
                 </div>
                 <table className="table table-striped" >
