@@ -21,6 +21,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			fotoJsonIncidencia: null,
 			alert: { text: '', background: 'primary', visible: false },
 			message: null,
+			urlrender: "https://sample-service-name-0sfq.onrender.com"
 		},
 		actions: {
 			setIdParam: (item) => { setStore({ idParam: item }) },
@@ -32,7 +33,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
-				const uri = `${process.env.BACKEND_URL}/users/profile`;
+				const uri = `${getStore().urlrender}/users/profile`;
 				const options = {
 					method: "GET",
 					headers: {
@@ -51,7 +52,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ usuario: datos.results });
 			},
 			postMascotaDetails: async (dataToSend) => {
-				const uri = `${process.env.BACKEND_URL}/mascotasDetailsApi/mascotas-details`;
+				const uri = `${getStore().urlrender}/mascotasDetailsApi/mascotas-details`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -67,7 +68,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getMascotas(data.user_id);
 			},
 			getMascotas: async () => {
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas`;
+				const uri = `${getStore().urlrender}/mascotasApi/mascotas`;
 
 				try {
 					const response = await fetch(uri, {
@@ -87,7 +88,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getUsersMascotas: async () => {
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/users/mascotas`;
+				const uri = `${getStore().urlrender}/mascotasApi/users/mascotas`;
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
@@ -111,7 +112,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getMascotShareUsers(getStore().userMascotas.userId);
 			},
 			getMascotaById: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;
+				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${id}`;
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
@@ -137,7 +138,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas`;
+				const uri = `${getStore().urlrender}/mascotasApi/mascotas`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -157,7 +158,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getUsersMascotas()
 			},
 			getAnalysis: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/analysisApi/mascotas/${id}/analysis`;
+				const uri = `${getStore().urlrender}/analysisApi/mascotas/${id}/analysis`;
 
 				try {
 					const response = await fetch(uri, {
@@ -180,7 +181,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 				
-				const uri = `${process.env.BACKEND_URL}/analysisApi/analysis`;
+				const uri = `${getStore().urlrender}/analysisApi/analysis`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -203,7 +204,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return false;  
 			
-				const uri = `${process.env.BACKEND_URL}/analysisApi/analysis/${id}`;  
+				const uri = `${getStore().urlrender}/analysisApi/analysis/${id}`;  
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -226,7 +227,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getMetrica: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/metricasApi/mascotas/${id}/metricas`;
+				const uri = `${getStore().urlrender}/metricasApi/mascotas/${id}/metricas`;
 
 				try {
 					const response = await fetch(uri, {
@@ -249,7 +250,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 				
-				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas`;
+				const uri = `${getStore().urlrender}/metricasApi/metricas`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -272,7 +273,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return false;  
 			
-				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas/${id}`;  
+				const uri = `${getStore().urlrender}/metricasApi/metricas/${id}`;  
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -295,7 +296,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getIncidencias: async () => {
-				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
+				const uri = `${getStore().urlrender}/incidenciasApi/incidencias`;
 
 				try {
 					const response = await fetch(uri, {
@@ -315,7 +316,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getIncidencia: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/incidenciasApi/mascotas/${id}/incidencias`;
+				const uri = `${getStore().urlrender}/incidenciasApi/mascotas/${id}/incidencias`;
 
 				try {
 					const response = await fetch(uri, {
@@ -338,7 +339,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
-				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
+				const uri = `${getStore().urlrender}/incidenciasApi/incidencias`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -361,7 +362,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return false;  
 			
-				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias/${id}`;  
+				const uri = `${getStore().urlrender}/incidenciasApi/incidencias/${id}`;  
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -384,7 +385,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			signup: async (dataToSend) => {
-				/*const uri = `${process.env.BACKEND_URL}/usersApi/users`;
+				/*const uri = `${getStore().urlrender}/usersApi/users`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -411,7 +412,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getUsersMascotas()*/
 			},
 			login: async (dataToSend) => {
-				const uri = `${process.env.BACKEND_URL}/api/login`;
+				const uri = `${getStore().urlrender}/api/login`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -456,7 +457,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ isNuevaMascota: value })
 			},
 			updateUsuario: async (dataToSend) => {
-				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
+				const uri = `${getStore().urlrender}/usersApi/users`;
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
@@ -479,7 +480,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ usuario: datos.results })
 			},
 			updateVeterinario: async (dataToSend) => {
-				const uri = `${process.env.BACKEND_URL}/veterinariosApi/veterinarios`;
+				const uri = `${getStore().urlrender}/veterinariosApi/veterinarios`;
 				const token = localStorage.getItem("token");
 				if (!token) return;
 				
@@ -505,7 +506,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 			},
 			getShareUsers: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}/usuarios`;
+				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${id}/usuarios`;
 
 				try {
 					const response = await fetch(uri, {
@@ -525,7 +526,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getMascotShareUsers: async (id) => {
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/usuarios/${id}/share-mascot`;
+				const uri = `${getStore().urlrender}/mascotasApi/usuarios/${id}/share-mascot`;
 
 				try {
 					const response = await fetch(uri, {
@@ -545,7 +546,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			shareMascot: async (dataToSend, mascotId, userId) => {
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${mascotId}/share`;
+				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${mascotId}/share`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -568,7 +569,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${mascotaId}/delete-share/${userId}`;
+				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${mascotaId}/delete-share/${userId}`;
 				const options = {
 					method: 'DELETE',
 					headers: {
@@ -617,7 +618,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return false;
 
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${mascotaId}`;
+				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${mascotaId}`;
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -641,7 +642,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			defaultUsuarios: async () => {
-				const uri = `${process.env.BACKEND_URL}/api/default-users`;
+				const uri = `${getStore().urlrender}/api/default-users`;
 				const options = {
 					method: 'POST',
 				};
@@ -649,7 +650,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				await fetch(uri, options);
 			},
 			defaultMetricas: async () => {
-				const uri = `${process.env.BACKEND_URL}/api/default-metricas`;
+				const uri = `${getStore().urlrender}/api/default-metricas`;
 				const options = {
 					method: 'POST',
 				};
