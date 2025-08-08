@@ -39,17 +39,11 @@ export const HeartRate = () => {
         actions.getMetrica(store.idParam);
     }, [])
 
-    const filteredData = useMemo(() => {
-        const now = moment();
-        const cutoff = now.clone().subtract(daysRange, "days");
+    const filteredData = [...metricasHeartRate].sort(
+        (a, b) => new Date(a.ts_init) - new Date(b.ts_init)
+    );
 
-        return metricasHeartRate.filter((item) => moment(item.ts_init).isAfter(cutoff)).map((item) => ({
-                            date: moment(item.ts_init).format("MM/DD HH:mm"),
-                            value: item.valor_diario,
-                        }));
-    }, [metricasHeartRate, daysRange]);
-
-    const values = filteredData.map(d => d.value);
+    const values = filteredData.map(d => d.valor_diario);
     const min = Math.floor(Math.min(...values) / 5) * 5;
     const max = Math.ceil(Math.max(...values) / 5) * 5;
 
@@ -165,12 +159,12 @@ export const HeartRate = () => {
                     <ResponsiveContainer width="100%" height={200}>
                         <LineChart data={filteredData}>
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="date" />
+                            <XAxis dataKey="ts_init" tickFormatter={(str) => new Date(str).toLocaleDateString()} />
                             <YAxis unit="bpm" domain={['auto', 'auto']} ticks={ticks} tickFormatter={(v) => `${v}`} />
                             <Tooltip formatter={(v) => `${v} bpm`} />
                             <Line
                                 type="monotone"
-                                dataKey="value"
+                                dataKey="valor_diario"
                                 stroke="#00b3b3"
                                 strokeWidth={2}
                                 dot={{ r: 4 }}

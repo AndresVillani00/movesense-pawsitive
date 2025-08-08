@@ -436,7 +436,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				localStorage.setItem('token', datos.access_token)
 				getActions().getUsersMascotas()
-				getActions().getMascotShareUsers(getStore().usuario.id);
 			},
 			logout: () => {
 				setStore({

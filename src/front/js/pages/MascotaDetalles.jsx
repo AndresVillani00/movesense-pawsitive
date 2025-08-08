@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
+import { useNavigate } from "react-router-dom";
 
 import { Analysis } from "../component/Analysis.jsx";
 import { Peso } from "../component/Peso.jsx";
@@ -10,6 +11,7 @@ import { Incidencias } from "../component/Incidencias.jsx";
 
 export const MascotaDetalles = () => {
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
 
     const [activeMenu, setActiveMenu] = useState('incident');
 
@@ -46,6 +48,9 @@ export const MascotaDetalles = () => {
         <section className="container-fluid p-5">
             {store.isLogged ?
                 <div>
+                    <div className="p-2">
+                        <button className="btn btn-outline-secondary" onClick={() => navigate(-1)}>Volver</button>
+                    </div>
                     <div className="row g-3">
                         <div className="col-md-2">
                             <div className="card border-0" style={{ borderRadius: "12px" }}>

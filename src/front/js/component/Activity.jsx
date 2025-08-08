@@ -39,17 +39,11 @@ export const Activity = () => {
         actions.getMetrica(store.idParam);
     }, [])
 
-    const filteredData = useMemo(() => {
-        const now = moment();
-        const cutoff = now.clone().subtract(daysRange, "days");
+    const filteredData = [...metricasActivity].sort(
+        (a, b) => new Date(a.ts_init) - new Date(b.ts_init)
+    );
 
-        return metricasActivity.filter((item) => moment(item.ts_init).isAfter(cutoff)).map((item) => ({
-                            date: moment(item.ts_init).format("MM/DD HH:mm"),
-                            value: item.valor_diario,
-                        }));
-    }, [metricasActivity, daysRange]);
-
-    const values = filteredData.map(d => d.value);
+    const values = filteredData.map(d => d.valor_diario);
     const min = Math.floor(Math.min(...values) / 5) * 5;
     const max = Math.ceil(Math.max(...values) / 5) * 5;
 
@@ -57,6 +51,8 @@ export const Activity = () => {
     for (let i = min; i <= max; i += 5) {
         ticks.push(i);
     }
+
+    
 
     const toggleChecks = (id) => {
         if (itemCheck.includes(id)) {
@@ -165,12 +161,12 @@ export const Activity = () => {
                     <ResponsiveContainer width="100%" height={200}>
                         <LineChart data={filteredData}>
                             <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="date" />
+                            <XAxis dataKey="ts_init" tickFormatter={(str) => new Date(str).toLocaleDateString()} />
                             <YAxis unit="min" domain={['auto', 'auto']} ticks={ticks} tickFormatter={(v) => `${v}`} />
                             <Tooltip formatter={(v) => `${v} min`} />
                             <Line
                                 type="monotone"
-                                dataKey="value"
+                                dataKey="valor_diario"
                                 stroke="#00b3b3"
                                 strokeWidth={2}
                                 dot={{ r: 4 }}
