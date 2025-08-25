@@ -28,6 +28,7 @@ def incidencias():
                      final_date=data.get('final_date'),
                      alert_status=data.get('alert_status'),
                      ia_description=data.get('ia_description'),
+                     ia_action=data.get('ia_action'),
                      mascota_incidencia_id=data.get('mascota_incidencia_id'))
         db.session.add(row)
         db.session.commit()

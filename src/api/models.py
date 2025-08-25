@@ -74,6 +74,7 @@ class Mascotas(db.Model):
     foto_mascot = db.Column(db.String(), unique=False, nullable=True, default=" ")
     name_mascot = db.Column(db.String(), unique=False, nullable=False, default=" ")
     patologia = db.Column(db.String(), unique=False, nullable=True, default=" ")
+    score = db.Column(db.Integer(), unique=False, nullable=True, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_register = db.relationship('Users', back_populates='mascotas_registradas', lazy='select')
     usuarios = db.relationship('Users', secondary='users_mascotas', back_populates='mascotas', lazy='subquery')
@@ -90,6 +91,7 @@ class Mascotas(db.Model):
                 'foto_mascot': self.foto_mascot,
                 'name_mascot': self.name_mascot,
                 'patologia': self.patologia,
+                'score': self.score,
                 'user_id': self.user_id,
                 'usuarios': [u.id for u in self.usuarios]}
     
@@ -123,8 +125,10 @@ class Incidencias(db.Model):
     initial_date = db.Column(db.DateTime(), unique=False, nullable=False)
     final_date = db.Column(db.DateTime(), unique=False, nullable=False)
     ia_description = db.Column(db.Text(), unique=False, nullable=False, default=" ")
+    ia_action = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     alert_status = db.Column(db.String(), unique=False, nullable=False, default=" ")
     json_incidencia =db.Column(db.JSON(), unique=False, nullable=True, default=" ")
+    ts_alta = db.Column(db.DateTime(), unique=False, nullable=False, default=datetime.utcnow)
     mascota_incidencia_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_incidencia_to = db.relationship('Mascotas', foreign_keys=[mascota_incidencia_id], backref=db.backref('mascota_incidencia_to'), lazy='select')
     #alert_status = db.Column(db.Enum('Good', 'Bad', name='alert_status'), nullable=False)
@@ -136,9 +140,30 @@ class Incidencias(db.Model):
                 'initial_date': self.initial_date,
                 'final_date': self.final_date,
                 'ia_description': self.ia_description,
+                'ia_action': self.ia_action,
                 'alert_status': self.alert_status,
                 'json_incidencia': self.json_incidencia,
+                'ts_alta': self.ts_alta,
                 'mascota_incidencia_id':self.mascota_incidencia_id}
+    
+
+class Reportes(db.Model):
+    __tablename__ = 'reportes'
+    id = db.Column(db.Integer, primary_key=True)
+    food_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
+    description_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
+    action_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
+    ts_alta = db.Column(db.DateTime(), unique=False, nullable=False, default=datetime.utcnow)
+    mascota_reports_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
+    mascota_reports_to = db.relationship('Mascotas', foreign_keys=[mascota_reports_id], backref=db.backref('mascota_reports_to'), lazy='select')
+    
+    def serialize(self):
+        return {'id': self.id,
+                'food_ia': self.food_ia,
+                'description_ia': self.description_ia,
+                'action_ia': self.action_ia,
+                'ts_alta': self.ts_alta,
+                'mascota_reports_id':self.mascota_reports_id}
         
 
 class Metrica(db.Model):
@@ -219,6 +244,7 @@ class Comida(db.Model):
     grasa = db.Column(db.String(), unique=False, nullable=True, default="")
     proteina = db.Column(db.String(), unique=False, nullable=True, default="")
     fibra = db.Column(db.String(), unique=False, nullable=True, default="")
+    ia_food = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     food_in_a_day = db.Column(db.String(), unique=False, nullable=True, default="")
     mascota_comida_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_comida_to = db.relationship('Mascotas', foreign_keys=[mascota_comida_id], backref=db.backref('mascota_comida_to'), lazy='select')
@@ -231,6 +257,7 @@ class Comida(db.Model):
             'grasa': self.grasa,
             'proteina': self.proteina,
             'fibra': self.fibra,
+            'ia_food': self.ia_food,
             'food_in_a_day': self.food_in_a_day}
         
 

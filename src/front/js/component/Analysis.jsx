@@ -37,10 +37,6 @@ export const Analysis = () => {
         }
     }, [showModal]);
 
-    useEffect(() => {
-        actions.getAnalysis(store.idParam);
-    }, [])
-
     const toggleChecks = (id) => {
         if (itemCheck.includes(id)) {
         setItemCheck(itemCheck.filter((sid) => sid !== id));

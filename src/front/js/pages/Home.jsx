@@ -19,6 +19,7 @@ export const Home = () => {
   const [gender, setGender] = useState('');
   const [isEsterilizado, setEsterilizado] = useState('');
   const [patologia, setPatology] = useState('');
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (activeKey === 'incidents') {
@@ -101,6 +102,15 @@ export const Home = () => {
     return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
   }
 
+  // Normalizamos búsqueda (case-insensitive)
+  const filtrarPorMascota = (lista, tipo) => {
+    return lista.filter((item) => {
+      const mascota = store.mascotas != null ? store.mascotas.find((m) => m.id == (tipo === "incidencia" ? item.mascota_incidencia_id : item.mascota_reporte_id)) : null;
+
+      if (!search) return true; // si no hay búsqueda → muestra todo
+      return mascota.mascota_name_id.toLowerCase().includes(search.toLowerCase());
+    });
+  };
 
   return (
     <div style={{ background: "#F5EFDE" }}>
@@ -239,49 +249,105 @@ export const Home = () => {
         </Container>
         :
         <Container className="row justify-content-center mt-4">
+          {/* Barra de búsqueda */}
+          <Form className="mb-3">
+            <Form.Control
+              type="text"
+              placeholder="Buscar por nombre de mascota..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </Form>
+
           <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
             <Nav variant="tabs" className="bg-light justify-content-center rounded">
               <Nav.Item>
-                <Nav.Link style={{ color: "#1B365D" }} eventKey="incidents">Incidents</Nav.Link>
+                <Nav.Link style={{ color: "#1B365D" }} eventKey="incidents">
+                  Incidents
+                </Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link style={{ color: "#1B365D" }} eventKey="reports">Reports</Nav.Link>
+                <Nav.Link style={{ color: "#1B365D" }} eventKey="reports">
+                  Reports
+                </Nav.Link>
               </Nav.Item>
             </Nav>
 
             <Tab.Content className="border p-4 bg-white mt-3 rounded shadow-sm">
+              {/* TAB INCIDENCIAS */}
               <Tab.Pane eventKey="incidents">
-                <table className="table table-striped" >
-                  <thead style={{ color: "secondary" }}>
+                <table className="table table-striped">
+                  <thead>
                     <tr className="text-center">
-                      <th scope="col-md-2">Mascot</th>
-                      <th scope="col-md-2">Type</th>
-                      <th scope="col-md-2">Start Time</th>
-                      <th scope="col-md-2">End Time</th>
-                      <th scope="col-md-2">Description</th>
-                      <th scope="col-md-2">Good/Bad</th>
+                      <th>Mascot</th>
+                      <th>Type</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
+                      <th>Description</th>
+                      <th>Good/Bad</th>
                     </tr>
                   </thead>
                   <tbody>
-                      {store.incidencias.map((item, index) => {
-                        const mascot = store.mascotas != null ? store.mascotas.find(mascota => mascota.id == item.mascota_incidencia_id) : null;
+                    {filtrarPorMascota(store.incidencias, "incidencia").map(
+                      (item, index) => {
+                        const mascot =
+                          store.mascotas != null
+                            ? store.mascotas.find(
+                                (m) => m.id == item.mascota_incidencia_id
+                              )
+                            : null;
 
                         return (
                           <tr key={index} className="text-center">
-                            <td>{mascot != null ? mascot.mascota_name_id : '-'}</td>
-                            <td>{item.title != null ? item.title : '-'}</td>
-                            <td>{item.initial_date != null ? formatDateTime(item.initial_date) : '-'}</td>
-                            <td>{item.final_date != null ? formatDateTime(item.final_date) : '-'}</td>
-                            <td>{item.description != null ? item.description : '-'}</td>
-                            <td>{item.alert_status != null ? item.alert_status : '-'}</td>
+                            <td>{mascot ? mascot.mascota_name_id : "-"}</td>
+                            <td>{item.title != null ? item.title : "-"}</td>
+                            <td>{item.initial_date != null ? formatDateTime(item.initial_date) : "-"}</td>
+                            <td>{item.final_date != null ? formatDateTime(item.final_date) : "-"}</td>
+                            <td>{item.description != null ? item.description : "-"}</td>
+                            <td>{item.alert_status != null ? item.alert_status : "-"}</td>
                           </tr>
                         );
-                      })}
+                      }
+                    )}
                   </tbody>
                 </table>
               </Tab.Pane>
+
+              {/* TAB REPORTES */}
               <Tab.Pane eventKey="reports">
-                <h1>FUTUROS REPORTES</h1>
+                <table className="table table-striped">
+                  <thead>
+                    <tr className="text-center">
+                      <th>Mascot</th>
+                      <th>Score</th>
+                      <th>Description</th>
+                      <th>Food</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtrarPorMascota(store.reportes, "reporte").map(
+                      (item, index) => {
+                        const mascot =
+                          store.mascotas != null
+                            ? store.mascotas.find(
+                                (m) => m.id == item.mascota_reporte_id
+                              )
+                            : null;
+
+                        return (
+                          <tr key={index} className="text-center">
+                            <td>{mascot ? mascot.mascota_name_id : "-"}</td>
+                            <td>{item.score != null ? item.score : "-"}</td>
+                            <td>{item.description_ia != null ? item.description_ia : "-"}</td>
+                            <td>{item.food_ia != null ? item.food_ia : "-"}</td>
+                            <td>{item.action_ia != null ? item.action_ia : "-"}</td>
+                          </tr>
+                        );
+                      }
+                    )}
+                  </tbody>
+                </table>
               </Tab.Pane>
             </Tab.Content>
           </Tab.Container>

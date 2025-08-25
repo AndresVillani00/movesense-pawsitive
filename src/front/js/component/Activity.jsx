@@ -35,10 +35,6 @@ export const Activity = () => {
         }
     }, [showModal]);
 
-    useEffect(() => {
-        actions.getMetrica(store.idParam);
-    }, [])
-
     const filteredData = [...metricasActivity].sort(
         (a, b) => new Date(a.ts_init) - new Date(b.ts_init)
     );

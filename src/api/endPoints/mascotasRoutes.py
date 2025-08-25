@@ -43,6 +43,7 @@ def postMascotas():
                     patologia=data.get('patologia'),
                     is_mix=data.get('is_mix'),
                     is_Esterilizado=data.get('is_Esterilizado'),
+                    score=data.get('score'),
                     user_id=user_id)
         db.session.add(row)
         db.session.commit()
@@ -142,6 +143,7 @@ def mascota(id):
         row.patologia = data.get('patologia', row.patologia)
         row.is_mix = data.get('is_mix', row.is_mix)
         row.is_Esterilizado = data.get('is_Esterilizado', row.is_Esterilizado)
+        row.score = data.get('score', row.score)
         db.session.commit()
         response_body['message'] = f'Mascota con id: {id}. Actualizado'
         response_body["results"] = row.serialize()

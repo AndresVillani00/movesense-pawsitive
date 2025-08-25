@@ -34,10 +34,6 @@ export const Incidencias = () => {
         }
     }, [showModal]);
 
-    useEffect(() => {
-        actions.getIncidencia(store.idParam);
-    }, [])
-
     const handleCheckboxChange = (value) => {
         setSelected((prev) => (prev === value ? '' : value));
     };

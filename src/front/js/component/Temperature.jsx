@@ -35,10 +35,6 @@ export const Temperature = () => {
         }
     }, [showModal]);
 
-    useEffect(() => {
-        actions.getMetrica(store.idParam);
-    }, [])
-
     const filteredData = [...metricasTemperature].sort(
         (a, b) => new Date(a.ts_init) - new Date(b.ts_init)
     );

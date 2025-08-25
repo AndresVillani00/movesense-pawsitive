@@ -16,6 +16,7 @@ import { Explore } from "./pages/Explore.jsx";
 import { UserProfile } from "./pages/UserProfile.jsx";
 import { Alert } from "./component/Alert.jsx";
 import { AboutUs } from "./pages/AboutUs.jsx";
+import { Report } from "./pages/Report.jsx";
 import { Cart } from "./pages/Cart.jsx";
 import { Payment } from "./pages/Payment.jsx";
 import { PaymentSuccess } from "./pages/PaymentSuccess.jsx";
@@ -51,6 +52,7 @@ const Layout = () => {
                             <Route element={<Explore />} path="/explore" />
                             <Route element={<UserProfile />} path="/user-profile" />
                             <Route element={<MascotaDetalles />} path="/mascota-profile/:id" />
+                            <Route element={<Report />} path="/report" />
                             <Route element={<AboutUs />} path="/about-us" />
                             <Route element={<Cart />} path="/cart" />
                             <Route element={<Payment />} path="/payment" />

@@ -68,7 +68,7 @@ export const Navbar = () => {
                                     }}>
                                         Log In</button>
                                 </Link>
-                                {/*<Link to="/sign-up">
+                                {<Link to="/sign-up">
                                     <button className="btn fw-bold" style={{
                                         color: "#1B365D",
                                         background: "#F5EFDE",
@@ -77,7 +77,7 @@ export const Navbar = () => {
                                     }}>
                                         Sign Up
                                     </button>
-                                </Link>*/}
+                                </Link>}
                             </div>
                         )}
                     </div>

@@ -7,11 +7,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isVeterinario: false,
 			usuario: {},
 			veterinario: {},
+			report: {},
+			reportes: [],
 			analysis: [],
 			metricas: [],
 			incidenciaId: null,
 			incidencia: {},
 			incidencias: [],
+			foods: [],
 			mascotas: [],
 			userMascotas: [],
 			mascotUsers: [],
@@ -383,8 +386,51 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false; 
 				}
 			},
+			getFood: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/foodApi/mascotas/${id}/food`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de comidas");
+						return;
+					}
+					const data = await response.json();
+					setStore({ foods: data.results });
+				} catch (error) {
+					console.log("Error en getFood:", error);
+				}
+			},
+			postFood: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
+				const uri = `${process.env.BACKEND_URL}/foodApi/food`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'La Comida que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+
+				getActions().getFood(dataToSend.mascota_metrica_id);
+			},
 			signup: async (dataToSend) => {
-				/*const uri = `${process.env.BACKEND_URL}/usersApi/users`;
+				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -408,7 +454,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ isVeterinario: true })
 				}
 				localStorage.setItem('token', datos.access_token)
-				getActions().getUsersMascotas()*/
+				getActions().getUsersMascotas()
 			},
 			login: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/api/login`;

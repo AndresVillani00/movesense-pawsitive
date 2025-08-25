@@ -35,10 +35,6 @@ export const Peso = () => {
         }
     }, [showModal]);
 
-    useEffect(() => {
-        actions.getMetrica(store.idParam);
-    }, [])
-
     const filteredData = [...metricasWeight].sort(
         (a, b) => new Date(a.ts_init) - new Date(b.ts_init)
     );

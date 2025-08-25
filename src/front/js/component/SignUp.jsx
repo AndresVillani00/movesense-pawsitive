@@ -21,7 +21,7 @@ export const SignUp = () => {
             password,
         }
 
-        //await actions.signup(dataToSend);
+        await actions.signup(dataToSend);
 
         if (store.isLogged && !store.isVeterinario) {
             store.alert = { text: "", background: "primary", visible: false };
