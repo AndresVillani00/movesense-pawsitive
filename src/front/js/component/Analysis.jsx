@@ -133,8 +133,8 @@ export const Analysis = () => {
                                             </div>
                                         )}
                                         <div className="text-center p-2 mb-3">
-                                            <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the Urine</label>
-                                            <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
+                                            <label htmlFor="selectFotoAnalysis" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the Urine</label>
+                                            <input id="selectFotoAnalysis" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                                         </div>
                                     </div>
                                     <div className="row">

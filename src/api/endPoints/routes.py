@@ -21,7 +21,15 @@ def login():
     row = db.session.execute(db.select(Users).where(Users.username == username, Users.password == password)).scalar()
     if not row:
         response_body['message'] = f'El usuario no existe'
+        return response_body, 404
+    
+    if len(password) < 8:
+        return response_body, 400
+
+    symbols = "!@#$%^&*"
+    if not any(char in symbols for char in password):
         return response_body, 401
+
     user = row.serialize()
     # Buscar si el usuario tiene Mascotas
     mascotas = db.session.execute(db.select(Mascotas).where(Mascotas.user_id == user['id'])).scalar()

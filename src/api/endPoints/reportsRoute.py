@@ -25,6 +25,7 @@ def reportes():
         row = Reportes(food_ia=data.get('food_ia'),
                      description_ia=data.get('description_ia'),
                      action_ia=data.get('action_ia'),
+                     analysis_ia=data.get('analysis_ia'),
                      mascota_reports_id=data.get('mascota_reports_id'))
         db.session.add(row)
         db.session.commit()

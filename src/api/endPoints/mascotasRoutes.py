@@ -144,6 +144,7 @@ def mascota(id):
         row.is_mix = data.get('is_mix', row.is_mix)
         row.is_Esterilizado = data.get('is_Esterilizado', row.is_Esterilizado)
         row.score = data.get('score', row.score)
+        row.status = data.get('status', row.status)
         db.session.commit()
         response_body['message'] = f'Mascota con id: {id}. Actualizado'
         response_body["results"] = row.serialize()

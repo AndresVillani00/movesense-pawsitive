@@ -23,6 +23,15 @@ def users():
         return response_body, 200
     if request.method == 'POST':
         data = request.json
+        password = data.get('password', None)
+
+        if len(password) < 8:
+            return jsonify({"error": "La contraseña debe tener al menos 8 caracteres"}), 400
+
+        symbols = "!@#$%^&*"
+        if not any(char in symbols for char in password):
+            return jsonify({"error": "La contraseña debe contener al menos un símbolo"}), 401
+        
         row = Users(username=data.get('username'),
                     password=data.get('password'),
                     name=data.get('name'),
@@ -35,7 +44,7 @@ def users():
         rowdb = db.session.execute(db.select(Users).where(Users.username == data.get('username'), Users.password == data.get('password'))).scalar()
         if rowdb:
             response_body['message'] = f'El usuario ya existe'
-            return response_body, 401
+            return response_body, 404
         db.session.add(row)
         db.session.commit()
         if data.get('is_veterinario'):

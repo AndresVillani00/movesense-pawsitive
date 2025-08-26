@@ -9,7 +9,7 @@ export const Food = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [activeKey, setActiveKey] = useState('profile');
-    
+
     const [type_food, setTypeFood] = useState('');
     const [marca, setMarca] = useState('');
     const [grasa, setGrasa] = useState('');
@@ -29,7 +29,7 @@ export const Food = () => {
             });
         }
     }, []);
-    
+
     useEffect(() => {
         if (bsModal.current) {
             showModal ? bsModal.current.show() : bsModal.current.hide();
@@ -48,7 +48,7 @@ export const Food = () => {
             food_in_a_day,
             mascota_comida_id: store.idParam
         }
-    
+
         store.alert = { text: "", background: "primary", visible: false };
 
         await actions.postFood(dataToSend);
@@ -58,14 +58,17 @@ export const Food = () => {
     const handleCapture = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
-    
+
         const reader = new FileReader();
         reader.onloadend = () => {
             const base64 = reader.result;
-            actions.setFotoJsonComida({ foto: base64 });
+            actions.setFotoJsonFood({ foto: base64 });
         };
         reader.readAsDataURL(file);
     };
+
+    const lastFood = store.foods.length != 0 ? store.foods.reduce((latest, item) => { return new Date(item.ts_alta) > new Date(latest.ts_alta) ? item : latest; }) : null;
+    console.log(lastFood)
 
     return (
         <section>
@@ -109,13 +112,17 @@ export const Food = () => {
                                                                 </div>
                                                             )}
                                                             <div className="text-center p-2 mb-3">
-                                                                <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the food</label>
-                                                                <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
+                                                                <label htmlFor="selectFotoComida" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the food</label>
+                                                                <input id="selectFotoComida" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                                                             </div>
                                                         </div>
                                                         <div className="col-md-4 mb-3">
                                                             <label className="form-label fw-semibold">Type of the Food</label>
-                                                            <input type="text" name="type_food" className="form-control" value={type_food} onChange={(event) => setTypeFood(event.target.value)} required />
+                                                            <select className="form-select" aria-label="Default select example" value={type_food} onChange={(event) => setTypeFood(event.target.value)} required >
+                                                                <option value="">Select a type</option>
+                                                                <option value="suave">Sueva</option>
+                                                                <option value="dura">Dura</option>
+                                                            </select>
                                                         </div>
                                                         <div className="col-md-4 mb-3">
                                                             <label className="form-label fw-semibold">Brand</label>
@@ -161,8 +168,19 @@ export const Food = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="card-body p-5">
-
+                                    <div className="card-body p-5 d-flex justify-content-between">
+                                        <div className="text-center">
+                                            <h5>Fat</h5>
+                                            <p>{lastFood != null ? lastFood.grasa + ' %' : '-'}</p>
+                                        </div>
+                                        <div className="text-center">
+                                            <h5>Proteine</h5>
+                                            <p>{lastFood != null ? lastFood.proteina + ' %' : '-'}</p>
+                                        </div>
+                                        <div className="text-center">
+                                            <h5>Fiber</h5>
+                                            <p>{lastFood != null ? lastFood.fibra + ' %' : '-'}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

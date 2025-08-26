@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import moment from "moment";
 import { Context } from "../store/appContext";
 
 export const HeartRate = () => {

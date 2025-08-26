@@ -5,18 +5,33 @@ import { useNavigate, Link } from "react-router-dom";
 export const Login = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState(false);
+    
     const handleSubmit = async (event) => {
         event.preventDefault();
         const dataToSend = { username, password }
+
         await actions.login(dataToSend);
+
         store.alert = { text: "", background: "primary", visible: false };
         if (store.isLogged) {
             navigate('/home')
         }
     }
+
+    const validatePassword = (value) => {
+        const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+        if(!isValid.test(value)){
+            setError(true)
+        } else{
+            setError(false)
+        }
+        setPassword(value)
+    }
+
     return (
         <div className="container-fluid d-flex justify-content-center align-items-center vh-100" style={{
             background: "#F5EFDE", // Fondo claro y limpio
@@ -39,7 +54,7 @@ export const Login = () => {
                     </div>
                     <div className="mb-3 input-group">
                         <label className="form-label col-12">Password</label>
-                        <input onChange={(event) => setPassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className="form-control border-0 shadow-sm" placeholder="Enter your password" required />
+                        <input onChange={(event) => validatePassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className={`form-control ${error ? "is-invalid" : "is-valid"} border-0 shadow-sm`} placeholder="Enter your password" required />
                         <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
                             {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                         </span>

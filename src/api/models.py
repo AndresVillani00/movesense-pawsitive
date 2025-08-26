@@ -75,6 +75,7 @@ class Mascotas(db.Model):
     name_mascot = db.Column(db.String(), unique=False, nullable=False, default=" ")
     patologia = db.Column(db.String(), unique=False, nullable=True, default=" ")
     score = db.Column(db.Integer(), unique=False, nullable=True, default=0)
+    status = db.Column(db.Enum('active', 'nonactive', name='status'), nullable=False, default="active")
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_register = db.relationship('Users', back_populates='mascotas_registradas', lazy='select')
     usuarios = db.relationship('Users', secondary='users_mascotas', back_populates='mascotas', lazy='subquery')
@@ -92,6 +93,7 @@ class Mascotas(db.Model):
                 'name_mascot': self.name_mascot,
                 'patologia': self.patologia,
                 'score': self.score,
+                'status': self.status,
                 'user_id': self.user_id,
                 'usuarios': [u.id for u in self.usuarios]}
     
@@ -153,6 +155,7 @@ class Reportes(db.Model):
     food_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     description_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     action_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
+    analysis_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     ts_alta = db.Column(db.DateTime(), unique=False, nullable=False, default=datetime.utcnow)
     mascota_reports_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_reports_to = db.relationship('Mascotas', foreign_keys=[mascota_reports_id], backref=db.backref('mascota_reports_to'), lazy='select')
@@ -162,6 +165,7 @@ class Reportes(db.Model):
                 'food_ia': self.food_ia,
                 'description_ia': self.description_ia,
                 'action_ia': self.action_ia,
+                'analysis_ia': self.analysis_ia,
                 'ts_alta': self.ts_alta,
                 'mascota_reports_id':self.mascota_reports_id}
         
@@ -215,6 +219,7 @@ class Analysis(db.Model):
     leukocytes = db.Column(db.String(), unique=False, nullable=True, default="")
     ph = db.Column(db.String(), unique=False, nullable=True, default="")
     json_analysis = db.Column(db.JSON(), unique=False, nullable=True, default=" ")
+    ia_analysis = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     ts_init = db.Column(db.DateTime(), unique=False, nullable=True, default="")
     mascota_analysis_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_analysis_to = db.relationship('Mascotas', foreign_keys=[mascota_analysis_id], backref=db.backref('mascota_analysis_to'), lazy='select')
@@ -232,6 +237,7 @@ class Analysis(db.Model):
             'leukocytes': self.leukocytes,
             'ph': self.ph,
             'json_analysis': self.json_analysis,
+            'ia_analysis': self.ia_analysis,
             'ts_init': self.ts_init,
             'mascota_analysis_id':self.mascota_analysis_id}
 
@@ -246,6 +252,7 @@ class Comida(db.Model):
     fibra = db.Column(db.String(), unique=False, nullable=True, default="")
     ia_food = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     food_in_a_day = db.Column(db.String(), unique=False, nullable=True, default="")
+    json_food =db.Column(db.JSON(), unique=False, nullable=True, default=" ")
     mascota_comida_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_comida_to = db.relationship('Mascotas', foreign_keys=[mascota_comida_id], backref=db.backref('mascota_comida_to'), lazy='select')
 
@@ -258,6 +265,7 @@ class Comida(db.Model):
             'proteina': self.proteina,
             'fibra': self.fibra,
             'ia_food': self.ia_food,
+            'json_food': self.json_food,
             'food_in_a_day': self.food_in_a_day}
         
 

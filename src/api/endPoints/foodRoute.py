@@ -29,6 +29,7 @@ def food():
                     fibra=data.get('fibra'),
                     ia_food=data.get('ia_food'),
                     food_in_a_day=data.get('food_in_a_day'),
+                    json_food=data.get('json_food'),
                     mascota_comida_id=data.get('mascota_comida_id'))
         db.session.add(row)
         db.session.commit()

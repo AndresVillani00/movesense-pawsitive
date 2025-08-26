@@ -138,8 +138,8 @@ export const Incidencias = () => {
                                             </div>
                                         )}
                                         <div className="text-center p-2 mb-3">
-                                            <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the incident</label>
-                                            <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
+                                            <label htmlFor="selectFotoIncidencia" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the incident</label>
+                                            <input id="selectFotoIncidencia" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                                         </div>
                                     </div>
                                     <div className="row">
