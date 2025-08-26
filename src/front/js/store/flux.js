@@ -22,6 +22,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			fotoMascota: null,
 			fotoJsonAnalysis: null,
 			fotoJsonIncidencia: null,
+			fotoJsonFood: null,
 			alert: { text: '', background: 'primary', visible: false },
 			message: null,
 		},
@@ -31,6 +32,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setFotoMascota: (item) => { setStore({ fotoMascota: item }) },
 			setFotoJsonIncidencia: (item) => { setStore({ fotoJsonIncidencia: item }) },
 			setFotoJsonAnalysis: (item) => { setStore({ fotoJsonAnalysis: item }) },
+			setFotoJsonFood: (item) => { setStore({ fotoJsonFood: item }) },
 			getUserProfile: async () => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
@@ -427,7 +429,70 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 
-				getActions().getFood(dataToSend.mascota_metrica_id);
+				getActions().getFood(dataToSend.mascota_comida_id);
+			},
+			getReportes: async () => {
+				const uri = `${process.env.BACKEND_URL}/reportesApi/reportes`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de reportes");
+						return;
+					}
+					const data = await response.json();
+					setStore({ reportes: data.results });
+				} catch (error) {
+					console.log("Error en getReports:", error);
+				}
+			},
+			getReport: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/reportesApi/mascotas/${id}/reportes`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de reportes");
+						return;
+					}
+					const data = await response.json();
+					setStore({ reportes: data.results });
+				} catch (error) {
+					console.log("Error en getReport:", error);
+				}
+			},
+			postReport: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
+				const uri = `${process.env.BACKEND_URL}/reportesApi/reportes`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'El Reporte que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+
+				getActions().getReport(dataToSend.mascota_reports_id);
 			},
 			signup: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
@@ -440,7 +505,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+					}
 					if (response.status == 401) {
+						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+					}
+					if (response.status == 404) {
 						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
 					}
 					return
@@ -467,8 +538,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+					}
 					if (response.status == 401) {
-						setStore({ alert: { text: 'Usuario o contraseña incorrecto', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+					}
+					if (response.status == 404) {
+						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
 					}
 					return
 				}

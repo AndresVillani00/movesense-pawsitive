@@ -19,11 +19,16 @@ export const Report = () => {
                         <p>This report covers the last 30 days of your pet's health data</p>
                     </div>
 
+                    <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
+                        <h5 style={{ color: "#1B365D" }}>Patterns Detected</h5>
+                        <p>{store.report.description_ia}</p>
+                    </div>
+
                     <div className="row mb-4">
                         <div className="col-md-6 mb-3">
                             <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
-                                <h5 style={{ color: "#1B365D" }}>Patterns Detected</h5>
-                                <p>{store.report.description_ia}</p>
+                                <h5 style={{ color: "#1B365D" }}>Urine Analysis</h5>
+                                <p>{store.report.analysis_ia}</p>
                             </div>
                         </div>
                         <div className="col-md-6 mb-3">

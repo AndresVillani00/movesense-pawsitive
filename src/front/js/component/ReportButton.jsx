@@ -7,7 +7,7 @@ import { jsPDF } from "jspdf";
 export const ReportButton = ({ data }) => {
   const { store, actions } = useContext(Context);
 
-  const lastIncidencia = store.incidencias != null ? store.incidencias.reduce((latest, item) => { return new Date(item.ts_alta) > new Date(latest.ts_alta) ? item : latest; }) : null;
+  //const lastIncidencia = store.incidencias != null ? store.incidencias.reduce((latest, item) => { return new Date(item.ts_alta) > new Date(latest.ts_alta) ? item : latest; }) : null;
 
   const sendReport = (event) => {
     event.preventDefault();
@@ -16,7 +16,9 @@ export const ReportButton = ({ data }) => {
       score: store.currentMascota.score,
       description_ia: lastIncidencia.ia_desciption,
       food_ia: store.food.ia_food,
-      action_ia: lastIncidencia.ia_action
+      action_ia: lastIncidencia.ia_action,
+      analysis_ia: lastAnalysis.ia_analysis,
+      mascota_reports_id: store.idParam
     }
 
       actions.postReport(dataToSend);

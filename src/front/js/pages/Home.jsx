@@ -1,12 +1,13 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
-import { Tab, Nav, Container } from 'react-bootstrap';
+import { useNavigate, Link } from "react-router-dom";
+import { Tab, Nav, Container, Form } from 'react-bootstrap';
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
 
+  const [showModal, setShowModal] = useState(false);
   const [activeKey, setActiveKey] = useState(store.isVeterinario ? 'incidents' : 'existing');
   const [share_mascota_name_id, setShareMascotaId] = useState('');
   const [share_password, setSharePassword] = useState('');
@@ -19,14 +20,35 @@ export const Home = () => {
   const [gender, setGender] = useState('');
   const [isEsterilizado, setEsterilizado] = useState('');
   const [patologia, setPatology] = useState('');
+  const [error, setError] = useState(false);
   const [search, setSearch] = useState("");
+
+  const modalRef = useRef(null);
+  const bsModal = useRef(null);
 
   useEffect(() => {
     if (activeKey === 'incidents') {
       actions.getIncidencias();
-      actions.getUsersMascotas();
+      actions.getReports();
+      actions.getMascotas();
     }
   }, []);
+
+  useEffect(() => {
+      // Cargar modal de Bootstrap solo una vez
+      if (modalRef.current) {
+          bsModal.current = new window.bootstrap.Modal(modalRef.current, {
+              backdrop: 'static',
+              keyboard: false,
+          });
+      }
+  }, []);
+  
+  useEffect(() => {
+      if (bsModal.current) {
+          showModal ? bsModal.current.show() : bsModal.current.hide();
+      }
+  }, [showModal]);
 
   const handleShareSubmit = async (event) => {
     event.preventDefault();
@@ -57,10 +79,18 @@ export const Home = () => {
       is_mix: isMix,
       is_Esterilizado: isEsterilizado
     }
-
-    await actions.postMascota(dataToSend);
+    
+    if(!error){
+      await actions.postMascota(dataToSend);
+    }
+    
     setActiveKey('existing')
     navigate('/home');
+  }
+
+  const handleMascotDelete = async (event, idMascot) => {
+    event.preventDefault();
+    await actions.deleteMascot(idMascot);
   }
 
   const handleCapture = async (event) => {
@@ -112,6 +142,18 @@ export const Home = () => {
     });
   };
 
+  const validatePassword = async (value) => {
+        const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+        if(!isValid.test(value)){
+            store.alert = { text: "The password most have at least 8 characters and a symbol", background: "danger", visible: true };
+            setError(true)
+        } else{
+            store.alert = { text: "", background: "primary", visible: false };
+            setError(false)
+        }
+        setPassword(value)
+    }
+
   return (
     <div style={{ background: "#F5EFDE" }}>
 
@@ -146,13 +188,47 @@ export const Home = () => {
                         style={{ height: "300px", objectFit: "cover" }}
                       />
                       <div className="card-body text-center">
-                        <div className="card-title mb-3 text-start">
-                          <h4 style={{ color: "#1E1E50" }}>
-                            {item.name_mascot}
-                          </h4>
-                          <h6 className="text-secondary">
-                            {item.raza}
-                          </h6>
+                        <div className="card-title mb-3 d-flex justify-content-between">
+                          <div>
+                            <h4 style={{ color: "#1E1E50" }}>
+                              {item.name_mascot}
+                            </h4>
+                            <h6 className="text-secondary">
+                              {item.raza}
+                            </h6>
+                          </div>
+                          <div>
+                            <Link className="nav-link mx-2 fw-medium" to={'/edit-pet'}>
+                              lapiz
+                            </Link>
+                            <button className="btn btn-outline-danger" onClick={() => setShowModal(true)}>Delete</button>
+                            <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
+                              <div className="modal-dialog modal-dialog-centered">
+                                <div className="container modal-content">
+                                  <div className="modal-header row d-flex justify-content-between">
+                                    <h3 className="modal-title fs-4 col-md-8">Are your sure you want to delete this pet ?</h3>
+                                    <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}></button>
+                                  </div>
+                                  <div className="modal-body d-flex justify-content-end">
+                                    <button type="button" className="btn btn-primary" style={{
+                                        color: "white",
+                                        background: "#ff6100",
+                                        border: "#ff6100",
+                                        borderRadius: "30px",
+                                        padding: "10px 20px"
+                                    }}
+                                    onClick={(event) => handleMascotDelete(event, item.id)}>
+                                        Delete
+                                    </button>
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
+                                        onClick={() => setShowModal(false)} style={{ borderRadius: "30px", padding: "10px 20px" }}>
+                                        Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+                          </div>
                         </div> 
                         <button className="btn fw-bold" type="button" onClick={(event) => handleDetails(event, item)}
                           style={{ color: "white", 
@@ -187,7 +263,7 @@ export const Home = () => {
                   </div>
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">Mascot Password</label>
-                    <input type="password" name="password" className="form-control" value={password} onChange={(event) => setPassword(event.target.value)} />
+                    <input type="password" name="password" className="form-control" value={password} onChange={(event) => validatePassword(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">Mascot Name</label>
@@ -206,8 +282,14 @@ export const Home = () => {
                     </select>
                   </div>
                   <div className="col-md-4 mb-3">
-                    <label className="form-label fw-semibold">Patology</label>
-                    <input type="text" name="patology" className="form-control" value={patologia} onChange={(event) => setPatology(event.target.value)} />
+                    <label className="form-label fw-semibold">Pathology</label>
+                    <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} required >
+                      <option value="">Select a Pathology</option>
+                      <option value="food_pathology">Food pathology</option>
+                      <option value="movility_pathology">Movility pathology</option>
+                      <option value="skin_pathology">Skin pathology</option>
+                      <option value="cardiac_pathology">Cardiac pathology</option>
+                    </select>
                   </div>
                   <div className="col-md-12 mb-3">
                     <label className="form-label fw-semibold">Raza</label>
@@ -290,12 +372,7 @@ export const Home = () => {
                   <tbody>
                     {filtrarPorMascota(store.incidencias, "incidencia").map(
                       (item, index) => {
-                        const mascot =
-                          store.mascotas != null
-                            ? store.mascotas.find(
-                                (m) => m.id == item.mascota_incidencia_id
-                              )
-                            : null;
+                        const mascot = store.mascotas != null ? store.mascotas.find((m) => m.id == item.mascota_incidencia_id): null;
 
                         return (
                           <tr key={index} className="text-center">
