@@ -26,11 +26,13 @@ def users():
         password = data.get('password', None)
 
         if len(password) < 8:
-            return jsonify({"error": "La contraseña debe tener al menos 8 caracteres"}), 400
+            response_body['message'] = f'La contraseña debe tener al menos 8 caracteres'
+            return response_body, 400
 
         symbols = "!@#$%^&*"
         if not any(char in symbols for char in password):
-            return jsonify({"error": "La contraseña debe contener al menos un símbolo"}), 401
+            response_body['message'] = f'La contraseña debe contener al menos un símbolo'
+            return response_body, 401
         
         row = Users(username=data.get('username'),
                     password=data.get('password'),
@@ -62,7 +64,8 @@ def users():
         user = row.serialize()
         claims = {'user_id': user['id'],
               'user_username': user['username'],
-              'is_veterinario': user['is_veterinario']}
+              'is_veterinario': user['is_veterinario'],
+              'subscription_code': user['subscription_code']}
         access_token = create_access_token(identity=data.get('username'), additional_claims=claims)
         response_body['access_token'] = access_token
         response_body['message'] = f'Agregar nuevo Usuario'

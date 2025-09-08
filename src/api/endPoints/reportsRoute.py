@@ -22,7 +22,8 @@ def reportes():
         return response_body, 200
     if request.method == 'POST': 
         data = request.json
-        row = Reportes(food_ia=data.get('food_ia'),
+        row = Reportes(score=data.get('score'),
+                     food_ia=data.get('food_ia'),
                      description_ia=data.get('description_ia'),
                      action_ia=data.get('action_ia'),
                      analysis_ia=data.get('analysis_ia'),

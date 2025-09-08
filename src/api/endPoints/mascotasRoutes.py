@@ -29,10 +29,21 @@ def postMascotas():
     if request.method == 'POST':
         data = request.json 
         user_id = additional_claims['user_id']
+        password = data.get('password', None)
         is_veterinario = additional_claims['is_veterinario']
         if is_veterinario:
             response_body['message'] = f'El usuario es Veterinario'
             return response_body, 404
+
+        if len(password) < 8:
+            response_body['message'] = f'La contraseña debe tener al menos 8 caracteres'
+            return response_body, 400
+
+        symbols = "!@#$%^&*"
+        if not any(char in symbols for char in password):
+            response_body['message'] = f'La contraseña debe contener al menos un símbolo'
+            return response_body, 401
+        
         row = Mascotas(mascota_name_id=data.get('mascota_name_id'),
                     password=data.get('password'),
                     name_mascot=data.get('name_mascot'),
@@ -43,7 +54,6 @@ def postMascotas():
                     patologia=data.get('patologia'),
                     is_mix=data.get('is_mix'),
                     is_Esterilizado=data.get('is_Esterilizado'),
-                    score=data.get('score'),
                     user_id=user_id)
         db.session.add(row)
         db.session.commit()
@@ -108,7 +118,8 @@ def share_mascot(mascota_name_id):
 @jwt_required()
 def delete_share_mascot(id, usuario_id):
     response_body = {}
-    user_log_id = get_jwt()['user_id']
+    additional_claims = get_jwt()
+    user_log_id = additional_claims['user_id']
     row = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
     if not row:
         response_body['message'] = f'La Mascota de id: {id}, no existe'
@@ -126,24 +137,34 @@ def delete_share_mascot(id, usuario_id):
         response_body['message'] = 'Usuario eliminado correctamente de la mascota'
         return response_body, 200
 
+
 @mascotas_api.route('/mascotas/<int:id>', methods=['PUT', 'DELETE'])
+@jwt_required()
 def mascota(id):
     response_body = {}
+    user_log_id = get_jwt()['user_id']
     row = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
     if not row:
         response_body['message'] = f'La Mascota de id: {id}, no existe'
+    if row.user_id != user_log_id:
+        response_body['message'] = f'La contraseña debe tener al menos 8 caracteres'
+        return response_body, 403
     if request.method == 'PUT':
         data = request.json
-        row.mascota_name_id = data.get('mascota_name_id', row.mascota_name_id)
-        row.password = data.get('password', row.password)
+        password = data.get('password', None)
+        if len(password) < 8:
+            response_body['message'] = f'La contraseña debe tener al menos 8 caracteres'
+            return response_body, 400
+
+        symbols = "!@#$%^&*"
+        if not any(char in symbols for char in password):
+            response_body['message'] = f'La contraseña debe contener al menos un símbolo'
+            return response_body, 401
         row.name_mascot = data.get('name_mascot', row.name_mascot)
         row.foto_mascot = data.get('foto_mascot', row.foto_mascot)
         row.raza = data.get('raza', row.raza)
-        row.birth_date = data.get('birth_date', row.birth_date)
-        row.patologia = data.get('patologia', row.patologia)
-        row.is_mix = data.get('is_mix', row.is_mix)
         row.is_Esterilizado = data.get('is_Esterilizado', row.is_Esterilizado)
-        row.score = data.get('score', row.score)
+        row.patologia = data.get('patologia', row.patologia)
         row.status = data.get('status', row.status)
         db.session.commit()
         response_body['message'] = f'Mascota con id: {id}. Actualizado'
@@ -152,7 +173,7 @@ def mascota(id):
     if request.method == 'DELETE':
         db.session.delete(row)
         db.session.commit()
-        response_body['message'] = f'Mascota con id: {id}. Eliminado'
+        response_body['message'] = f'Mascota con id: {id}. Actualizado'
         return response_body, 200
 
 

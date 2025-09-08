@@ -153,13 +153,80 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+					}
 					if (response.status == 401) {
-						setStore({ alert: { text: 'La Mascota que intenta registrar ya existe', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+					}
+					if (response.status == 404) {
+						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
 					}
 					return
 				}
 
 				getActions().getUsersMascotas()
+			},
+			updateMascota: async (dataToSend, id) => {
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const options = {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+					}
+					if (response.status == 401) {
+						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+					}
+					if (response.status == 404) {
+						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+				const datos = await response.json();
+				setStore({ currentMascota: datos.results })
+				getActions().getUsersMascotas()
+			},
+			deleteMascota: async (id) => {
+				const token = localStorage.getItem("token");
+				if (!token) return false;  
+			
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;  
+				const options = {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				};
+			
+				try {
+					const response = await fetch(uri, options);
+					if (!response.ok) {
+						if (response.status == 403) {
+							setStore({ alert: { text: `This User don't have permission to delete this Pet`, background: 'danger', visible: true } })
+						}
+						return
+					}
+			
+					const updatedMascotas = getStore().mascotas.filter(mascota => mascota.id !== id);
+					setStore({ mascotas: updatedMascotas });
+			
+					return true; 
+				} catch (error) {
+					console.log("Error en deleteMascota:", error);
+					return false; 
+				}
 			},
 			getAnalysis: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/analysisApi/mascotas/${id}/analysis`;
@@ -545,7 +612,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
 					}
 					if (response.status == 404) {
-						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'Incorrect User or password', background: 'danger', visible: true } })
 					}
 					return
 				}
@@ -568,6 +635,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 					userMascotas:[]
 				})
 				localStorage.removeItem('token')
+			},
+			paymentIntent: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const uri = `${process.env.BACKEND_URL}/stripeApi/create-subscription-session`;
+				const options = {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(dataToSend),
+					Authorization: `Bearer ${token}`
+				};
+				const response = await fetch(uri, options);
+
+				const data = await response.json();
+				if (data.url) {
+					window.location.href = data.url; // redirige a Stripe
+				} else {
+					console.error("Error al crear sesión:", data.error);
+				}
 			},
 			setIsLogged: (value) => {
 				setStore({ isLogged: value })

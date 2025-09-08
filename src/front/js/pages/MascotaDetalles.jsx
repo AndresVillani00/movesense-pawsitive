@@ -96,13 +96,13 @@ export const MascotaDetalles = () => {
                                             <Nav.Link style={{ color: "#1B365D" }} eventKey="food">Food Tracking</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="medicine">Medicine</Nav.Link>
+                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="medicine" disabled>Medicine</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="appoiment">Appoiment</Nav.Link>
+                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="appoiment" disabled>Appoiment</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="result">Result</Nav.Link>
+                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="result" disabled>Result</Nav.Link>
                                         </Nav.Item>
                                     </Nav>
                                     <Tab.Content className="border-0 p-4 bg-transparent mt-3">

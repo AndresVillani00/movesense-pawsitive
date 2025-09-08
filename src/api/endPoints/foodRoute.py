@@ -22,13 +22,15 @@ def food():
         return response_body, 200
     if request.method == 'POST':
         data = request.json 
-        row = Comida(type_food=data.get('type_food'),
+        row = Comida(title=data.get('title'),
+                    type_food=data.get('type_food'),
                     marca=data.get('marca'),
                     grasa=data.get('grasa'),
                     proteina=data.get('proteina'),
                     fibra=data.get('fibra'),
                     ia_food=data.get('ia_food'),
-                    food_in_a_day=data.get('food_in_a_day'),
+                    food_time=data.get('food_time'),
+                    quantity=data.get('quantity'),
                     json_food=data.get('json_food'),
                     mascota_comida_id=data.get('mascota_comida_id'))
         db.session.add(row)

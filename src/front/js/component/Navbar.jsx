@@ -41,22 +41,35 @@ export const Navbar = () => {
                     </ul>
 
                     {/* Sección de usuario */}
-                    <div className="d-flex justify-content-center">
+                    <div className="row g-3">
 
                         {/* Dropdown de usuario */}
                         {store.isLogged ? (
-                            <Dropdown className="ms-3">
-                                <Dropdown.Toggle variant="light" className="d-flex align-items-center border-0">
-                                    <span className="fw-bold text-dark ms-2">{store.usuario.username}</span>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu align="end">
-                                    <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
-                                    <Dropdown.Divider />
-                                    <Dropdown.Item as={Link} to="/home" onClick={() => actions.logout()} className="text-danger">
-                                        Cerrar Sesión
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                            <div className="d-flex justify-content-center">
+                                <Link to="/payment">
+                                    <button className="btn fw-bold" style={{
+                                        color: "white", 
+                                        background:"#ff6100", 
+                                        border: "#ff6100",
+                                        borderRadius: "8px",
+                                        padding: "8px 16px"
+                                    }}>
+                                        Subscribe
+                                    </button>
+                                </Link>
+                                <Dropdown className="ms-3">
+                                    <Dropdown.Toggle variant="light" className="d-flex align-items-center border-0">
+                                        <span className="fw-bold text-dark ms-2">{store.usuario.username}</span>
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu align="end">
+                                        <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
+                                        <Dropdown.Divider />
+                                        <Dropdown.Item as={Link} to="/home" onClick={() => actions.logout()} className="text-danger">
+                                            Cerrar Sesión
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
                         ) : (
                             <div className="d-flex ms-3">
                                 <Link to="/login">

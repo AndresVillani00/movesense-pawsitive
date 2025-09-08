@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Tab, Nav, Container, Form } from 'react-bootstrap';
 
 export const Home = () => {
@@ -21,7 +21,9 @@ export const Home = () => {
   const [isEsterilizado, setEsterilizado] = useState('');
   const [patologia, setPatology] = useState('');
   const [error, setError] = useState(false);
-  const [search, setSearch] = useState("");
+  const [searchName, setSearchName] = useState('');
+  const [filterStatus, setFilterStatus] = useState(''); 
+  const [filterDate, setFilterDate] = useState('');
 
   const modalRef = useRef(null);
   const bsModal = useRef(null);
@@ -29,7 +31,7 @@ export const Home = () => {
   useEffect(() => {
     if (activeKey === 'incidents') {
       actions.getIncidencias();
-      actions.getReports();
+      actions.getReportes();
       actions.getMascotas();
     }
   }, []);
@@ -80,17 +82,16 @@ export const Home = () => {
       is_Esterilizado: isEsterilizado
     }
     
-    if(!error){
-      await actions.postMascota(dataToSend);
-    }
+    await actions.postMascota(dataToSend);
     
     setActiveKey('existing')
     navigate('/home');
   }
 
-  const handleMascotDelete = async (event, idMascot) => {
-    event.preventDefault();
-    await actions.deleteMascot(idMascot);
+  const handleMascotDelete = async (idMascot) => {
+    actions.deleteMascota(idMascot);
+    setShowModal(false)
+    await actions.getUsersMascotas();
   }
 
   const handleCapture = async (event) => {
@@ -115,8 +116,25 @@ export const Home = () => {
     await actions.getIncidencia(mascota.id);
     await actions.getShareUsers(mascota.mascota_name_id);
     
-    navigate(`/mascota-profile/${mascota.id}`);
+    navigate('/pet-details');
   };
+
+  const handleEdit = async (event, mascota) => {
+    event.preventDefault();
+
+    actions.setCurrentMascota(mascota);
+    actions.setIdParam(mascota.id)
+    
+    navigate('/edit-pet');
+  };
+
+  const handleReport = async (event, id) => {
+    event.preventDefault();
+
+    
+
+    navigate('/report');
+  }
 
   const formatDateTime = (value) => {
     if (!value) return null;
@@ -133,22 +151,39 @@ export const Home = () => {
   }
 
   // Normalizamos búsqueda (case-insensitive)
-  const filtrarPorMascota = (lista, tipo) => {
-    return lista.filter((item) => {
-      const mascota = store.mascotas != null ? store.mascotas.find((m) => m.id == (tipo === "incidencia" ? item.mascota_incidencia_id : item.mascota_reporte_id)) : null;
+  const filterData = (data, type) => {
+    return data.filter((item) => {
+      const mascota =
+        store.mascotas != null
+          ? store.mascotas.find(
+              (mascota) =>
+                mascota.id ===
+                (type === "incidencias"
+                  ? item.mascota_incidencia_id
+                  : item.mascota_reports_id)
+            )
+          : null;
 
-      if (!search) return true; // si no hay búsqueda → muestra todo
-      return mascota.mascota_name_id.toLowerCase().includes(search.toLowerCase());
+      const mascotName = mascota ? mascota.mascota_name_id.toLowerCase() : "";
+
+      const matchesName = mascotName.includes(searchName.toLowerCase());
+      const matchesStatus = filterStatus
+        ? item.status_read === filterStatus : true;
+      const matchesDate = filterDate
+        ? (formatDateTime(item.ts_alta) &&
+            formatDateTime(item.ts_alta).substring(0, 10) === filterDate)
+        : true;
+
+
+      return matchesName && matchesStatus && matchesDate;
     });
   };
 
   const validatePassword = async (value) => {
         const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
         if(!isValid.test(value)){
-            store.alert = { text: "The password most have at least 8 characters and a symbol", background: "danger", visible: true };
             setError(true)
         } else{
-            store.alert = { text: "", background: "primary", visible: false };
             setError(false)
         }
         setPassword(value)
@@ -156,7 +191,6 @@ export const Home = () => {
 
   return (
     <div style={{ background: "#F5EFDE" }}>
-
       {/* Sección de Categorías */}
       {store.isLogged ?
       <section className="container py-5">
@@ -198,10 +232,12 @@ export const Home = () => {
                             </h6>
                           </div>
                           <div>
-                            <Link className="nav-link mx-2 fw-medium" to={'/edit-pet'}>
-                              lapiz
-                            </Link>
-                            <button className="btn btn-outline-danger" onClick={() => setShowModal(true)}>Delete</button>
+                            <button type="button" className="btn border-0 bg-transparent p-0 mx-3" onClick={(event) => handleEdit(event, item)}>
+                              <i className="fa-solid fa-pen-to-square text-primary"></i>
+                            </button>
+                            <button type="button" className="btn border-0 bg-transparent p-0" onClick={() => setShowModal(true)}>
+                              <i className="fa-solid fa-trash-can text-danger"></i>
+                            </button>
                             <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
                               <div className="modal-dialog modal-dialog-centered">
                                 <div className="container modal-content">
@@ -217,7 +253,7 @@ export const Home = () => {
                                         borderRadius: "30px",
                                         padding: "10px 20px"
                                     }}
-                                    onClick={(event) => handleMascotDelete(event, item.id)}>
+                                    onClick={() => handleMascotDelete(item.id)}>
                                         Delete
                                     </button>
                                     <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
@@ -227,7 +263,7 @@ export const Home = () => {
                                   </div>
                                 </div>
                               </div>
-                          </div>
+                            </div>
                           </div>
                         </div> 
                         <button className="btn fw-bold" type="button" onClick={(event) => handleDetails(event, item)}
@@ -235,7 +271,7 @@ export const Home = () => {
                             background:"#ff6100", 
                             border: "#ff6100",
                           }}>
-                          Detalles
+                          Details
                         </button>
                       </div>
                     </div>
@@ -253,20 +289,20 @@ export const Home = () => {
                       </div>
                     )}
                     <div className="text-center my-5 mb-3">
-                      <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background:"#ff6100", border: "#ff6100"}}>Upload a photo of your mascot</label>
+                      <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background:"#ff6100", border: "#ff6100"}}>Upload a photo of your Pet</label>
                       <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                     </div>
                   </div>
                   <div className="col-md-4 mb-3">
-                    <label className="form-label fw-semibold">Mascot Username</label>
+                    <label className="form-label fw-semibold">Pet Username</label>
                     <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
-                    <label className="form-label fw-semibold">Mascot Password</label>
+                    <label className="form-label fw-semibold">Pet Password</label>
                     <input type="password" name="password" className="form-control" value={password} onChange={(event) => validatePassword(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
-                    <label className="form-label fw-semibold">Mascot Name</label>
+                    <label className="form-label fw-semibold">Pet Name</label>
                     <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
@@ -292,20 +328,20 @@ export const Home = () => {
                     </select>
                   </div>
                   <div className="col-md-12 mb-3">
-                    <label className="form-label fw-semibold">Raza</label>
+                    <label className="form-label fw-semibold">Breed</label>
                     <input type="text" name="raza" className="form-control" value={raza} onChange={(event) => setRaza(event.target.value)} required />
                   </div>
                   <div className="col-md-6 mx-3 mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="is_mix" onChange={(event) => setMix(event.target.checked)}/>
-                    <label className="form-check-label" htmlFor="is_mix">Your mascot is mix ?</label>
+                    <label className="form-check-label" htmlFor="is_mix">Is your pet mixed race?</label>
                   </div>
                   <div className="col-md-6 mx-3 mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setEsterilizado(event.target.checked)}/>
-                    <label className="form-check-label" htmlFor="is_esterilizado">Your mascot is Esterilizado ?</label>
+                    <label className="form-check-label" htmlFor="is_esterilizado">Is your pet Sterilized ?</label>
                   </div>
                   {/* Botones de acción */}
                   <div className="d-flex justify-content-between">
-                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Sign In Mascot</button>
+                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Sign In Pet</button>
                   </div>
                 </form>
               </Tab.Pane>
@@ -313,16 +349,16 @@ export const Home = () => {
                 <form onSubmit={handleShareSubmit} className="row g-3">
                   {/* Campos del formulario */}
                   <div className="col-md-12 mb-3">
-                    <label className="form-label fw-semibold">Mascot Username</label>
+                    <label className="form-label fw-semibold">Pet Username</label>
                     <input type="text" name="mascota_id" className="form-control" value={share_mascota_name_id} onChange={(event) => setShareMascotaId(event.target.value)} />
                   </div>
                   <div className="col-md-12 mb-3">
-                    <label className="form-label fw-semibold">Mascot Password</label>
+                    <label className="form-label fw-semibold">Pet Password</label>
                     <input type="password" name="password" className="form-control" value={share_password} onChange={(event) => setSharePassword(event.target.value)} />
                   </div>
                   {/* Botones de acción */}
                   <div className="d-flex justify-content-between">
-                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Sign In Mascot</button>
+                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Sign In Pet</button>
                   </div>
                 </form>
               </Tab.Pane>
@@ -332,14 +368,45 @@ export const Home = () => {
         :
         <Container className="row justify-content-center mt-4">
           {/* Barra de búsqueda */}
-          <Form className="mb-3">
-            <Form.Control
-              type="text"
-              placeholder="Buscar por nombre de mascota..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </Form>
+          <div className="row mb-3">
+            <div className="col-md-3">
+              <Form.Control
+                type="text"
+                placeholder="Buscar mascota..."
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3">
+              <Form.Select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+              >
+                <option value="">Filtrar por estado...</option>
+                <option value="leido">Readed</option>
+                <option value="noleido">Un Readed</option>
+              </Form.Select>
+            </div>
+            <div className="col-md-3">
+              <Form.Control
+                type="date"
+                value={filterDate}
+                onChange={(e) => setFilterDate(e.target.value)}
+              />
+            </div>
+            <div className="col-md-2">
+              <button style={{ color: "white", background:"#1B365D", border: "#1B365D", borderRadius: "8px", padding: "8px 16px" }}
+                variant="secondary"
+                onClick={() => {
+                  setSearchName("");
+                  setFilterStatus("");
+                  setFilterDate("");
+                }}
+              >
+                Limpiar
+              </button>
+            </div>
+          </div>
 
           <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
             <Nav variant="tabs" className="bg-light justify-content-center rounded">
@@ -370,7 +437,7 @@ export const Home = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {filtrarPorMascota(store.incidencias, "incidencia").map(
+                    {filterData(store.incidencias, "incidencia").map(
                       (item, index) => {
                         const mascot = store.mascotas != null ? store.mascotas.find((m) => m.id == item.mascota_incidencia_id): null;
 
@@ -397,13 +464,13 @@ export const Home = () => {
                     <tr className="text-center">
                       <th>Mascot</th>
                       <th>Score</th>
-                      <th>Description</th>
-                      <th>Food</th>
-                      <th>Action</th>
+                      <th>State</th>
+                      <th>Date</th>
+                      <th>Report</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filtrarPorMascota(store.reportes, "reporte").map(
+                    {filterData(store.reportes, "reporte").map(
                       (item, index) => {
                         const mascot =
                           store.mascotas != null
@@ -416,9 +483,9 @@ export const Home = () => {
                           <tr key={index} className="text-center">
                             <td>{mascot ? mascot.mascota_name_id : "-"}</td>
                             <td>{item.score != null ? item.score : "-"}</td>
-                            <td>{item.description_ia != null ? item.description_ia : "-"}</td>
-                            <td>{item.food_ia != null ? item.food_ia : "-"}</td>
-                            <td>{item.action_ia != null ? item.action_ia : "-"}</td>
+                            <td>{item.status_read != null ? (item.status_read == 'leido' ? 'Readed' : 'Un Readed' ) : "-"}</td>
+                            <td>{item.ts_alta != null ? formatDateTime(item.ts_alta) : "-"}</td>
+                            <td><button className="btn fw-bold" onClick={(event) => handleReport(event, item.id)} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px" }}>See</button></td>
                           </tr>
                         );
                       }

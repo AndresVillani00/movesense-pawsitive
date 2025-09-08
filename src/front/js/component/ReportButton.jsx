@@ -1,28 +1,12 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import logo from '../../img/LogoPawsitive.png';
 import { jsPDF } from "jspdf";
 
 export const ReportButton = ({ data }) => {
-  const { store, actions } = useContext(Context);
-
-  //const lastIncidencia = store.incidencias != null ? store.incidencias.reduce((latest, item) => { return new Date(item.ts_alta) > new Date(latest.ts_alta) ? item : latest; }) : null;
-
-  const sendReport = (event) => {
-    event.preventDefault();
-
-    const dataToSend = {
-      score: store.currentMascota.score,
-      description_ia: lastIncidencia.ia_desciption,
-      food_ia: store.food.ia_food,
-      action_ia: lastIncidencia.ia_action,
-      analysis_ia: lastAnalysis.ia_analysis,
-      mascota_reports_id: store.idParam
-    }
-
-      actions.postReport(dataToSend);
-  }
+  const { store } = useContext(Context);
+  const navigate = useNavigate();
 
   const generatePDF = async () => {
     const doc = new jsPDF();
@@ -95,15 +79,15 @@ export const ReportButton = ({ data }) => {
   };
 
   return (
-    <div className="card-footer d-flex justify-content-between" style={{ background: "#ffffffff" }}>
-      <Link to="/report">
-        <button className="btn fw-bold" onClick={event => sendReport(event)} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "30px", padding: "10px 20px"}}>
+    <div className="card-footer" style={{ background: "#ffffffff" }}>
+      <div className="d-flex justify-content-between">
+        <button className="btn fw-bold" onClick={() => navigate('/report')} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px"}}>
           Health Report
         </button>
-      </Link>
-      <button className="btn fw-bold" onClick={generatePDF} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "30px", padding: "10px 20px"}}>
-        PDF Report
-      </button>
+        <button className="btn fw-bold" onClick={generatePDF} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px"}}>
+          PDF Report
+        </button>
+      </div>
     </div>
   );
 }
