@@ -49,11 +49,11 @@ export const Food = () => {
             fibra,
             quantity,
             food_time,
+            foto_food: store.fotoJsonFood.foto,
             mascota_comida_id: store.idParam
         }
 
         store.alert = { text: "", background: "primary", visible: false };
-        console.log(dataToSend)
         await actions.postFood(dataToSend);
         setShowModal(false);
     };

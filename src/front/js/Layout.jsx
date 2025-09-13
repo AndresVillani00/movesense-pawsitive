@@ -25,6 +25,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { PaymentFail } from "./pages/PaymentFail.jsx";
 import { MascotaDetalles } from "./pages/MascotaDetalles.jsx";
 import { MascotaProfile } from "./pages/MascotaProfile.jsx";
+import { IncidenciasUser } from "./pages/IncidenciasUser.jsx";
 
 
 
@@ -55,6 +56,7 @@ const Layout = () => {
                             <Route element={<MascotaDetalles />} path="/pet-details" />
                             <Route element={<MascotaProfile />} path="/edit-pet" />
                             <Route element={<Report />} path="/report" />
+                            <Route element={<IncidenciasUser />} path="/incidencias" />
                             <Route element={<AboutUs />} path="/about-us" />
                             <Route element={<Cart />} path="/cart" />
                             <Route element={<Payment />} path="/payment" />

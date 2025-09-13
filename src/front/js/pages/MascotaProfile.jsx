@@ -12,7 +12,11 @@ export const MascotaProfile = () => {
   const [is_Esterilizado, setIsEsterilizado] = useState(store.currentMascota.is_Esterilizado);
   const [patologia, setPatology] = useState(store.currentMascota.patologia);
   const [status, setStatus] = useState(store.currentMascota.status);
-  const [error, setError] = useState(false);
+
+  const razas = ['Beagle', 'Border Collie', 'Bóxer', 'Bulldog Francés', 'Bulldog Inglés', 'Caniche', 'Chihuahua', 'Cocker Spaniel Inglés', 'Dálmata', 'Dobermann', 
+    'Epagneul Bretón', 'Galgo Español', 'Golden Retriever', 'Husky Siberiano', 'Jack Russell Terrier / Parson Russell Terrier', 'Labrador Retriever', 'Mastín Español', 
+    'Pastor Alemán', 'Perro de Agua Español', 'Podenco Ibicenco / Podenco Canario', 'Pomerania (Spitz Alemán Enano)', 'Pug (Carlino)', 'Rottweiler', 'San Bernardo', 
+    'Setter Inglés', 'Shih Tzu', 'Staffordshire Bull Terrier / American Staffordshire Terrier', 'Teckel (Dachshund)', 'West Highland White Terrier', 'Yorkshire Terrier', 'Otros']
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -65,11 +69,11 @@ export const MascotaProfile = () => {
               <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
             </div>
           </div>
-          <div className="col-md-4 mb-3">
+          <div className="col-md-6 mb-3">
             <label className="form-label fw-semibold">Pet Name</label>
             <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} />
           </div>
-          <div className="col-md-4 mb-3">
+          <div className="col-md-6 mb-3">
             <label className="form-label fw-semibold">Pathology</label>
             <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} required >
               <option value="">Select a Pathology</option>
@@ -79,18 +83,24 @@ export const MascotaProfile = () => {
               <option value="cardiac_pathology">Cardiac pathology</option>
             </select>
           </div>
-          <div className="col-md-8 mb-3">
+          <div className="col-md-6 mb-3">
             <label className="form-label fw-semibold">Breed</label>
-            <input type="text" name="raza" className="form-control" value={raza} onChange={(event) => setRaza(event.target.value)} required />
+            <select className="form-select" aria-label="Default select example" value={raza} onChange={(event) => setRaza(event.target.value)} required >
+              <option value="">Select a Breed</option>
+              {razas.map((item) => {
+                return (
+                  <option value={item}>{item}</option>
+                );
+              }
+            )}
+            </select>
           </div>
-          <div className="d-flex">
-            <div className="col-md-5">
-              <label className="form-label fw-semibold">Change this if your pet is still active</label>
-              <select className="form-select" aria-label="Default select example" value={status} onChange={(event) => setStatus(event.target.value)} required >
-                <option value="active">Still Active</option>
-                <option value="nonactive">Not Active</option>
-              </select>
-            </div>
+          <div className="col-md-6">
+            <label className="form-label fw-semibold">Change this if your pet is still active</label>
+            <select className="form-select" aria-label="Default select example" value={status} onChange={(event) => setStatus(event.target.value)} required >
+              <option value="active">Still Active</option>
+              <option value="nonactive">Not Active</option>
+            </select>
           </div>
           {/* Botones de acción */}
           <div className="d-flex justify-content-between">

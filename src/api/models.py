@@ -135,7 +135,7 @@ class Incidencias(db.Model):
     ia_description = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     ia_action = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     alert_status = db.Column(db.String(), unique=False, nullable=False, default=" ")
-    json_incidencia =db.Column(db.JSON(), unique=False, nullable=True, default=" ")
+    foto_incidencia = db.Column(db.String(), unique=False, nullable=True, default=" ")
     ts_alta = db.Column(db.DateTime(), unique=False, nullable=False, default=datetime.utcnow)
     mascota_incidencia_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_incidencia_to = db.relationship('Mascotas', foreign_keys=[mascota_incidencia_id], backref=db.backref('mascota_incidencia_to'), lazy='select')
@@ -150,7 +150,7 @@ class Incidencias(db.Model):
                 'ia_description': self.ia_description,
                 'ia_action': self.ia_action,
                 'alert_status': self.alert_status,
-                'json_incidencia': self.json_incidencia,
+                'foto_incidencia': self.foto_incidencia,
                 'ts_alta': self.ts_alta,
                 'mascota_incidencia_id':self.mascota_incidencia_id}
     
@@ -228,7 +228,7 @@ class Analysis(db.Model):
     nitrite = db.Column(db.String(), unique=False, nullable=True, default="")
     leukocytes = db.Column(db.String(), unique=False, nullable=True, default="")
     ph = db.Column(db.String(), unique=False, nullable=True, default="")
-    json_analysis = db.Column(db.JSON(), unique=False, nullable=True, default=" ")
+    foto_analysis = db.Column(db.String(), unique=False, nullable=True, default=" ")
     ia_analysis = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     ts_init = db.Column(db.DateTime(), unique=False, nullable=True, default="")
     mascota_analysis_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
@@ -246,7 +246,7 @@ class Analysis(db.Model):
             'nitrite': self.nitrite,
             'leukocytes': self.leukocytes,
             'ph': self.ph,
-            'json_analysis': self.json_analysis,
+            'foto_analysis': self.foto_analysis,
             'ia_analysis': self.ia_analysis,
             'ts_init': self.ts_init,
             'mascota_analysis_id':self.mascota_analysis_id}
@@ -263,8 +263,8 @@ class Comida(db.Model):
     fibra = db.Column(db.String(), unique=False, nullable=False, default="")
     ia_food = db.Column(db.Text(), unique=False, nullable=True, default=" ")
     quantity = db.Column(db.String(), unique=False, nullable=False, default=" ")
-    food_time = db.Column(db.Time(), unique=False, nullable=True)
-    json_food =db.Column(db.JSON(), unique=False, nullable=True, default=" ")
+    food_time = db.Column(db.Time, unique=False, nullable=True)
+    foto_food = db.Column(db.String(), unique=False, nullable=True, default=" ")
     mascota_comida_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_comida_to = db.relationship('Mascotas', foreign_keys=[mascota_comida_id], backref=db.backref('mascota_comida_to'), lazy='select')
 
@@ -278,9 +278,35 @@ class Comida(db.Model):
             'proteina': self.proteina,
             'fibra': self.fibra,
             'ia_food': self.ia_food,
-            'json_food': self.json_food,
+            'foto_food': self.foto_food,
             'quantity': self.quantity,
-            'food_time': self.food_time}
+            'food_time': self.food_time.strftime("%H:%M:%S")}
+    
+
+class Alerts(db.Model):
+    __tablename__ = 'alerts'
+    id = db.Column(db.Integer, primary_key=True)
+    type = db.Column(db.String(), unique=False, nullable=True, default="")
+    danger_value = db.Column(db.Integer, unique=False, nullable=True, default="")
+    source = db.Column(db.String(), unique=False, nullable=True, default="")
+    description = db.Column(db.String(), unique=False, nullable=True, default="")
+    traffic_light = db.Column(db.Enum('rojo', 'amarillo', 'verde', name='traffic_light'), nullable=False)
+    status_read = db.Column(db.Enum('leido', 'noleido', name='status_read'), nullable=False, default='noleido')
+    post_time = db.Column(db.DateTime(), unique=False, nullable=True, default=datetime.utcnow)
+    mascota_alerts_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
+    mascota_alerts_to = db.relationship('Mascotas', foreign_keys=[mascota_alerts_id], backref=db.backref('mascota_alerts_to'), lazy='select')
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'type': self.type,
+            'danger_value': self.danger_value,
+            'source': self.source,
+            'description': self.description,
+            'traffic_light': self.traffic_light,
+            'status_read': self.status_read,
+            'post_time': self.post_time,
+            'mascota_alerts_id': self.mascota_alerts_id}
         
 
 class Sensor(db.Model):

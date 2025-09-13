@@ -2,6 +2,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			idParam: null,
+			idMascotaReporte: null,
 			isLogged: false,
 			isNuevaMascota: false,
 			isVeterinario: false,
@@ -10,10 +11,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			report: {},
 			reportes: [],
 			analysis: [],
+			alerts: [],
 			metricas: [],
 			incidenciaId: null,
 			incidencia: {},
 			incidencias: [],
+			incidenciasUser: [],
 			foods: [],
 			mascotas: [],
 			userMascotas: [],
@@ -23,6 +26,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 			fotoJsonAnalysis: null,
 			fotoJsonIncidencia: null,
 			fotoJsonFood: null,
+			reportAI: null,
+			descriptionReport: null,
+			analysisReport: null,
+			actionReport: null,
 			alert: { text: '', background: 'primary', visible: false },
 			message: null,
 		},
@@ -33,6 +40,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setFotoJsonIncidencia: (item) => { setStore({ fotoJsonIncidencia: item }) },
 			setFotoJsonAnalysis: (item) => { setStore({ fotoJsonAnalysis: item }) },
 			setFotoJsonFood: (item) => { setStore({ fotoJsonFood: item }) },
+			reportOpenAI: async (prompt, dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/openaiApi/generate-report`;
+				const options = {
+					method: 'POST',
+					headers: { "Content-Type": "application/json" },
+    				body: JSON.stringify({ prompt, dataToSend })
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					return
+				}
+
+				const data = await response.json();
+				setStore({ reportAI: data })
+			},
 			getUserProfile: async () => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
@@ -386,6 +408,30 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error en getIncidencias:", error);
 				}
 			},
+			getIncidenciasUser: async () => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/usuarios/incidencias`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de incidencias");
+						return;
+					}
+					const data = await response.json();
+					setStore({ incidenciasUser: data.results });
+				} catch (error) {
+					console.log("Error en getIncidenciasUser:", error);
+				}
+			},
 			getIncidencia: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/incidenciasApi/mascotas/${id}/incidencias`;
 
@@ -453,6 +499,47 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.log("Error en deleteIncidencia:", error);
 					return false; 
+				}
+			},
+			getAlerts: async () => {
+				const uri = `${process.env.BACKEND_URL}/alertsApi/alerts`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de alertas");
+						return;
+					}
+					const data = await response.json();
+					setStore({ alerts: data.results });
+				} catch (error) {
+					console.log("Error en getAlerts:", error);
+				}
+			},
+			postAlert: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const uri = `${process.env.BACKEND_URL}/alertsApi/alerts`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'La Alerta que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
 				}
 			},
 			getFood: async (id) => {

@@ -8,7 +8,9 @@ export const Home = () => {
   const navigate = useNavigate();
 
   const [showModal, setShowModal] = useState(false);
-  const [activeKey, setActiveKey] = useState(store.isVeterinario ? 'incidents' : 'existing');
+  const [activeKey, setActiveKey] = useState(store.isVeterinario ? 'alerts' : 'existing');
+  const [itemCheck, setItemCheck] = useState([]);
+
   const [share_mascota_name_id, setShareMascotaId] = useState('');
   const [share_password, setSharePassword] = useState('');
   const [mascota_name_id, setMascotaId] = useState('');
@@ -28,11 +30,17 @@ export const Home = () => {
   const modalRef = useRef(null);
   const bsModal = useRef(null);
 
+  const razas = ['Beagle', 'Border Collie', 'Bóxer', 'Bulldog Francés', 'Bulldog Inglés', 'Caniche', 'Chihuahua', 'Cocker Spaniel Inglés', 'Dálmata', 'Dobermann', 
+    'Epagneul Bretón', 'Galgo Español', 'Golden Retriever', 'Husky Siberiano', 'Jack Russell Terrier / Parson Russell Terrier', 'Labrador Retriever', 'Mastín Español', 
+    'Pastor Alemán', 'Perro de Agua Español', 'Podenco Ibicenco / Podenco Canario', 'Pomerania (Spitz Alemán Enano)', 'Pug (Carlino)', 'Rottweiler', 'San Bernardo', 
+    'Setter Inglés', 'Shih Tzu', 'Staffordshire Bull Terrier / American Staffordshire Terrier', 'Teckel (Dachshund)', 'West Highland White Terrier', 'Yorkshire Terrier', 'Otros']
+
   useEffect(() => {
-    if (activeKey === 'incidents') {
+    if (activeKey === 'alerts') {
       actions.getIncidencias();
       actions.getReportes();
       actions.getMascotas();
+      actions.getAlerts();
     }
   }, []);
 
@@ -131,10 +139,28 @@ export const Home = () => {
   const handleReport = async (event, id) => {
     event.preventDefault();
 
-    
+    store.idMascotaReporte = id;
 
     navigate('/report');
   }
+
+  const toggleChecks = (id) => {
+    if (itemCheck.includes(id)) {
+      setItemCheck(itemCheck.filter((sid) => sid !== id));
+    } else {
+      setItemCheck([...itemCheck, id]);
+    }
+  };
+
+  const handleLeido = async (event) => {
+        event.preventDefault();
+
+        for(var i = 0; i < itemCheck.length; i++){
+            actions.readAlert(itemCheck[i]);
+        }
+
+        setItemCheck([]); // Limpiar selección
+    };
 
   const formatDateTime = (value) => {
     if (!value) return null;
@@ -158,9 +184,7 @@ export const Home = () => {
           ? store.mascotas.find(
               (mascota) =>
                 mascota.id ===
-                (type === "incidencias"
-                  ? item.mascota_incidencia_id
-                  : item.mascota_reports_id)
+                (type === "incidencias" ? item.mascota_incidencia_id : (type === "reporte" ? item.mascota_reports_id : item.mascota_alert_id))
             )
           : null;
 
@@ -329,11 +353,19 @@ export const Home = () => {
                   </div>
                   <div className="col-md-12 mb-3">
                     <label className="form-label fw-semibold">Breed</label>
-                    <input type="text" name="raza" className="form-control" value={raza} onChange={(event) => setRaza(event.target.value)} required />
+                    <select className="form-select" aria-label="Default select example" value={raza} onChange={(event) => setRaza(event.target.value)} required >
+                      <option value="">Select a Breed</option>
+                      {razas.map((item) => {
+                        return (
+                          <option value={item}>{item}</option>
+                        );
+                      }
+                    )}
+                    </select>
                   </div>
                   <div className="col-md-6 mx-3 mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="is_mix" onChange={(event) => setMix(event.target.checked)}/>
-                    <label className="form-check-label" htmlFor="is_mix">Is your pet mixed race?</label>
+                    <label className="form-check-label" htmlFor="is_mix">Is your pet mixed Breed?</label>
                   </div>
                   <div className="col-md-6 mx-3 mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setEsterilizado(event.target.checked)}/>
@@ -411,6 +443,11 @@ export const Home = () => {
           <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
             <Nav variant="tabs" className="bg-light justify-content-center rounded">
               <Nav.Item>
+                <Nav.Link style={{ color: "#1B365D" }} eventKey="alerts">
+                  Alerts
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
                 <Nav.Link style={{ color: "#1B365D" }} eventKey="incidents">
                   Incidents
                 </Nav.Link>
@@ -423,6 +460,53 @@ export const Home = () => {
             </Nav>
 
             <Tab.Content className="border p-4 bg-white mt-3 rounded shadow-sm">
+              {/* TAB INCIDENCIAS */}
+              <Tab.Pane eventKey="alerts">
+                <div className="d-flex justify-content-end p-2">
+                  <button className="btn btn-outline-secondary" onClick={(event) => handleLeido(event)} hidden={itemCheck.length === 0}>Read Alerts</button>
+                </div>
+                <table className="table table-striped">
+                  <thead>
+                    <tr className="text-center">
+                      <th>Mascot</th>
+                      <th>Type</th>
+                      <th>Source</th>
+                      <th>Value</th>
+                      <th>Description</th>
+                      <th>Post Time</th>
+                      <th>Status</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filterData(store.alerts, "alerts").map(
+                      (item, index) => {
+                        const mascot = store.mascotas != null ? store.mascotas.find((m) => m.id == item.mascota_alerts_id): null;
+
+                        return (
+                          <tr key={index} className="text-center">
+                            <td>{mascot ? mascot.mascota_name_id : "-"}</td>
+                            <td>{item.type != null ? item.type : "-"}</td>
+                            <td>{item.source != null ? item.source : "-"}</td>
+                            <td>{item.danger_value != null ? item.danger_value : "-"}</td>
+                            <td>{item.description != null ? item.description : "-"}</td>
+                            <td>{item.post_time != null ? formatDateTime(item.post_time) : "-"}</td>
+                            <td>{item.traffic_light != null ? (item.traffic_light == 'rojo' ? 'Danger' : (item.traffic_light == 'amarillo' ? 'Medium' : 'Good')) : "-"}</td>
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={itemCheck.includes(item.id)}
+                                onChange={() => toggleChecks(item.id)}
+                              />
+                            </td>
+                          </tr>
+                        );
+                      }
+                    )}
+                  </tbody>
+                </table>
+              </Tab.Pane>
+
               {/* TAB INCIDENCIAS */}
               <Tab.Pane eventKey="incidents">
                 <table className="table table-striped">
@@ -472,12 +556,7 @@ export const Home = () => {
                   <tbody>
                     {filterData(store.reportes, "reporte").map(
                       (item, index) => {
-                        const mascot =
-                          store.mascotas != null
-                            ? store.mascotas.find(
-                                (m) => m.id == item.mascota_reporte_id
-                              )
-                            : null;
+                        const mascot = store.mascotas != null ? store.mascotas.find((m) => m.id == item.mascota_reports_id) : null;
 
                         return (
                           <tr key={index} className="text-center">

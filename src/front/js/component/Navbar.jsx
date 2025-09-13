@@ -31,13 +31,21 @@ export const Navbar = () => {
                 {/* Menú colapsable */}
                 <div className="collapse navbar-collapse" id="navbarNav" >
                     <ul className="navbar-nav mx-auto text-center">
-                        {["Home", "Mis Mascotas", "Incidencias", "About Us"].map((item, index) => (
-                            <li className="nav-item" key={index}>
-                                <Link className="nav-link mx-2 fw-medium" style={{ color:"#F5EFDE" }} to={`/${item.toLowerCase()}`}>
-                                    {item}
-                                </Link>
-                            </li>
-                        ))}
+                        <li className="nav-item">
+                            <Link className="nav-link mx-2 fw-medium" style={{ color:"#F5EFDE" }} to={`/home`}>
+                                <i class="fa-solid fa-house"></i>
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link mx-2 fw-medium" style={{ color:"#F5EFDE" }} to={`/incidencias`}>
+                                <i class="fa-solid fa-paw"></i>
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link mx-2 fw-medium" style={{ color:"#F5EFDE" }} to={`/about-us`}>
+                                <i class="fa-solid fa-users-rectangle"></i>
+                            </Link>
+                        </li>
                     </ul>
 
                     {/* Sección de usuario */}

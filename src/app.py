@@ -12,12 +12,14 @@ from api.endPoints.routes import api
 from api.endPoints.usersRoutes import users_api
 from api.endPoints.mascotasRoutes import mascotas_api
 from api.endPoints.incidenciasRoutes import incidencias_api
+from api.endPoints.alertRoute import alerts_api
 from api.endPoints.reportsRoute import reportes_api
 from api.endPoints.analysisRoute import analysis_api
 from api.endPoints.metricasRoutes import metricas_api
 from api.endPoints.foodRoute import food_api
 from api.endPoints.vetRoutes import veterinarios_api
 from api.endPoints.stripeRoutes import stripe_api
+from api.endPoints.openaiRoute import openai_api
 from api.admin import setup_admin
 from api.commands import setup_commands
 from flask_jwt_extended import JWTManager
@@ -48,12 +50,14 @@ app.register_blueprint(api, url_prefix='/api')  # Add all endpoints form the API
 app.register_blueprint(users_api, url_prefix='/usersApi')
 app.register_blueprint(mascotas_api, url_prefix='/mascotasApi')
 app.register_blueprint(incidencias_api, url_prefix='/incidenciasApi')
+app.register_blueprint(alerts_api, url_prefix='/alertsApi')
 app.register_blueprint(reportes_api, url_prefix='/reportesApi')
 app.register_blueprint(analysis_api, url_prefix='/analysisApi')
 app.register_blueprint(metricas_api, url_prefix='/metricasApi')
 app.register_blueprint(food_api, url_prefix='/foodApi')
 app.register_blueprint(veterinarios_api, url_prefix='/veterinariosApi')
 app.register_blueprint(stripe_api, url_prefix='/stripeApi')
+app.register_blueprint(openai_api, url_prefix='/openaiApi')
 # Setup the Flask-JWT-Extended extension
 app.config["JWT_SECRET_KEY"] = os.getenv('JWT_SECRET_KEY') # Change this!
 jwt = JWTManager(app)
