@@ -1,4 +1,3 @@
-# api/openai_routes.py
 import os
 import json
 from flask import Blueprint, request, jsonify, current_app
