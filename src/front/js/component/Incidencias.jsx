@@ -12,10 +12,10 @@ export const Incidencias = () => {
     const [initialDate, setInitialDate] = useState('');
     const [finalDate, setFinalDate] = useState('');
     const [description, setDescription] = useState('');
-    
+
     const modalRef = useRef(null);
     const bsModal = useRef(null);
-    
+
     const checkform = ['Vomit', 'Diarrhea', 'Skin Issue', 'Fight', 'Inside Home', 'Outside Home', 'Others']
 
     useEffect(() => {
@@ -27,16 +27,12 @@ export const Incidencias = () => {
             });
         }
     }, []);
-    
+
     useEffect(() => {
         if (bsModal.current) {
             showModal ? bsModal.current.show() : bsModal.current.hide();
         }
     }, [showModal]);
-
-    useEffect(() => {
-        actions.getIncidencia(store.idParam);
-    }, [])
 
     const handleCheckboxChange = (value) => {
         setSelected((prev) => (prev === value ? '' : value));
@@ -44,15 +40,15 @@ export const Incidencias = () => {
 
     const toggleChecks = (id) => {
         if (itemCheck.includes(id)) {
-        setItemCheck(itemCheck.filter((sid) => sid !== id));
+            setItemCheck(itemCheck.filter((sid) => sid !== id));
         } else {
-        setItemCheck([...itemCheck, id]);
+            setItemCheck([...itemCheck, id]);
         }
     };
-    
+
     const formatDateTime = (value) => {
         if (!value) return null;
-            
+
         const date = new Date(value);
         const yyyy = date.getFullYear();
         const mm = String(date.getMonth() + 1).padStart(2, '0');
@@ -60,40 +56,41 @@ export const Incidencias = () => {
         const hh = String(date.getHours()).padStart(2, '0');
         const min = String(date.getMinutes()).padStart(2, '0');
         const ss = '00'; // datetime-local no incluye segundos
-    
+
         return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
     }
-    
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-    
+
         const startDate = formatDateTime(initialDate);
         const endDate = formatDateTime(finalDate);
-    
+
         const dataToSend = {
             title: selected,
             initial_date: startDate,
             final_date: endDate,
             description,
             alertStatus: status,
+            foto_incidencia: store.fotoJsonIncidencia.foto,
             mascota_incidencia_id: store.idParam
         }
-    
+
         if (!selected) {
             store.alert = { text: "Debe seleccionar una opcion", background: "danger", visible: true };
             return;
         }
-    
+
         store.alert = { text: "", background: "primary", visible: false };
 
         await actions.postIncidencia(dataToSend);
         setShowModal(false);
     };
-    
+
     const handleCapture = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
-    
+
         const reader = new FileReader();
         reader.onloadend = () => {
             const base64 = reader.result;
@@ -105,7 +102,7 @@ export const Incidencias = () => {
     const handleDelete = async (event) => {
         event.preventDefault();
 
-        for(var i = 0; i < itemCheck.length; i++){
+        for (var i = 0; i < itemCheck.length; i++) {
             actions.deleteIncidencia(itemCheck[i]);
         }
 
@@ -142,8 +139,8 @@ export const Incidencias = () => {
                                             </div>
                                         )}
                                         <div className="text-center p-2 mb-3">
-                                            <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the incident</label>
-                                            <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
+                                            <label htmlFor="selectFotoIncidencia" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the incident</label>
+                                            <input id="selectFotoIncidencia" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                                         </div>
                                     </div>
                                     <div className="row">
@@ -210,9 +207,9 @@ export const Incidencias = () => {
                             <tr key={index} className="text-center">
                                 <td>
                                     <input
-                                    type="checkbox"
-                                    checked={itemCheck.includes(item.id)}
-                                    onChange={() => toggleChecks(item.id)}
+                                        type="checkbox"
+                                        checked={itemCheck.includes(item.id)}
+                                        onChange={() => toggleChecks(item.id)}
                                     />
                                 </td>
                                 <td>{item.title != null ? item.title : '-'}</td>

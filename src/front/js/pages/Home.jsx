@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
-import { Tab, Nav, Container } from 'react-bootstrap';
+import { Tab, Nav, Container, Form } from 'react-bootstrap';
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
 
-  const [activeKey, setActiveKey] = useState(store.isVeterinario ? 'incidents' : 'existing');
+  const [showModal, setShowModal] = useState(false);
+  const [activeKey, setActiveKey] = useState(store.isVeterinario ? 'alerts' : 'existing');
+  const [itemCheck, setItemCheck] = useState([]);
+
   const [share_mascota_name_id, setShareMascotaId] = useState('');
   const [share_password, setSharePassword] = useState('');
   const [mascota_name_id, setMascotaId] = useState('');
@@ -19,13 +22,43 @@ export const Home = () => {
   const [gender, setGender] = useState('');
   const [isEsterilizado, setEsterilizado] = useState('');
   const [patologia, setPatology] = useState('');
+  const [error, setError] = useState(false);
+  const [searchName, setSearchName] = useState('');
+  const [filterStatus, setFilterStatus] = useState(''); 
+  const [filterDate, setFilterDate] = useState('');
+
+  const modalRef = useRef(null);
+  const bsModal = useRef(null);
+
+  const razas = ['Beagle', 'Border Collie', 'Bóxer', 'Bulldog Francés', 'Bulldog Inglés', 'Caniche', 'Chihuahua', 'Cocker Spaniel Inglés', 'Dálmata', 'Dobermann', 
+    'Epagneul Bretón', 'Galgo Español', 'Golden Retriever', 'Husky Siberiano', 'Jack Russell Terrier / Parson Russell Terrier', 'Labrador Retriever', 'Mastín Español', 
+    'Pastor Alemán', 'Perro de Agua Español', 'Podenco Ibicenco / Podenco Canario', 'Pomerania (Spitz Alemán Enano)', 'Pug (Carlino)', 'Rottweiler', 'San Bernardo', 
+    'Setter Inglés', 'Shih Tzu', 'Staffordshire Bull Terrier / American Staffordshire Terrier', 'Teckel (Dachshund)', 'West Highland White Terrier', 'Yorkshire Terrier', 'Otros']
 
   useEffect(() => {
-    if (activeKey === 'incidents') {
+    if (activeKey === 'alerts') {
       actions.getIncidencias();
-      actions.getUsersMascotas();
+      actions.getReportes();
+      actions.getMascotas();
+      actions.getAlerts();
     }
   }, []);
+
+  useEffect(() => {
+      // Cargar modal de Bootstrap solo una vez
+      if (modalRef.current) {
+          bsModal.current = new window.bootstrap.Modal(modalRef.current, {
+              backdrop: 'static',
+              keyboard: false,
+          });
+      }
+  }, []);
+  
+  useEffect(() => {
+      if (bsModal.current) {
+          showModal ? bsModal.current.show() : bsModal.current.hide();
+      }
+  }, [showModal]);
 
   const handleShareSubmit = async (event) => {
     event.preventDefault();
@@ -56,10 +89,17 @@ export const Home = () => {
       is_mix: isMix,
       is_Esterilizado: isEsterilizado
     }
-
+    
     await actions.postMascota(dataToSend);
+    
     setActiveKey('existing')
     navigate('/home');
+  }
+
+  const handleMascotDelete = async (idMascot) => {
+    actions.deleteMascota(idMascot);
+    setShowModal(false)
+    await actions.getUsersMascotas();
   }
 
   const handleCapture = async (event) => {
@@ -84,8 +124,43 @@ export const Home = () => {
     await actions.getIncidencia(mascota.id);
     await actions.getShareUsers(mascota.mascota_name_id);
     
-    navigate(`/mascota-profile/${mascota.id}`);
+    navigate('/pet-details');
   };
+
+  const handleEdit = async (event, mascota) => {
+    event.preventDefault();
+
+    actions.setCurrentMascota(mascota);
+    actions.setIdParam(mascota.id)
+    
+    navigate('/edit-pet');
+  };
+
+  const handleReport = async (event, id) => {
+    event.preventDefault();
+
+    store.idMascotaReporte = id;
+
+    navigate('/report');
+  }
+
+  const toggleChecks = (id) => {
+    if (itemCheck.includes(id)) {
+      setItemCheck(itemCheck.filter((sid) => sid !== id));
+    } else {
+      setItemCheck([...itemCheck, id]);
+    }
+  };
+
+  const handleLeido = async (event) => {
+        event.preventDefault();
+
+        for(var i = 0; i < itemCheck.length; i++){
+            actions.readAlert(itemCheck[i]);
+        }
+
+        setItemCheck([]); // Limpiar selección
+    };
 
   const formatDateTime = (value) => {
     if (!value) return null;
@@ -101,10 +176,45 @@ export const Home = () => {
     return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
   }
 
+  // Normalizamos búsqueda (case-insensitive)
+  const filterData = (data, type) => {
+    return data.filter((item) => {
+      const mascota =
+        store.mascotas != null
+          ? store.mascotas.find(
+              (mascota) =>
+                mascota.id ===
+                (type === "incidencias" ? item.mascota_incidencia_id : (type === "reporte" ? item.mascota_reports_id : item.mascota_alert_id))
+            )
+          : null;
+
+      const mascotName = mascota ? mascota.mascota_name_id.toLowerCase() : "";
+
+      const matchesName = mascotName.includes(searchName.toLowerCase());
+      const matchesStatus = filterStatus
+        ? item.status_read === filterStatus : true;
+      const matchesDate = filterDate
+        ? (formatDateTime(item.ts_alta) &&
+            formatDateTime(item.ts_alta).substring(0, 10) === filterDate)
+        : true;
+
+
+      return matchesName && matchesStatus && matchesDate;
+    });
+  };
+
+  const validatePassword = async (value) => {
+        const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+        if(!isValid.test(value)){
+            setError(true)
+        } else{
+            setError(false)
+        }
+        setPassword(value)
+    }
 
   return (
     <div style={{ background: "#F5EFDE" }}>
-
       {/* Sección de Categorías */}
       {store.isLogged ?
       <section className="container py-5">
@@ -136,20 +246,56 @@ export const Home = () => {
                         style={{ height: "300px", objectFit: "cover" }}
                       />
                       <div className="card-body text-center">
-                        <div className="card-title mb-3 text-start">
-                          <h4 style={{ color: "#1E1E50" }}>
-                            {item.name_mascot}
-                          </h4>
-                          <h6 className="text-secondary">
-                            {item.raza}
-                          </h6>
+                        <div className="card-title mb-3 d-flex justify-content-between">
+                          <div>
+                            <h4 style={{ color: "#1E1E50" }}>
+                              {item.name_mascot}
+                            </h4>
+                            <h6 className="text-secondary">
+                              {item.raza}
+                            </h6>
+                          </div>
+                          <div>
+                            <button type="button" className="btn border-0 bg-transparent p-0 mx-3" onClick={(event) => handleEdit(event, item)}>
+                              <i className="fa-solid fa-pen-to-square text-primary"></i>
+                            </button>
+                            <button type="button" className="btn border-0 bg-transparent p-0" onClick={() => setShowModal(true)}>
+                              <i className="fa-solid fa-trash-can text-danger"></i>
+                            </button>
+                            <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
+                              <div className="modal-dialog modal-dialog-centered">
+                                <div className="container modal-content">
+                                  <div className="modal-header row d-flex justify-content-between">
+                                    <h3 className="modal-title fs-4 col-md-8">Are your sure you want to delete this pet ?</h3>
+                                    <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}></button>
+                                  </div>
+                                  <div className="modal-body d-flex justify-content-end">
+                                    <button type="button" className="btn btn-primary" style={{
+                                        color: "white",
+                                        background: "#ff6100",
+                                        border: "#ff6100",
+                                        borderRadius: "30px",
+                                        padding: "10px 20px"
+                                    }}
+                                    onClick={() => handleMascotDelete(item.id)}>
+                                        Delete
+                                    </button>
+                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
+                                        onClick={() => setShowModal(false)} style={{ borderRadius: "30px", padding: "10px 20px" }}>
+                                        Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div> 
                         <button className="btn fw-bold" type="button" onClick={(event) => handleDetails(event, item)}
                           style={{ color: "white", 
                             background:"#ff6100", 
                             border: "#ff6100",
                           }}>
-                          Detalles
+                          Details
                         </button>
                       </div>
                     </div>
@@ -167,20 +313,20 @@ export const Home = () => {
                       </div>
                     )}
                     <div className="text-center my-5 mb-3">
-                      <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background:"#ff6100", border: "#ff6100"}}>Upload a photo of your mascot</label>
+                      <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background:"#ff6100", border: "#ff6100"}}>Upload a photo of your Pet</label>
                       <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                     </div>
                   </div>
                   <div className="col-md-4 mb-3">
-                    <label className="form-label fw-semibold">Mascot Username</label>
+                    <label className="form-label fw-semibold">Pet Username</label>
                     <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
-                    <label className="form-label fw-semibold">Mascot Password</label>
-                    <input type="password" name="password" className="form-control" value={password} onChange={(event) => setPassword(event.target.value)} />
+                    <label className="form-label fw-semibold">Pet Password</label>
+                    <input type="password" name="password" className="form-control" value={password} onChange={(event) => validatePassword(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
-                    <label className="form-label fw-semibold">Mascot Name</label>
+                    <label className="form-label fw-semibold">Pet Name</label>
                     <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
@@ -196,24 +342,38 @@ export const Home = () => {
                     </select>
                   </div>
                   <div className="col-md-4 mb-3">
-                    <label className="form-label fw-semibold">Patology</label>
-                    <input type="text" name="patology" className="form-control" value={patologia} onChange={(event) => setPatology(event.target.value)} />
+                    <label className="form-label fw-semibold">Pathology</label>
+                    <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} required >
+                      <option value="">Select a Pathology</option>
+                      <option value="food_pathology">Food pathology</option>
+                      <option value="movility_pathology">Movility pathology</option>
+                      <option value="skin_pathology">Skin pathology</option>
+                      <option value="cardiac_pathology">Cardiac pathology</option>
+                    </select>
                   </div>
                   <div className="col-md-12 mb-3">
-                    <label className="form-label fw-semibold">Raza</label>
-                    <input type="text" name="raza" className="form-control" value={raza} onChange={(event) => setRaza(event.target.value)} required />
+                    <label className="form-label fw-semibold">Breed</label>
+                    <select className="form-select" aria-label="Default select example" value={raza} onChange={(event) => setRaza(event.target.value)} required >
+                      <option value="">Select a Breed</option>
+                      {razas.map((item) => {
+                        return (
+                          <option value={item}>{item}</option>
+                        );
+                      }
+                    )}
+                    </select>
                   </div>
                   <div className="col-md-6 mx-3 mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="is_mix" onChange={(event) => setMix(event.target.checked)}/>
-                    <label className="form-check-label" htmlFor="is_mix">Your mascot is mix ?</label>
+                    <label className="form-check-label" htmlFor="is_mix">Is your pet mixed Breed?</label>
                   </div>
                   <div className="col-md-6 mx-3 mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setEsterilizado(event.target.checked)}/>
-                    <label className="form-check-label" htmlFor="is_esterilizado">Your mascot is Esterilizado ?</label>
+                    <label className="form-check-label" htmlFor="is_esterilizado">Is your pet Sterilized ?</label>
                   </div>
                   {/* Botones de acción */}
                   <div className="d-flex justify-content-between">
-                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Sign In Mascot</button>
+                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Sign In Pet</button>
                   </div>
                 </form>
               </Tab.Pane>
@@ -221,16 +381,16 @@ export const Home = () => {
                 <form onSubmit={handleShareSubmit} className="row g-3">
                   {/* Campos del formulario */}
                   <div className="col-md-12 mb-3">
-                    <label className="form-label fw-semibold">Mascot Username</label>
+                    <label className="form-label fw-semibold">Pet Username</label>
                     <input type="text" name="mascota_id" className="form-control" value={share_mascota_name_id} onChange={(event) => setShareMascotaId(event.target.value)} />
                   </div>
                   <div className="col-md-12 mb-3">
-                    <label className="form-label fw-semibold">Mascot Password</label>
+                    <label className="form-label fw-semibold">Pet Password</label>
                     <input type="password" name="password" className="form-control" value={share_password} onChange={(event) => setSharePassword(event.target.value)} />
                   </div>
                   {/* Botones de acción */}
                   <div className="d-flex justify-content-between">
-                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Sign In Mascot</button>
+                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Sign In Pet</button>
                   </div>
                 </form>
               </Tab.Pane>
@@ -239,49 +399,178 @@ export const Home = () => {
         </Container>
         :
         <Container className="row justify-content-center mt-4">
+          {/* Barra de búsqueda */}
+          <div className="row mb-3">
+            <div className="col-md-3">
+              <Form.Control
+                type="text"
+                placeholder="Buscar mascota..."
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3">
+              <Form.Select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+              >
+                <option value="">Filtrar por estado...</option>
+                <option value="leido">Readed</option>
+                <option value="noleido">Un Readed</option>
+              </Form.Select>
+            </div>
+            <div className="col-md-3">
+              <Form.Control
+                type="date"
+                value={filterDate}
+                onChange={(e) => setFilterDate(e.target.value)}
+              />
+            </div>
+            <div className="col-md-2">
+              <button style={{ color: "white", background:"#1B365D", border: "#1B365D", borderRadius: "8px", padding: "8px 16px" }}
+                variant="secondary"
+                onClick={() => {
+                  setSearchName("");
+                  setFilterStatus("");
+                  setFilterDate("");
+                }}
+              >
+                Limpiar
+              </button>
+            </div>
+          </div>
+
           <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
             <Nav variant="tabs" className="bg-light justify-content-center rounded">
               <Nav.Item>
-                <Nav.Link style={{ color: "#1B365D" }} eventKey="incidents">Incidents</Nav.Link>
+                <Nav.Link style={{ color: "#1B365D" }} eventKey="alerts">
+                  Alerts
+                </Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link style={{ color: "#1B365D" }} eventKey="reports">Reports</Nav.Link>
+                <Nav.Link style={{ color: "#1B365D" }} eventKey="incidents">
+                  Incidents
+                </Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link style={{ color: "#1B365D" }} eventKey="reports">
+                  Reports
+                </Nav.Link>
               </Nav.Item>
             </Nav>
 
             <Tab.Content className="border p-4 bg-white mt-3 rounded shadow-sm">
-              <Tab.Pane eventKey="incidents">
-                <table className="table table-striped" >
-                  <thead style={{ color: "secondary" }}>
+              {/* TAB INCIDENCIAS */}
+              <Tab.Pane eventKey="alerts">
+                <div className="d-flex justify-content-end p-2">
+                  <button className="btn btn-outline-secondary" onClick={(event) => handleLeido(event)} hidden={itemCheck.length === 0}>Read Alerts</button>
+                </div>
+                <table className="table table-striped">
+                  <thead>
                     <tr className="text-center">
-                      <th scope="col-md-2">Mascot</th>
-                      <th scope="col-md-2">Type</th>
-                      <th scope="col-md-2">Start Time</th>
-                      <th scope="col-md-2">End Time</th>
-                      <th scope="col-md-2">Description</th>
-                      <th scope="col-md-2">Good/Bad</th>
+                      <th>Mascot</th>
+                      <th>Type</th>
+                      <th>Source</th>
+                      <th>Value</th>
+                      <th>Description</th>
+                      <th>Post Time</th>
+                      <th>Status</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
-                      {store.incidencias.map((item, index) => {
-                        const mascot = store.mascotas != null ? store.mascotas.find(mascota => mascota.id == item.mascota_incidencia_id) : null;
+                    {filterData(store.alerts, "alerts").map(
+                      (item, index) => {
+                        const mascot = store.mascotas != null ? store.mascotas.find((m) => m.id == item.mascota_alerts_id): null;
 
                         return (
                           <tr key={index} className="text-center">
-                            <td>{mascot != null ? mascot.mascota_name_id : '-'}</td>
-                            <td>{item.title != null ? item.title : '-'}</td>
-                            <td>{item.initial_date != null ? formatDateTime(item.initial_date) : '-'}</td>
-                            <td>{item.final_date != null ? formatDateTime(item.final_date) : '-'}</td>
-                            <td>{item.description != null ? item.description : '-'}</td>
-                            <td>{item.alert_status != null ? item.alert_status : '-'}</td>
+                            <td>{mascot ? mascot.mascota_name_id : "-"}</td>
+                            <td>{item.type != null ? item.type : "-"}</td>
+                            <td>{item.source != null ? item.source : "-"}</td>
+                            <td>{item.danger_value != null ? item.danger_value : "-"}</td>
+                            <td>{item.description != null ? item.description : "-"}</td>
+                            <td>{item.post_time != null ? formatDateTime(item.post_time) : "-"}</td>
+                            <td>{item.traffic_light != null ? (item.traffic_light == 'rojo' ? 'Danger' : (item.traffic_light == 'amarillo' ? 'Medium' : 'Good')) : "-"}</td>
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={itemCheck.includes(item.id)}
+                                onChange={() => toggleChecks(item.id)}
+                              />
+                            </td>
                           </tr>
                         );
-                      })}
+                      }
+                    )}
                   </tbody>
                 </table>
               </Tab.Pane>
+
+              {/* TAB INCIDENCIAS */}
+              <Tab.Pane eventKey="incidents">
+                <table className="table table-striped">
+                  <thead>
+                    <tr className="text-center">
+                      <th>Mascot</th>
+                      <th>Type</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
+                      <th>Description</th>
+                      <th>Good/Bad</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filterData(store.incidencias, "incidencia").map(
+                      (item, index) => {
+                        const mascot = store.mascotas != null ? store.mascotas.find((m) => m.id == item.mascota_incidencia_id): null;
+
+                        return (
+                          <tr key={index} className="text-center">
+                            <td>{mascot ? mascot.mascota_name_id : "-"}</td>
+                            <td>{item.title != null ? item.title : "-"}</td>
+                            <td>{item.initial_date != null ? formatDateTime(item.initial_date) : "-"}</td>
+                            <td>{item.final_date != null ? formatDateTime(item.final_date) : "-"}</td>
+                            <td>{item.description != null ? item.description : "-"}</td>
+                            <td>{item.alert_status != null ? item.alert_status : "-"}</td>
+                          </tr>
+                        );
+                      }
+                    )}
+                  </tbody>
+                </table>
+              </Tab.Pane>
+
+              {/* TAB REPORTES */}
               <Tab.Pane eventKey="reports">
-                <h1>FUTUROS REPORTES</h1>
+                <table className="table table-striped">
+                  <thead>
+                    <tr className="text-center">
+                      <th>Mascot</th>
+                      <th>Score</th>
+                      <th>State</th>
+                      <th>Date</th>
+                      <th>Report</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filterData(store.reportes, "reporte").map(
+                      (item, index) => {
+                        const mascot = store.mascotas != null ? store.mascotas.find((m) => m.id == item.mascota_reports_id) : null;
+
+                        return (
+                          <tr key={index} className="text-center">
+                            <td>{mascot ? mascot.mascota_name_id : "-"}</td>
+                            <td>{item.score != null ? item.score : "-"}</td>
+                            <td>{item.status_read != null ? (item.status_read == 'leido' ? 'Readed' : 'Un Readed' ) : "-"}</td>
+                            <td>{item.ts_alta != null ? formatDateTime(item.ts_alta) : "-"}</td>
+                            <td><button className="btn fw-bold" onClick={(event) => handleReport(event, item.id)} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px" }}>See</button></td>
+                          </tr>
+                        );
+                      }
+                    )}
+                  </tbody>
+                </table>
               </Tab.Pane>
             </Tab.Content>
           </Tab.Container>

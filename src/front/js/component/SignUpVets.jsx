@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 export const SignUpVets = () => {
@@ -11,6 +11,7 @@ export const SignUpVets = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -22,13 +23,24 @@ export const SignUpVets = () => {
             is_veterinario: true
         }
 
-        //await actions.signup(dataToSend);
+        await actions.signup(dataToSend);
         actions.setIsVeterinario(true);
 
         if (store.isLogged && store.isVeterinario) {
             store.alert = { text: "", background: "primary", visible: false };
             navigate('/user-profile');
         }
+    }
+
+    const validatePassword = async (value) => {
+        const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+        if(!isValid.test(value)){
+            setError(true)
+        } else{
+            store.alert = { text: "", background: "primary", visible: false };
+            setError(false)
+        }
+        setPassword(value)
     }
 
     return (
@@ -76,7 +88,7 @@ export const SignUpVets = () => {
                                 <label className="form-label fw-semibold">Password</label>
                                 <div className="input-group">
                                     <input
-                                        onChange={(event) => setPassword(event.target.value)}
+                                        onChange={(event) => validatePassword(event.target.value)}
                                         value={password}
                                         type={showPassword ? "text" : "password"}
                                         className="form-control"

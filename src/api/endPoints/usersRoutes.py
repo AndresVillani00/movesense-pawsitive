@@ -23,6 +23,17 @@ def users():
         return response_body, 200
     if request.method == 'POST':
         data = request.json
+        password = data.get('password', None)
+
+        if len(password) < 8:
+            response_body['message'] = f'La contraseña debe tener al menos 8 caracteres'
+            return response_body, 400
+
+        symbols = "!@#$%^&*"
+        if not any(char in symbols for char in password):
+            response_body['message'] = f'La contraseña debe contener al menos un símbolo'
+            return response_body, 401
+        
         row = Users(username=data.get('username'),
                     password=data.get('password'),
                     name=data.get('name'),
@@ -35,7 +46,7 @@ def users():
         rowdb = db.session.execute(db.select(Users).where(Users.username == data.get('username'), Users.password == data.get('password'))).scalar()
         if rowdb:
             response_body['message'] = f'El usuario ya existe'
-            return response_body, 401
+            return response_body, 404
         db.session.add(row)
         db.session.commit()
         if data.get('is_veterinario'):
@@ -53,7 +64,8 @@ def users():
         user = row.serialize()
         claims = {'user_id': user['id'],
               'user_username': user['username'],
-              'is_veterinario': user['is_veterinario']}
+              'is_veterinario': user['is_veterinario'],
+              'subscription_code': user['subscription_code']}
         access_token = create_access_token(identity=data.get('username'), additional_claims=claims)
         response_body['access_token'] = access_token
         response_body['message'] = f'Agregar nuevo Usuario'

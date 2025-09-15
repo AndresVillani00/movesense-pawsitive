@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required
 from flask_jwt_extended import get_jwt
 from flask_cors import CORS
 from datetime import datetime, timezone
-from api.models import db, Incidencias, Mascotas
+from api.models import db, Incidencias, Mascotas, Users
 
 
 incidencias_api = Blueprint('incidenciasApi', __name__)
@@ -28,6 +28,8 @@ def incidencias():
                      final_date=data.get('final_date'),
                      alert_status=data.get('alert_status'),
                      ia_description=data.get('ia_description'),
+                     ia_action=data.get('ia_action'),
+                     foto_incidencia=data.get('foto_incidencia'),
                      mascota_incidencia_id=data.get('mascota_incidencia_id'))
         db.session.add(row)
         db.session.commit()
@@ -49,16 +51,26 @@ def delete_incidencias(id):
        response_body['results'] = row.serialize() 
        return response_body, 200  
 
-# Para ver las ordenes del comprador
-@incidencias_api.route('/veterinarios/<int:veterinarios_id>/incidencia', methods=['GET'])
-def buyers_orders(veterinarios_id):
+
+@incidencias_api.route('/usuarios/incidencias', methods=['GET'])
+@jwt_required()
+def usuario_incidencias():
     response_body = {}
-    row = db.session.execute(db.select(Incidencias).where(Incidencias.veterinarios_id == veterinarios_id)).scalars()
-    if not row:
-        response_body['message'] = f'Incidencias del veterinario con id: {veterinarios_id}'
-    if request.method == 'GET':
-        response_body['message'] = f'Incidencias del veterinario con id: {veterinarios_id}'
-        response_body["results"] = row.serialize()
+    additional_claims = get_jwt()
+    user_id = additional_claims['user_id']
+    usuario = db.session.execute(db.select(Users).where(Users.id == user_id)).scalar()
+    if not usuario:
+        response_body['message'] = f'El usuario con id: {user_id} no existe'
+        return response_body, 404    
+    incidencias = db.session.execute(db.select(Incidencias).join(Mascotas).where(Mascotas.user_id == user_id)).scalars()
+    incidencias_list = [incidencia.serialize() for incidencia in incidencias]
+    if not incidencias_list:
+        response_body['message'] = f'No hay incidencias para las mascotas del usuario con id: {user_id}'
+        return response_body, 200
+    response_body['message'] = f'Incidencias de las mascotas del usuario con id: {user_id}'
+    response_body['results'] = incidencias_list
+    return response_body, 200
+
 
 
 @incidencias_api.route('/mascotas/<int:id>/incidencias', methods=['GET'])

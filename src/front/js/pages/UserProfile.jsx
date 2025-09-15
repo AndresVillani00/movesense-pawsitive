@@ -63,12 +63,6 @@ export const UserProfile = () => {
     <div className="container mt-5 p-4 d-flex justify-content-center card p-4 shadow-lg border-0" style={{ maxWidth: "600px", width: "100%", borderRadius: "12px" }}>
       <div className="text-center mb-4">
         <div className="mt-3 text-end">
-          <img
-            src={"https://i.imgur.com/24t1SYU.jpeg"}
-            className="rounded-circle img-fluid"
-            alt="Owner"
-            style={{ width: "60px", height: "60px" }}
-          />
           <h3 className="mt-2 fw-bold text-center">User Profile</h3>
         </div>
       </div>

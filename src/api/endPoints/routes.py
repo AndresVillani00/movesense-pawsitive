@@ -21,14 +21,23 @@ def login():
     row = db.session.execute(db.select(Users).where(Users.username == username, Users.password == password)).scalar()
     if not row:
         response_body['message'] = f'El usuario no existe'
+        return response_body, 404
+    
+    if len(password) < 8:
+        return response_body, 400
+
+    symbols = "!@#$%^&*"
+    if not any(char in symbols for char in password):
         return response_body, 401
+
     user = row.serialize()
     # Buscar si el usuario tiene Mascotas
     mascotas = db.session.execute(db.select(Mascotas).where(Mascotas.user_id == user['id'])).scalar()
     # user['id'] = mascotas.get('id') if mascotas else None
     claims = {'user_id': user['id'],
               'user_username': user['username'],
-              'is_veterinario': user['is_veterinario']}
+              'is_veterinario': user['is_veterinario'],
+              'subscription_code': user['subscription_code']}
     access_token = create_access_token(identity=username, additional_claims=claims)
     response_body['access_token'] = access_token
     response_body['message'] = f'Usuario Logeado'
@@ -64,16 +73,6 @@ def get_mascotas():
     response_body['results'] = mascotas
     return response_body, 200
 
-@api.route('/users/mascotas/<int:mascotas_id>', methods=['GET'])
-def get_artist_by_id(mascotas_id):
-    response_body = {}
-    mascotas = db.session.execute(db.select(Users).where(Users.mascotas_id == mascotas_id, Users.is_veterinario == False)).scalar()
-    if not mascotas:
-        response_body['message'] = 'Maascota de un usuario no encontrada'
-        return response_body, 404
-    response_body['message'] = 'Maascota de un usuario obtenida con éxito'
-    response_body['results'] = mascotas.serialize()
-    return response_body, 200
 
 @api.route('/default-metricas', methods=['POST'])
 def default_metricas():

@@ -2,16 +2,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
 			idParam: null,
+			idMascotaReporte: null,
 			isLogged: false,
 			isNuevaMascota: false,
 			isVeterinario: false,
 			usuario: {},
 			veterinario: {},
+			report: {},
+			reportes: [],
 			analysis: [],
+			alerts: [],
 			metricas: [],
 			incidenciaId: null,
 			incidencia: {},
 			incidencias: [],
+			incidenciasUser: [],
+			foods: [],
 			mascotas: [],
 			userMascotas: [],
 			mascotUsers: [],
@@ -19,9 +25,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 			fotoMascota: null,
 			fotoJsonAnalysis: null,
 			fotoJsonIncidencia: null,
+			fotoJsonFood: null,
+			reportAI: null,
+			descriptionReport: null,
+			analysisReport: null,
+			actionReport: null,
 			alert: { text: '', background: 'primary', visible: false },
 			message: null,
-			urlrender: "https://sample-service-name-0sfq.onrender.com"
 		},
 		actions: {
 			setIdParam: (item) => { setStore({ idParam: item }) },
@@ -29,11 +39,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setFotoMascota: (item) => { setStore({ fotoMascota: item }) },
 			setFotoJsonIncidencia: (item) => { setStore({ fotoJsonIncidencia: item }) },
 			setFotoJsonAnalysis: (item) => { setStore({ fotoJsonAnalysis: item }) },
+			setFotoJsonFood: (item) => { setStore({ fotoJsonFood: item }) },
+			reportOpenAI: async (prompt, dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/openaiApi/generate-report`;
+				const options = {
+					method: 'POST',
+					headers: { "Content-Type": "application/json" },
+    				body: JSON.stringify({ prompt, dataToSend })
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					return
+				}
+
+				const data = await response.json();
+				setStore({ reportAI: data })
+			},
 			getUserProfile: async () => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
-				const uri = `${getStore().urlrender}/users/profile`;
+				const uri = `${process.env.BACKEND_URL}/users/profile`;
 				const options = {
 					method: "GET",
 					headers: {
@@ -52,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ usuario: datos.results });
 			},
 			postMascotaDetails: async (dataToSend) => {
-				const uri = `${getStore().urlrender}/mascotasDetailsApi/mascotas-details`;
+				const uri = `${process.env.BACKEND_URL}/mascotasDetailsApi/mascotas-details`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -68,7 +94,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getMascotas(data.user_id);
 			},
 			getMascotas: async () => {
-				const uri = `${getStore().urlrender}/mascotasApi/mascotas`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas`;
 
 				try {
 					const response = await fetch(uri, {
@@ -88,7 +114,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getUsersMascotas: async () => {
-				const uri = `${getStore().urlrender}/mascotasApi/users/mascotas`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/users/mascotas`;
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
@@ -112,7 +138,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getMascotShareUsers(getStore().userMascotas.userId);
 			},
 			getMascotaById: async (id) => {
-				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${id}`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
@@ -138,7 +164,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
-				const uri = `${getStore().urlrender}/mascotasApi/mascotas`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -149,16 +175,83 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+					}
 					if (response.status == 401) {
-						setStore({ alert: { text: 'La Mascota que intenta registrar ya existe', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+					}
+					if (response.status == 404) {
+						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
 					}
 					return
 				}
 
 				getActions().getUsersMascotas()
 			},
+			updateMascota: async (dataToSend, id) => {
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const options = {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+					}
+					if (response.status == 401) {
+						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+					}
+					if (response.status == 404) {
+						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+				const datos = await response.json();
+				setStore({ currentMascota: datos.results })
+				getActions().getUsersMascotas()
+			},
+			deleteMascota: async (id) => {
+				const token = localStorage.getItem("token");
+				if (!token) return false;  
+			
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;  
+				const options = {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				};
+			
+				try {
+					const response = await fetch(uri, options);
+					if (!response.ok) {
+						if (response.status == 403) {
+							setStore({ alert: { text: `This User don't have permission to delete this Pet`, background: 'danger', visible: true } })
+						}
+						return
+					}
+			
+					const updatedMascotas = getStore().mascotas.filter(mascota => mascota.id !== id);
+					setStore({ mascotas: updatedMascotas });
+			
+					return true; 
+				} catch (error) {
+					console.log("Error en deleteMascota:", error);
+					return false; 
+				}
+			},
 			getAnalysis: async (id) => {
-				const uri = `${getStore().urlrender}/analysisApi/mascotas/${id}/analysis`;
+				const uri = `${process.env.BACKEND_URL}/analysisApi/mascotas/${id}/analysis`;
 
 				try {
 					const response = await fetch(uri, {
@@ -181,7 +274,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 				
-				const uri = `${getStore().urlrender}/analysisApi/analysis`;
+				const uri = `${process.env.BACKEND_URL}/analysisApi/analysis`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -204,7 +297,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return false;  
 			
-				const uri = `${getStore().urlrender}/analysisApi/analysis/${id}`;  
+				const uri = `${process.env.BACKEND_URL}/analysisApi/analysis/${id}`;  
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -227,7 +320,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getMetrica: async (id) => {
-				const uri = `${getStore().urlrender}/metricasApi/mascotas/${id}/metricas`;
+				const uri = `${process.env.BACKEND_URL}/metricasApi/mascotas/${id}/metricas`;
 
 				try {
 					const response = await fetch(uri, {
@@ -250,7 +343,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 				
-				const uri = `${getStore().urlrender}/metricasApi/metricas`;
+				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -273,7 +366,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return false;  
 			
-				const uri = `${getStore().urlrender}/metricasApi/metricas/${id}`;  
+				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas/${id}`;  
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -296,7 +389,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getIncidencias: async () => {
-				const uri = `${getStore().urlrender}/incidenciasApi/incidencias`;
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
 
 				try {
 					const response = await fetch(uri, {
@@ -315,8 +408,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log("Error en getIncidencias:", error);
 				}
 			},
+			getIncidenciasUser: async () => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/usuarios/incidencias`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de incidencias");
+						return;
+					}
+					const data = await response.json();
+					setStore({ incidenciasUser: data.results });
+				} catch (error) {
+					console.log("Error en getIncidenciasUser:", error);
+				}
+			},
 			getIncidencia: async (id) => {
-				const uri = `${getStore().urlrender}/incidenciasApi/mascotas/${id}/incidencias`;
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/mascotas/${id}/incidencias`;
 
 				try {
 					const response = await fetch(uri, {
@@ -339,7 +456,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
-				const uri = `${getStore().urlrender}/incidenciasApi/incidencias`;
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -362,7 +479,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return false;  
 			
-				const uri = `${getStore().urlrender}/incidenciasApi/incidencias/${id}`;  
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias/${id}`;  
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -384,8 +501,155 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false; 
 				}
 			},
+			getAlerts: async () => {
+				const uri = `${process.env.BACKEND_URL}/alertsApi/alerts`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de alertas");
+						return;
+					}
+					const data = await response.json();
+					setStore({ alerts: data.results });
+				} catch (error) {
+					console.log("Error en getAlerts:", error);
+				}
+			},
+			postAlert: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const uri = `${process.env.BACKEND_URL}/alertsApi/alerts`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'La Alerta que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+			},
+			getFood: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/foodApi/mascotas/${id}/food`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de comidas");
+						return;
+					}
+					const data = await response.json();
+					setStore({ foods: data.results });
+				} catch (error) {
+					console.log("Error en getFood:", error);
+				}
+			},
+			postFood: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
+				const uri = `${process.env.BACKEND_URL}/foodApi/food`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'La Comida que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+
+				getActions().getFood(dataToSend.mascota_comida_id);
+			},
+			getReportes: async () => {
+				const uri = `${process.env.BACKEND_URL}/reportesApi/reportes`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de reportes");
+						return;
+					}
+					const data = await response.json();
+					setStore({ reportes: data.results });
+				} catch (error) {
+					console.log("Error en getReports:", error);
+				}
+			},
+			getReport: async (id) => {
+				const uri = `${process.env.BACKEND_URL}/reportesApi/mascotas/${id}/reportes`;
+
+				try {
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						console.log("Error obteniendo la lista de reportes");
+						return;
+					}
+					const data = await response.json();
+					setStore({ reportes: data.results });
+				} catch (error) {
+					console.log("Error en getReport:", error);
+				}
+			},
+			postReport: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
+				const uri = `${process.env.BACKEND_URL}/reportesApi/reportes`;
+				const options = {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: `Bearer ${token}`,
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 401) {
+						setStore({ alert: { text: 'El Reporte que intenta registrar ya existe', background: 'danger', visible: true } })
+					}
+					return
+				}
+
+				getActions().getReport(dataToSend.mascota_reports_id);
+			},
 			signup: async (dataToSend) => {
-				/*const uri = `${getStore().urlrender}/usersApi/users`;
+				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -395,7 +659,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+					}
 					if (response.status == 401) {
+						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+					}
+					if (response.status == 404) {
 						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
 					}
 					return
@@ -409,10 +679,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ isVeterinario: true })
 				}
 				localStorage.setItem('token', datos.access_token)
-				getActions().getUsersMascotas()*/
+				getActions().getUsersMascotas()
 			},
 			login: async (dataToSend) => {
-				const uri = `${getStore().urlrender}/api/login`;
+				const uri = `${process.env.BACKEND_URL}/api/login`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -422,8 +692,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+					}
 					if (response.status == 401) {
-						setStore({ alert: { text: 'Usuario o contraseña incorrecto', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+					}
+					if (response.status == 404) {
+						setStore({ alert: { text: 'Incorrect User or password', background: 'danger', visible: true } })
 					}
 					return
 				}
@@ -447,6 +723,26 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 				localStorage.removeItem('token')
 			},
+			paymentIntent: async (dataToSend) => {
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
+				const uri = `${process.env.BACKEND_URL}/stripeApi/create-subscription-session`;
+				const options = {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(dataToSend),
+					Authorization: `Bearer ${token}`
+				};
+				const response = await fetch(uri, options);
+
+				const data = await response.json();
+				if (data.url) {
+					window.location.href = data.url; // redirige a Stripe
+				} else {
+					console.error("Error al crear sesión:", data.error);
+				}
+			},
 			setIsLogged: (value) => {
 				setStore({ isLogged: value })
 			},
@@ -457,7 +753,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ isNuevaMascota: value })
 			},
 			updateUsuario: async (dataToSend) => {
-				const uri = `${getStore().urlrender}/usersApi/users`;
+				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
@@ -480,7 +776,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ usuario: datos.results })
 			},
 			updateVeterinario: async (dataToSend) => {
-				const uri = `${getStore().urlrender}/veterinariosApi/veterinarios`;
+				const uri = `${process.env.BACKEND_URL}/veterinariosApi/veterinarios`;
 				const token = localStorage.getItem("token");
 				if (!token) return;
 				
@@ -506,7 +802,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 			},
 			getShareUsers: async (id) => {
-				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${id}/usuarios`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}/usuarios`;
 
 				try {
 					const response = await fetch(uri, {
@@ -526,7 +822,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			getMascotShareUsers: async (id) => {
-				const uri = `${getStore().urlrender}/mascotasApi/usuarios/${id}/share-mascot`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/usuarios/${id}/share-mascot`;
 
 				try {
 					const response = await fetch(uri, {
@@ -546,7 +842,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			shareMascot: async (dataToSend, mascotId, userId) => {
-				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${mascotId}/share`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${mascotId}/share`;
 				const options = {
 					method: 'POST',
 					headers: {
@@ -569,7 +865,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
 
-				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${mascotaId}/delete-share/${userId}`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${mascotaId}/delete-share/${userId}`;
 				const options = {
 					method: 'DELETE',
 					headers: {
@@ -618,7 +914,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const token = localStorage.getItem("token");
 				if (!token) return false;
 
-				const uri = `${getStore().urlrender}/mascotasApi/mascotas/${mascotaId}`;
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${mascotaId}`;
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -642,7 +938,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			defaultUsuarios: async () => {
-				const uri = `${getStore().urlrender}/api/default-users`;
+				const uri = `${process.env.BACKEND_URL}/api/default-users`;
 				const options = {
 					method: 'POST',
 				};
@@ -650,7 +946,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				await fetch(uri, options);
 			},
 			defaultMetricas: async () => {
-				const uri = `${getStore().urlrender}/api/default-metricas`;
+				const uri = `${process.env.BACKEND_URL}/api/default-metricas`;
 				const options = {
 					method: 'POST',
 				};

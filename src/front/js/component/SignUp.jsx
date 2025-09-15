@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 
 export const SignUp = () => {
@@ -11,6 +11,7 @@ export const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState(false);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -20,13 +21,23 @@ export const SignUp = () => {
             email,
             password,
         }
-
-        //await actions.signup(dataToSend);
+        
+        await actions.signup(dataToSend);
 
         if (store.isLogged && !store.isVeterinario) {
             store.alert = { text: "", background: "primary", visible: false };
             navigate('/home');
         }
+    }
+
+    const validatePassword = async (value) => {
+        const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+        if(!isValid.test(value)){
+            setError(true)
+        } else{
+            setError(false)
+        }
+        setPassword(value)
     }
 
     return (
@@ -73,13 +84,7 @@ export const SignUp = () => {
                             <div className="col-12">
                                 <label className="form-label fw-semibold">Password</label>
                                 <div className="input-group">
-                                    <input
-                                        onChange={(event) => setPassword(event.target.value)}
-                                        value={password}
-                                        type={showPassword ? "text" : "password"}
-                                        className="form-control"
-                                        required
-                                    />
+                                    <input onChange={(event) => validatePassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className="form-control" required />
                                     <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
                                         {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                                     </span>

@@ -7,6 +7,7 @@ export const Activity = () => {
     const { store, actions } = useContext(Context);
 
     const [showModal, setShowModal] = useState(false);
+    const [showAlertModal, setShowAlertModal] = useState(false);
     const [date, setDate] = useState('');
     const [daysRange, setDaysRange] = useState(5);
     const [itemCheck, setItemCheck] = useState([]);
@@ -16,6 +17,9 @@ export const Activity = () => {
     
     const modalRef = useRef(null);
     const bsModal = useRef(null);
+
+    const modalAlertRef = useRef(null);
+    const bsAlertModal = useRef(null);
     
     const metricasActivity = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'activity' && metricas.mascota_metrica_id === store.idParam) : null;
 
@@ -27,17 +31,24 @@ export const Activity = () => {
                 keyboard: false,
             });
         }
+
+        if (modalAlertRef.current) {
+            bsAlertModal.current = new window.bootstrap.Modal(modalAlertRef.current, {
+                backdrop: 'static',
+                keyboard: false,
+            });
+        }
     }, []);
     
     useEffect(() => {
         if (bsModal.current) {
             showModal ? bsModal.current.show() : bsModal.current.hide();
         }
-    }, [showModal]);
 
-    useEffect(() => {
-        actions.getMetrica(store.idParam);
-    }, [])
+        if (bsAlertModal.current) {
+            showAlertModal ? bsAlertModal.current.show() : bsAlertModal.current.hide();
+        }
+    }, [showModal, showAlertModal]);
 
     const filteredData = [...metricasActivity].sort(
         (a, b) => new Date(a.ts_init) - new Date(b.ts_init)
@@ -90,6 +101,26 @@ export const Activity = () => {
         }
         await actions.postMetrica(dataToSend);
         setShowModal(false);
+
+        if(value <= 20 || value >= 200){
+            setShowAlertModal(true);
+        }
+    };
+
+    const handleAlertSubmit = async (event) => {
+        event.preventDefault();
+
+        const dataToSend = {
+            type: 'Activity',
+            danger_value: value,
+            source: 'Automatic',
+            description: note,
+            traffic_light: 'rojo',
+            status_read: 'noleido',
+            mascota_alerts_id: store.idParam
+        }
+        await actions.postAlert(dataToSend);
+        setShowAlertModal(false);
     };
 
     const handleDelete = async (event) => {
@@ -149,10 +180,38 @@ export const Activity = () => {
                                                 border: "#ff6100",
                                                 borderRadius: "30px",
                                                 padding: "10px 20px"
-                                            }}>Save Analysis</button>
+                                            }}>Save Activity</button>
                                         </div>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="modal fade" tabIndex="-1" ref={modalAlertRef} aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered">
+                        <div className="container modal-content">
+                            <div className="modal-header row">
+                                <div className="d-flex justify-content-between">
+                                    <h1 className="modal-title fs-4 col-md-8">Alert</h1>
+                                    <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowAlertModal(false)}></button>
+                                </div>
+                            </div>
+                            <div className="modal-body">
+                                <p className="col-md-12">The value you just try to post it's in the danger range, do you want to inform a veterinarian of this alert ?</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
+                                    onClick={() => setShowAlertModal(false)} style={{
+                                        borderRadius: "30px", padding: "10px 20px"
+                                    }}>Cancel</button>
+                                <button type="button" onClick={(event) => handleAlertSubmit(event)} className="btn btn-primary" style={{
+                                    color: "white",
+                                    background: "#ff6100",
+                                    border: "#ff6100",
+                                    borderRadius: "30px",
+                                    padding: "10px 20px"
+                                }}>Send Alert</button>
                             </div>
                         </div>
                     </div>

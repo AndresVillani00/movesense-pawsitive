@@ -16,6 +16,7 @@ import { Explore } from "./pages/Explore.jsx";
 import { UserProfile } from "./pages/UserProfile.jsx";
 import { Alert } from "./component/Alert.jsx";
 import { AboutUs } from "./pages/AboutUs.jsx";
+import { Report } from "./pages/Report.jsx";
 import { Cart } from "./pages/Cart.jsx";
 import { Payment } from "./pages/Payment.jsx";
 import { PaymentSuccess } from "./pages/PaymentSuccess.jsx";
@@ -23,6 +24,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { PaymentFail } from "./pages/PaymentFail.jsx";
 import { MascotaDetalles } from "./pages/MascotaDetalles.jsx";
+import { MascotaProfile } from "./pages/MascotaProfile.jsx";
+import { IncidenciasUser } from "./pages/IncidenciasUser.jsx";
 
 
 
@@ -50,7 +53,10 @@ const Layout = () => {
                             <Route element={<Login />} path="/login" />
                             <Route element={<Explore />} path="/explore" />
                             <Route element={<UserProfile />} path="/user-profile" />
-                            <Route element={<MascotaDetalles />} path="/mascota-profile/:id" />
+                            <Route element={<MascotaDetalles />} path="/pet-details" />
+                            <Route element={<MascotaProfile />} path="/edit-pet" />
+                            <Route element={<Report />} path="/report" />
+                            <Route element={<IncidenciasUser />} path="/incidencias" />
                             <Route element={<AboutUs />} path="/about-us" />
                             <Route element={<Cart />} path="/cart" />
                             <Route element={<Payment />} path="/payment" />
