@@ -33,6 +33,23 @@ def reportes():
         response_body['message'] = f'Agregar nuevo reporte'
         response_body['results'] = row.serialize()
         return response_body, 201
+    
+
+@reportes_api.route('/reportes/<int:id>', methods=['PUT'])
+def read_reportes(id):
+    response_body = {}
+    row = db.session.execute(db.select(Reportes).where(Reportes.id == id)).scalar()
+    if not row:
+        response_body['message'] = f'El Reporte con id: {id}, no existe'
+    if request.method == 'PUT':
+        data = request.json
+        row.status_read=data.get('status_read')
+        db.session.add(row)
+        db.session.commit()  
+        response_body['message'] = f'Reporte con id: {id}. Actualizado'
+        response_body["results"] = row.serialize()
+        return response_body, 200
+    
 
 @reportes_api.route('/reportes/<int:id>', methods=['DELETE'])
 def delete_reportes(id):

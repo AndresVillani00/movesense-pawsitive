@@ -73,7 +73,7 @@ export const IncidenciasUser = () => {
             final_date: endDate,
             description,
             alertStatus: status,
-            foto_incidencia: store.fotoJsonIncidencia.foto,
+            foto_incidencia: store.fotoJsonIncidencia != null ? store.fotoJsonIncidencia.foto : null,
             mascota_incidencia_id: mascotID.id
         }
 
@@ -203,7 +203,7 @@ export const IncidenciasUser = () => {
                 </tr>
               </thead>
               <tbody>
-                {store.incidenciasUser.map((item, index) => {
+                {store.incidenciasUser == null ? <tr></tr> : store.incidenciasUser.map((item, index) => {
                     const mascot = store.mascotas != null ? store.mascotas.find((m) => m.id == item.mascota_incidencia_id): null;
                     return (
                       <tr key={index} className="text-center">

@@ -173,6 +173,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					},
 					body: JSON.stringify(dataToSend)
 				};
+
+				if (dataToSend.foto_mascot == null) {
+					setStore({ alert: { text: 'There is no photo uploaded about the food', background: 'danger', visible: true } })
+            		return;
+        		}
+
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 400) {
@@ -283,6 +289,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					},
 					body: JSON.stringify(dataToSend)
 				};
+
+				if (dataToSend.foto_analysis == null) {
+					setStore({ alert: { text: 'There is no photo uploaded about the analysis', background: 'danger', visible: true } })
+            		return;
+        		}
+
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 401) {
@@ -465,6 +477,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					},
 					body: JSON.stringify(dataToSend)
 				};
+				
+				if (dataToSend.foto_incidencia == null) {
+					setStore({ alert: { text: 'There is no photo uploaded about the incident', background: 'danger', visible: true } })
+            		return;
+        		}
+				
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 401) {
@@ -575,6 +593,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					},
 					body: JSON.stringify(dataToSend)
 				};
+
+				if (dataToSend.foto_food == null) {
+					setStore({ alert: { text: 'There is no photo uploaded about the food', background: 'danger', visible: true } })
+            		return;
+        		}
+
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 401) {
@@ -647,6 +671,42 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 				getActions().getReport(dataToSend.mascota_reports_id);
+			},
+			putReadReport: async (dataToSend, id) => {
+				const uri = `${process.env.BACKEND_URL}/reportesApi/reportes/${id}`;
+				const options = {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'Error changing to read the report', background: 'danger', visible: true } })
+					}
+					return
+				}
+				getActions().getReportes()
+			},
+			putReadAlert: async (dataToSend, id) => {
+				const uri = `${process.env.BACKEND_URL}/alertsApi/alerts/${id}`;
+				const options = {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(dataToSend)
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					if (response.status == 400) {
+						setStore({ alert: { text: 'Error changing to read the alert', background: 'danger', visible: true } })
+					}
+					return
+				}
+				getActions().getAlerts()
 			},
 			signup: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users`;

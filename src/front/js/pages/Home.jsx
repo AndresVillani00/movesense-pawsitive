@@ -17,10 +17,10 @@ export const Home = () => {
   const [password, setPassword] = useState('');
   const [name_mascot, setNameMascot] = useState('');
   const [raza, setRaza] = useState('');
-  const [isMix, setMix] = useState('');
+  const [isMix, setMix] = useState(false);
   const [birth_date, setBirthdate] = useState('');
   const [gender, setGender] = useState('');
-  const [isEsterilizado, setEsterilizado] = useState('');
+  const [isEsterilizado, setEsterilizado] = useState(false);
   const [patologia, setPatology] = useState('');
   const [error, setError] = useState(false);
   const [searchName, setSearchName] = useState('');
@@ -81,7 +81,7 @@ export const Home = () => {
       mascota_name_id,
       password,
       name_mascot,
-      foto_mascot: store.fotoMascota.foto,
+      foto_mascot: store.fotoMascota != null ? store.fotoMascota.foto : null,
       raza,
       birth_date,
       gender,
@@ -153,14 +153,15 @@ export const Home = () => {
   };
 
   const handleLeido = async (event) => {
-        event.preventDefault();
+    event.preventDefault();
+      
+    const dataToSend = { status_read: 'leido' }
+    for(var i = 0; i < itemCheck.length; i++){
+      actions.putReadAlert(dataToSend, itemCheck[i]);
+    }
 
-        for(var i = 0; i < itemCheck.length; i++){
-            actions.readAlert(itemCheck[i]);
-        }
-
-        setItemCheck([]); // Limpiar selección
-    };
+    setItemCheck([]); // Limpiar selección
+  };
 
   const formatDateTime = (value) => {
     if (!value) return null;
@@ -460,7 +461,7 @@ export const Home = () => {
             </Nav>
 
             <Tab.Content className="border p-4 bg-white mt-3 rounded shadow-sm">
-              {/* TAB INCIDENCIAS */}
+              {/* TAB ALERTAS */}
               <Tab.Pane eventKey="alerts">
                 <div className="d-flex justify-content-end p-2">
                   <button className="btn btn-outline-secondary" onClick={(event) => handleLeido(event)} hidden={itemCheck.length === 0}>Read Alerts</button>
@@ -472,6 +473,7 @@ export const Home = () => {
                       <th>Type</th>
                       <th>Source</th>
                       <th>Value</th>
+                      <th>State</th>
                       <th>Description</th>
                       <th>Post Time</th>
                       <th>Status</th>
@@ -489,6 +491,7 @@ export const Home = () => {
                             <td>{item.type != null ? item.type : "-"}</td>
                             <td>{item.source != null ? item.source : "-"}</td>
                             <td>{item.danger_value != null ? item.danger_value : "-"}</td>
+                            <td>{item.status_read != null ? (item.status_read == 'leido' ? 'Readed' : 'Un Readed' ) : "-"}</td>
                             <td>{item.description != null ? item.description : "-"}</td>
                             <td>{item.post_time != null ? formatDateTime(item.post_time) : "-"}</td>
                             <td>{item.traffic_light != null ? (item.traffic_light == 'rojo' ? 'Danger' : (item.traffic_light == 'amarillo' ? 'Medium' : 'Good')) : "-"}</td>

@@ -34,4 +34,20 @@ def alerts():
         response_body['message'] = f'Agregar nueva Alerta'
         response_body['results'] = row.serialize()
         return response_body, 201  
+
+
+@alerts_api.route('/alerts/<int:id>', methods=['PUT'])
+def read_alerts(id):
+    response_body = {}
+    row = db.session.execute(db.select(Alerts).where(Alerts.id == id)).scalar()
+    if not row:
+        response_body['message'] = f'El Alerta con id: {id}, no existe'
+    if request.method == 'PUT':
+        data = request.json
+        row.status_read=data.get('status_read')
+        db.session.add(row)
+        db.session.commit()  
+        response_body['message'] = f'Alerta con id: {id}. Actualizado'
+        response_body["results"] = row.serialize()
+        return response_body, 200
     

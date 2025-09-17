@@ -24,6 +24,14 @@ export const Report = () => {
         navigate('/home')
     }
 
+    const handleRead = (event, id) => {
+        event.preventDefault();
+        
+        const dataToSend = { status_read: 'leido' }
+        actions.putReadReport(dataToSend, id);
+        navigate('/home')
+    }
+
     return (
         <section className="container-fluid p-5">
             {store.isLogged && !store.isVeterinario ?
@@ -71,40 +79,46 @@ export const Report = () => {
             :
             <div className="container" style={{ backgroundColor: "#F5EFDE", minHeight: "100vh" }}>
                 {store.isLogged ?
-                    <div className=" py-4">
+                    <div className="py-4">
+                        <div className="py-4">
+                            <div className="d-flex justify-content-between">
+                                <button className="btn btn-outline-secondary" onClick={() => navigate(-1)}>Volver</button>
+                                <button className="btn btn-outline-secondary" onClick={(event) => handleRead(event, report[report.length - 1].id)}>Mark as Read</button>
+                            </div>
+                        </div>
                         <div className="d-flex align-items-center mb-4">
                             <img src={logo} alt="Logo" style={{ height: "60px", marginRight: "15px" }} />
                             <h2 style={{ color: "#1B365D", fontWeight: "bold" }}>Pawsitive Health Quality Report</h2>
                         </div>
 
                         <div className="p-3 mb-4 rounded shadow-sm" style={{ backgroundColor: "white", borderLeft: "6px solid #1B365D" }}>
-                            <h5 style={{ color: "#1B365D" }}>Overall Health Score: {report[0].score}/10</h5>
+                            <h5 style={{ color: "#1B365D" }}>Overall Health Score: {report[report.length - 1].score}/10</h5>
                             <p>This report covers the last 30 days of your pet's health data</p>
                         </div>
 
                         <div className="p-3 mb-4 rounded shadow-sm" style={{ backgroundColor: "white" }}>
                             <h5 style={{ color: "#1B365D" }}>Patterns Detected</h5>
-                            <p>{report[0].description_ia}</p>
+                            <p>{report[report.length - 1].description_ia}</p>
                         </div>
 
                         <div className="row mb-4">
                             <div className="col-md-6 mb-3">
                                 <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
                                     <h5 style={{ color: "#1B365D" }}>Urine Analysis</h5>
-                                    <p>{report[0].analysis_ia}</p>
+                                    <p>{report[report.length - 1].analysis_ia}</p>
                                 </div>
                             </div>
                             <div className="col-md-6 mb-3">
                                 <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
                                     <h5 style={{ color: "#1B365D" }}>Food Analysis</h5>
-                                    <p>{report[0].food_ia}</p>
+                                    <p>{report[report.length - 1].food_ia}</p>
                                 </div>
                             </div>
                         </div>
 
                         <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
                             <h5 style={{ color: "#1B365D" }}>Action Plan</h5>
-                            <p>{report[0].action_ia}</p>
+                            <p>{report[report.length - 1].action_ia}</p>
                         </div>
                     </div>
                 :
