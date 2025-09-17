@@ -65,14 +65,14 @@ export const Incidencias = () => {
 
         const startDate = formatDateTime(initialDate);
         const endDate = formatDateTime(finalDate);
-
+        
         const dataToSend = {
             title: selected,
             initial_date: startDate,
             final_date: endDate,
             description,
             alertStatus: status,
-            foto_incidencia: store.fotoJsonIncidencia.foto,
+            foto_incidencia: store.fotoJsonIncidencia != null ? store.fotoJsonIncidencia.foto : null,
             mascota_incidencia_id: store.idParam
         }
 
@@ -80,6 +80,7 @@ export const Incidencias = () => {
             store.alert = { text: "Debe seleccionar una opcion", background: "danger", visible: true };
             return;
         }
+
 
         store.alert = { text: "", background: "primary", visible: false };
 

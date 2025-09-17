@@ -49,7 +49,7 @@ export const Food = () => {
             fibra,
             quantity,
             food_time,
-            foto_food: store.fotoJsonFood.foto,
+            foto_food: store.fotoJsonFood != null ? store.fotoJsonFood.foto : null,
             mascota_comida_id: store.idParam
         }
 

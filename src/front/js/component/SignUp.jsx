@@ -13,6 +13,19 @@ export const SignUp = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(false);
 
+    useEffect(() => {
+        if (window.google) {
+            window.google.accounts.id.initialize({
+                client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID, // pon aquí tu Client ID de Google
+                callback: handleGoogleResponse,
+            });
+            window.google.accounts.id.renderButton(
+                document.getElementById("googleSignup"),
+                { theme: "outline", size: "large" }
+            );
+        }
+    }, []);
+
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -21,7 +34,7 @@ export const SignUp = () => {
             email,
             password,
         }
-        
+
         await actions.signup(dataToSend);
 
         if (store.isLogged && !store.isVeterinario) {
@@ -32,9 +45,9 @@ export const SignUp = () => {
 
     const validatePassword = async (value) => {
         const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-        if(!isValid.test(value)){
+        if (!isValid.test(value)) {
             setError(true)
-        } else{
+        } else {
             setError(false)
         }
         setPassword(value)
@@ -95,8 +108,9 @@ export const SignUp = () => {
                                 <div className="d-flex justify-content-center gap-3">
                                     <button
                                         className="btn fw-bold" type="submit"
-                                        style={{ color: "white", 
-                                            background:"#ff6100", 
+                                        style={{
+                                            color: "white",
+                                            background: "#ff6100",
                                             border: "#ff6100",
                                             borderRadius: "30px",
                                             padding: "10px 20px"

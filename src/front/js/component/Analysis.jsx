@@ -74,7 +74,7 @@ export const Analysis = () => {
             nitrite,
             leukocytes,
             ph,
-            foto_analysis: store.fotoJsonAnalysis.foto,
+            foto_analysis: store.fotoJsonAnalysis != null ? store.fotoJsonAnalysis.foto : null,
             ts_init: startDate,
             mascota_analysis_id: store.idParam
         }

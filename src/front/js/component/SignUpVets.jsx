@@ -114,10 +114,6 @@ export const SignUpVets = () => {
                                     </button>
                                 </div>
                             </div>
-
-                            <button className="btn d-flex justify-content-center align-items-center rounded-pill mt-3" style={{ color: "#1B365D" }} type="button">
-                                <i className="fab fa-google me-2" ></i> Sign up with Google
-                            </button>
                         </form>
                     </div>
                 </div>

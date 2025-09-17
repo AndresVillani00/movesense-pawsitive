@@ -41,7 +41,8 @@ def users():
                     email=data.get('email'),
                     country=data.get('country'),
                     address=data.get('address'),
-                    phone=data.get('phone'))
+                    phone=data.get('phone'),
+                    is_veterinario=data.get('is_veterinario', False))
         rowdb = db.session.execute(db.select(Users).where(Users.username == data.get('username'), Users.password == data.get('password'))).scalar()
         if rowdb:
             response_body['message'] = f'El usuario ya existe'
