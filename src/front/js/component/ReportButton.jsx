@@ -9,15 +9,7 @@ export const ReportButton = ({ data }) => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const jsonDescription = store.currentMascota;
-  const jsonAnalysis = store.analysis[0];
-  const jsonFood = store.foods[0];
-
-  const metricasActivity = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'activity' && metricas.mascota_metrica_id === store.idParam) : null;
-  const metricasWeight = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'weight' && metricas.mascota_metrica_id === store.idParam) : null;
-  const metricasTemperature = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'temperature' && metricas.mascota_metrica_id === store.idParam) : null;
-  const metricasHeartRate = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'heart_rate' && metricas.mascota_metrica_id === store.idParam) : null;
-
+  
   const generatePDF = async () => {
     const doc = new jsPDF();
 
@@ -91,55 +83,29 @@ export const ReportButton = ({ data }) => {
   const generateAIReport = async () => {
     setLoading(true);
 
-    const prompt = "Actua como un experto veterinario, Interpreta, analiza y realiza un reporte sobre si es bueno o malo cada uno de los datos del json creado sobre mi mascota, devuelveme un json igual pero con los reportes para cada parte, agregando el de accion";
-    const data = {
-      'Descripcion de la Mascota': {
-        //'Foto de la mascota en base64': jsonDescription.foto_mascot,
-        'Raza de la mascota': jsonDescription.raza,
-        'Campo en booleano si la mascota esta o no mezclada': jsonDescription.is_mix,
-        'Genero de la mascota': jsonDescription.gender,
-        'Campo en booleano si la mascota esta o no esterilizado': jsonDescription.is_Esterilizado,
-        'Patologia de la mascota, si la tuviera': jsonDescription.patologia,
-        'Metricas': {
-          'Minutos de la ultima Actividad/Paseo de la mascota': metricasActivity[0].valor_diario,
-          'Peso de la mascota': metricasWeight[0].valor_diario,
-          'Temperatura de la mascota': metricasTemperature[0].valor_diario,
-          'Heart Rate de la mascota': metricasHeartRate[0].valor_diario,
-        }
-      },
-      'Analisis Orina': {
-        'Foto del analisis de orina en base64': jsonAnalysis.foto_analysis,
-        /*'Sangre en Analisis': jsonAnalysis.blood,
-        'Bilirubina en Analisis': jsonAnalysis.bilirubin,
-        'Urobilinogeno Analisis': jsonAnalysis.urobiling,
-        'Cetonas en Analisis': jsonAnalysis.ketones,
-        'Glucosa en Analisis': jsonAnalysis.glucose,
-        'Proteina en Analisis': jsonAnalysis.protein,
-        'Nitritoen Analisis': jsonAnalysis.nitrite,
-        'Leucocitos en Analisis': jsonAnalysis.leukocytes,
-        'PH en Analisis': jsonAnalysis.ph,*/
-      },
-      'Comida': {
-        'Foto de la comida en base64': jsonFood.foto_food,
-        'Titulo de contexto de la comida': jsonFood.title,
-        'Marca de la comida': jsonFood.marca,
-        'Tipo de la comida': jsonFood.type_food,
-        'Cantidad de la comida': jsonFood.quantity,
-        'Fibra, proteina y grasa por porcentajes': {
-          'Fibra': jsonFood.fibra,
-          'Proteina': jsonFood.proteina,
-          'Grasa': jsonFood.grasa
-        }
-      }
-    };
+    const date = new Date();
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    const ddsemana = String(date.getDate()-7).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const min = String(date.getMinutes()).padStart(2, '0');
+  
+    const now = `${yyyy}${mm}${dd}${hh}${min}00`;
+    const oneWeekBefore = `${yyyy}${mm}${ddsemana}${hh}${min}00`;
 
-    try {
-      await actions.reportOpenAI(prompt, data);
-    } catch (e) {
-      store.alert = { text: "Error generating the report", background: "danger", visible: true };
-    } finally {
-      setLoading(false);
-      navigate('/report')
+    const prompt = "Actua como un experto veterinario, Interpreta, analiza y realiza un reporte sobre si es bueno o malo cada uno de los datos del json creado sobre mi mascota, devuelveme un json igual pero con los reportes para cada parte, agregando el de accion";
+    await actions.generarJsonEntrada(store.idParam, oneWeekBefore, now);
+
+    if(store.JSONEntrada != null){
+      try {
+        await actions.reportOpenAI(prompt, store.JSONEntrada);
+      } catch (e) {
+        store.alert = { text: "Error generating the report", background: "danger", visible: true };
+      } finally {
+        setLoading(false);
+        navigate('/report')
+      }
     }
   };
 
@@ -148,9 +114,6 @@ export const ReportButton = ({ data }) => {
       <div className="d-flex justify-content-between">
         <button className="btn fw-bold" onClick={() => generateAIReport()} disabled={loading} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px"}}>
           {loading ? "Generating..." : "Health Report"}
-        </button>
-        <button className="btn fw-bold" onClick={generatePDF} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px"}}>
-          PDF Report
         </button>
       </div>
     </div>

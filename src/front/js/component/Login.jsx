@@ -50,7 +50,7 @@ export const Login = () => {
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Username</label>
-                        <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control border-0 shadow-sm" placeholder="Enter your username" required />
+                        <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control border-0 shadow-sm" placeholder="Enter your Username or Email" required />
                     </div>
                     <div className="mb-3 input-group">
                         <label className="form-label col-12">Password</label>
