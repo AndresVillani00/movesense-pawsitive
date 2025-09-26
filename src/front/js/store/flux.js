@@ -6,6 +6,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isLogged: false,
 			isNuevaMascota: false,
 			isVeterinario: false,
+			JSONEntrada: null,
 			usuario: {},
 			veterinario: {},
 			report: {},
@@ -40,6 +41,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setFotoJsonIncidencia: (item) => { setStore({ fotoJsonIncidencia: item }) },
 			setFotoJsonAnalysis: (item) => { setStore({ fotoJsonAnalysis: item }) },
 			setFotoJsonFood: (item) => { setStore({ fotoJsonFood: item }) },
+			generarJsonEntrada: async (mascota_id, start, end) => {
+				const uri = `${process.env.BACKEND_URL}/openaiApi/mascota/${mascota_id}/json-entrada?start_ts=${start}&end_ts=${end}`;
+				const options = {
+					method: 'GET',
+					headers: { "Content-Type": "application/json" }
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					return
+				}
+
+				const dataJson = await response.json();
+				console.log(dataJson);
+				setStore({ JSONEntrada: dataJson.results });
+			},
 			reportOpenAI: async (prompt, dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/openaiApi/generate-report`;
 				const options = {
@@ -107,6 +123,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log("Error obteniendo la lista de mascotas");
 						return;
 					}
+					
 					const data = await response.json();
 					setStore({ mascotas: data.results });
 				} catch (error) {
@@ -345,6 +362,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log("Error obteniendo la lista de metricas");
 						return;
 					}
+					
 					const data = await response.json();
 					setStore({ metricas: data.results });
 				} catch (error) {

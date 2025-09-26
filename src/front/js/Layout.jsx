@@ -46,7 +46,7 @@ const Layout = () => {
                     <Alert />
                     <Elements stripe={key}>
                         <Routes>
-                            <Route path="/" element={<Navigate to="/" />} />
+                            <Route element={<Home />} path="/" />
                             <Route element={<Home />} path="/home" />
                             <Route element={<SignUp />} path="/sign-up" />
                             <Route element={<SignUpVets />} path="/sign-up-vets" />

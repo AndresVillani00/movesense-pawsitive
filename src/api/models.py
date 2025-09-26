@@ -186,7 +186,7 @@ class Metrica(db.Model):
     valor_diario = db.Column(db.String(), unique=False, nullable=True, default="")
     valor_mensual = db.Column(db.String(), unique=False, nullable=True, default="")
     note = db.Column(db.Text(), unique=False, nullable=True, default="")
-    ts_init = db.Column(db.DateTime(), unique=False, nullable=True, default="")
+    ts_init = db.Column(db.DateTime(), unique=False, nullable=True, default=datetime.utcnow)
     sensor_id = db.Column(db.Integer, db.ForeignKey('sensor.id'))
     sensor_to = db.relationship('Sensor', foreign_keys=[sensor_id], backref=db.backref('sensor_to'), lazy='select')
     mascota_metrica_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
@@ -230,7 +230,7 @@ class Analysis(db.Model):
     ph = db.Column(db.String(), unique=False, nullable=True, default="")
     foto_analysis = db.Column(db.String(), unique=False, nullable=True, default=" ")
     ia_analysis = db.Column(db.Text(), unique=False, nullable=False, default=" ")
-    ts_init = db.Column(db.DateTime(), unique=False, nullable=True, default="")
+    ts_init = db.Column(db.DateTime(), unique=False, nullable=True, default=datetime.utcnow)
     mascota_analysis_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_analysis_to = db.relationship('Mascotas', foreign_keys=[mascota_analysis_id], backref=db.backref('mascota_analysis_to'), lazy='select')
 
@@ -265,6 +265,7 @@ class Comida(db.Model):
     quantity = db.Column(db.String(), unique=False, nullable=False, default=" ")
     food_time = db.Column(db.Time, unique=False, nullable=True)
     foto_food = db.Column(db.String(), unique=False, nullable=True, default=" ")
+    ts_init = db.Column(db.DateTime(), unique=False, nullable=True, default=datetime.utcnow)
     mascota_comida_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_comida_to = db.relationship('Mascotas', foreign_keys=[mascota_comida_id], backref=db.backref('mascota_comida_to'), lazy='select')
 
@@ -280,7 +281,8 @@ class Comida(db.Model):
             'ia_food': self.ia_food,
             'foto_food': self.foto_food,
             'quantity': self.quantity,
-            'food_time': self.food_time.strftime("%H:%M:%S")}
+            'food_time': self.food_time.strftime("%H:%M:%S"),
+            'ts_init': self.ts_init}
     
 
 class Alerts(db.Model):

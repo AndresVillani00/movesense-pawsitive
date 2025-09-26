@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import { Tab, Nav, Container, Form } from 'react-bootstrap';
+import logo from '../../img/LogoPawsitive.png';
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
@@ -12,6 +13,7 @@ export const Home = () => {
   const [itemCheck, setItemCheck] = useState([]);
 
   const [share_mascota_name_id, setShareMascotaId] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [share_password, setSharePassword] = useState('');
   const [mascota_name_id, setMascotaId] = useState('');
   const [password, setPassword] = useState('');
@@ -319,12 +321,18 @@ export const Home = () => {
                     </div>
                   </div>
                   <div className="col-md-4 mb-3">
+                    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right">
+                      Tooltip on right
+                    </button>
                     <label className="form-label fw-semibold">Pet Username</label>
                     <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">Pet Password</label>
-                    <input type="password" name="password" className="form-control" value={password} onChange={(event) => validatePassword(event.target.value)} />
+                    <div className="input-group"> 
+                      <input type={showPassword ? "text" : "password"} name="password" className="form-control" value={password} onChange={(event) => validatePassword(event.target.value)} required/>
+                      <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}> {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>} </span> 
+                    </div>
                   </div>
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">Pet Name</label>
@@ -344,7 +352,7 @@ export const Home = () => {
                   </div>
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">Pathology</label>
-                    <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} required >
+                    <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} >
                       <option value="">Select a Pathology</option>
                       <option value="food_pathology">Food pathology</option>
                       <option value="movility_pathology">Movility pathology</option>
@@ -581,7 +589,12 @@ export const Home = () => {
         }
       </section>
       :
-      <section></section>
+      <section className="container py-5">
+        {/* Fondo difuminado */}
+        <div className="bg-image text-center">
+          <img src={logo} className="m-auto"></img>
+        </div>
+      </section>
       }
     </div>
   );

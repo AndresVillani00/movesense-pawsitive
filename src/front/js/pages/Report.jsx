@@ -29,7 +29,7 @@ export const Report = () => {
         
         const dataToSend = { status_read: 'leido' }
         actions.putReadReport(dataToSend, id);
-        navigate('/home')
+        navigate(-1)
     }
 
     return (
