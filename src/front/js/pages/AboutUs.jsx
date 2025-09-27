@@ -9,8 +9,8 @@ export const AboutUs = () => {
                         <div class="col-md-8 text-center">
                             <h2 class="fw-bold mb-4" style={{ color: '#1B365D' }}>About Us</h2>
                             <p class="lead" style={{ color: "#333" }}>
-                                En <strong>Pawsitive Health</strong> creemos que cada mascota merece una vida sana, feliz y bien cuidada.
-                                Nuestra aplicación está diseñada para ayudarte a <strong>monitorizar, analizar y priorizar</strong>
+                                En <strong>Pawsitive</strong> creemos que cada mascota merece una vida sana, feliz y bien cuidada.
+                                Nuestra aplicación está diseñada para ayudarte a <strong>monitorizar, analizar y priorizar </strong>
                                 la salud de tu compañero de cuatro patas de una manera sencilla e inteligente.
                             </p>
                             <p style={{ color: "#333" }}>
