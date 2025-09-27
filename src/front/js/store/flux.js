@@ -210,6 +210,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 
+				setStore({ alert: { text: '', background: 'primary', visible: false } })
 				getActions().getUsersMascotas()
 			},
 			updateMascota: async (dataToSend, id) => {

@@ -93,8 +93,11 @@ export const Home = () => {
     }
     
     await actions.postMascota(dataToSend);
-    
-    setActiveKey('existing')
+    if(error){
+      setActiveKey('register')
+    } else {
+      setActiveKey('existing')
+    }
     navigate('/home');
   }
 
@@ -321,10 +324,10 @@ export const Home = () => {
                     </div>
                   </div>
                   <div className="col-md-4 mb-3">
-                    <button type="button" class="btn btn-secondary" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right">
-                      Tooltip on right
+                    <label className="form-label fw-semibold g-3">Pet Username</label>
+                    <button type="button" class="btn border-0 bg-transparent" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right">
+                      <i className="fa-solid fa-circle-info"></i>
                     </button>
-                    <label className="form-label fw-semibold">Pet Username</label>
                     <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
                   </div>
                   <div className="col-md-4 mb-3">
@@ -589,12 +592,17 @@ export const Home = () => {
         }
       </section>
       :
-      <section className="container py-5">
-        {/* Fondo difuminado */}
-        <div className="bg-image text-center">
-          <img src={logo} className="m-auto"></img>
+      <section className="container py-5 d-flex justify-content-center align-items-center">
+        <div className="position-relative w-100" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          {/* Imagen de fondo difuminada */}
+          <img src={logo} alt="Background" className="img-fluid position-absolutetranslate-middle"
+            style={{
+              width: "100%", height: "100%", objectFit: "cover"
+            }}
+          />
         </div>
       </section>
+
       }
     </div>
   );
