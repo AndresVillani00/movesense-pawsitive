@@ -22,6 +22,7 @@ def veterinarios():
         data = request.json 
         user_id = additional_claims['id']
         row = Veterinarios(id=user_id,            
+                    num_colegiado=data.get('num_colegiado'),
                     name_clinica=data.get('name_clinica'),
                     email_clinica=data.get('email_clinica'),
                     address_clinica=data.get('address_clinica'),

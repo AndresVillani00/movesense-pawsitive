@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import { Tab, Nav } from 'react-bootstrap';
+import { Alert } from "./Alert.jsx";
 
 export const Food = () => {
     const { store, actions } = useContext(Context);
@@ -55,7 +56,9 @@ export const Food = () => {
 
         store.alert = { text: "", background: "primary", visible: false };
         await actions.postFood(dataToSend);
-        setShowModal(false);
+        if(store.fotoJsonFood != null){
+            setShowModal(false);
+        }
     };
 
     const handleCapture = async (event) => {
@@ -94,6 +97,7 @@ export const Food = () => {
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}></button>
                                 </div>
                                 <p className="col-md-12">Enter the details of the food you want to record for your pet.</p>
+                                <Alert />
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit} className="row g-3">

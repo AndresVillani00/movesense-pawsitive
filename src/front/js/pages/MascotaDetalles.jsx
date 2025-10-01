@@ -68,7 +68,7 @@ export const MascotaDetalles = () => {
             {store.isLogged ?
                 <div>
                     <div className="p-2">
-                        <button className="btn btn-outline-secondary" onClick={() => navigate(-1)}>Volver</button>
+                        <button className="btn btn-outline-secondary" onClick={() => navigate('/home')}>Volver</button>
                     </div>
                     <div className="row g-3">
                             <div className="col-md-2">
@@ -120,16 +120,6 @@ export const MascotaDetalles = () => {
                                                         </div>
                                                     </div>
                                                 </button>
-                                                <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('activity')}>
-                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
-                                                        <div className="card-header d-flex justify-content-between">
-                                                            Activity<i className="fa-solid fa-chart-line p-1"></i>
-                                                        </div>
-                                                        <div className="card-body">
-                                                            {metricasActivity[0] != null ? (metricasActivity.length > 0 ? metricasActivity[metricasActivity.length - 1].valor_diario + ' min' : metricasActivity[0].valor_diario + ' min') : ''}
-                                                        </div>
-                                                    </div>
-                                                </button>
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('weight')}>
                                                     <div className="card border-0" style={{ borderRadius: "12px" }}>
                                                         <div className="card-header d-flex justify-content-between">
@@ -137,6 +127,16 @@ export const MascotaDetalles = () => {
                                                         </div>
                                                         <div className="card-body">
                                                             {metricasWeight[0] != null ? (metricasWeight.length > 0 ? metricasWeight[metricasWeight.length - 1].valor_diario + ' kg' : metricasWeight[0].valor_diario + ' kg') : ''}
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                                <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('activity')}>
+                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
+                                                        <div className="card-header d-flex justify-content-between">
+                                                            Activity<i className="fa-solid fa-chart-line p-1"></i>
+                                                        </div>
+                                                        <div className="card-body">
+                                                            {metricasActivity[0] != null ? (metricasActivity.length > 0 ? metricasActivity[metricasActivity.length - 1].valor_diario + ' min' : metricasActivity[0].valor_diario + ' min') : ''}
                                                         </div>
                                                     </div>
                                                 </button>

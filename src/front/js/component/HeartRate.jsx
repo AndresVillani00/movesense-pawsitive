@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { Context } from "../store/appContext";
+import { Alert } from "./Alert.jsx";
 
 export const HeartRate = () => {
     const { store, actions } = useContext(Context);
@@ -150,6 +151,7 @@ export const HeartRate = () => {
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}></button>
                                 </div>
                                 <p className="col-md-12">Enter the details of the Heart Rate you want to record for your pet.</p>
+                                <Alert />
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit} className="row g-3">

@@ -94,7 +94,7 @@ export const ReportButton = ({ data }) => {
     const now = `${yyyy}${mm}${dd}${hh}${min}00`;
     const oneWeekBefore = `${yyyy}${mm}${ddsemana}${hh}${min}00`;
 
-    const prompt = "Actua como un experto veterinario, Interpreta, analiza y realiza un reporte sobre si es bueno o malo cada uno de los datos del json creado sobre mi mascota, devuelveme un json igual pero con los reportes para cada parte, agregando el de accion";
+    const prompt = "Actua como un experto veterinario, Interpreta, analiza y realiza un reporte sobre si es bueno o malo cada uno de los datos del json creado sobre mi mascota, devuelveme un json igual pero con los reportes para cada parte, agregando el de accion y el de acciones a futuro";
     await actions.generarJsonEntrada(store.idParam, oneWeekBefore, now);
 
     if(store.JSONEntrada != null){

@@ -1,7 +1,9 @@
-
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
 import { useNavigate, Link } from "react-router-dom";
+import { Alert } from "./Alert.jsx";
+
+
 export const Login = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
@@ -17,8 +19,17 @@ export const Login = () => {
         await actions.login(dataToSend);
 
         store.alert = { text: "", background: "primary", visible: false };
-        if (store.isLogged) {
-            navigate('/home')
+        if (store.isLogged && store.userMascotas.length<2) {
+            actions.setCurrentMascota(store.userMascotas[0]);
+            actions.setIdParam(store.userMascotas[0].id)
+            await actions.getAnalysis(store.userMascotas[0].id);
+            await actions.getMetrica(store.userMascotas[0].id);
+            await actions.getIncidencia(store.userMascotas[0].id);
+            await actions.getShareUsers(store.userMascotas[0].mascota_name_id);
+            
+            navigate('/pet-details');
+        } else if (store.isLogged) {
+            navigate('/home');
         }
     }
 
@@ -47,6 +58,7 @@ export const Login = () => {
                 <Link to="/home" className="text-decoration-none mb-3" style={{ color: "#1B365D" }}>  <i className="fas fa-arrow-left"></i> go back home</Link>
                 <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1B365D" }}>Welcome Back</h2>
                 <p className="text-center" style={{ color: "#1B365D" }}>Log in to continue</p>
+                <Alert />
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Username</label>
@@ -59,13 +71,13 @@ export const Login = () => {
                             {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                         </span>
                     </div>
-                    <div className="d-flex justify-content-between align-items-center">
+                    {/**<div className="d-flex justify-content-between align-items-center">
                         <div className="form-check">
                             <input className="form-check-input" type="checkbox" id="rememberMe" />
                             <label className="form-check-label text-muted" htmlFor="rememberMe">Remember me</label>
                         </div>
                         <Link to="/home" className="text-decoration-none" style={{ color: "#1B365D" }}>Forgot password?</Link>
-                    </div>
+                    </div>*/}
                     <div className="text-center">
                         <button type="submit" className="btn w-50 mt-4 fw-bold" style={{ color: "white", 
                             background:"#ff6100", 

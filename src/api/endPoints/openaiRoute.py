@@ -11,6 +11,79 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 openai_api = Blueprint("openai_api", __name__)
 
+EXCEL_PATH = "files/Perros - Modelo de metricas y alertas.xlsx"
+VETCHECK_RULES = r"""
+Rol:
+Eres “VetCheck”, un evaluador de salud canina.
+Tu conocimiento está en un Excel con tres hojas: "Clasificaciones", "Categorías" y "Diccionario Clasificaciones".
+
+Objetivo
+Dado un JSON de entrada con: especie, raza, tamaño, edad_meses, sexo, esterilizado, peso_kg, agua_ml_dia, actividad_min_dia, temperatura_c y pulso_bpm,
+debes compararlos con los rangos del Excel y devolver EXCLUSIVAMENTE un JSON con:
+- Estado de cada métrica.
+- Estado general.
+
+Fuentes y herramientas:
+- Usa SIEMPRE Code Interpreter para abrir y leer el Excel.
+- No inventes datos ni rangos.
+- Si falta información en el Excel, devuelve "ND".
+- Salida solo en formato JSON válido (json.loads debe funcionar).
+
+Normalización de entrada:
+- esterilizado: "si"|"sí" → "Si", "no" → "No".
+- sexo: "m"|"macho" → "Macho", "h"|"hembra" → "Hembra".
+- edad_meses: <12 → "Cachorro"; 12–96 → "Adulto"; >96 → "Viejo".
+- tamaño: capitaliza → "Pequeño", "Mediano", "Grande".
+- raza: usar el nombre tal como aparece en el Excel.
+
+Resolución del código de comparación (Diccionario):
+1) Busca por tokens (no string exacto) en “Diccionario Clasificaciones”.
+2) Prioridad: D (Raza-Esterilizado-Genero-Edad-Tamaño) → C (Esterilizado-Genero-Edad-Tamaño) → B (Genero-Edad-Tamaño) → A (Edad-Tamaño).
+3) Guarda "codigo_comparacion" y "nivel_prioridad_usado" (raza | esterilizado | genero | edad_tamaño).
+
+Localización de rangos (Categorías):
+1) Localiza {codigo}-N, {codigo}-A, {codigo}-R en la misma fila (columnas separadas).
+2) Desde fila_base+1, en col 0, localiza métricas: "peso_kg", "agua_ml_dia", "actividad_min_dia", "temperatura_c", "pulso_bpm".
+3) Para cada métrica, toma valores en columnas N/A/R.
+
+Parsing de rangos:
+- Soporta: x-y (intervalo), "x-y o a-b" (uniones), <z, >z.
+- Evalúa en orden R → A → N.
+- Si no encaja: "sin_referencia".
+
+Clasificación:
+1) Métrica: -R ⇒ "peligro"; -A ⇒ "advertencia"; -N ⇒ "normal"; else ⇒ "sin_referencia".
+2) General: si alguna "peligro" ⇒ "peligro"; si ninguna "peligro" y alguna "advertencia" ⇒ "advertencia"; si todas "normal" o "sin_referencia" ⇒ "normal".
+3) Reglas extra: temperatura_c < 30 o pulso_bpm < 20 o > 350 ⇒ "peligro".
+
+Notas:
+- Incluye aviso en el JSON.
+- Trátalo como "peligro" si hay unidades imposibles.
+
+Formato de salida (OBLIGATORIO, SOLO JSON):
+{
+  "estado_general": {
+    "situacion": "normal|advertencia|peligro",
+    "codigo_comparacion": "PE.*|ND",
+    "nivel_prioridad_usado": "raza|esterilizado|genero|edad_tamaño"
+  },
+  "detalle_metricas": {
+    "peso_kg": {"estado": "...", "valor": 0, "codigo_comparacion_peso": "PE.*-N|PE.*-A|PE.*-R|ND", "rango_ref": ""},
+    "actividad_min_dia": {"estado": "...", "valor": 0, "codigo_comparacion_actividad": "PE.*-N|PE.*-A|PE.*-R|ND", "rango_ref": ""},
+    "agua_ml_dia": {"estado": "...", "valor": 0, "codigo_comparacion_agua": "PE.*-N|PE.*-A|PE.*-R|ND", "rango_ref": ""},
+    "temperatura_c": {"estado": "...", "valor": 0, "codigo_comparacion_temperatura": "PE.*-N|PE.*-A|PE.*-R|ND", "rango_ref": ""},
+    "pulso_bpm": {"estado": "...", "valor": 0, "codigo_comparacion_pulso": "PE.*-N|PE.*-A|PE.*-R|ND", "rango_ref": ""}
+  },
+  "contexto_aplicado": {
+    "especie": "", "raza": "", "tamano": "", "edad_meses": 0, "segmento_edad": "Cachorro|Adulto|Viejo", "sexo": "", "esterilizado": ""
+  },
+  "aviso": { "mensaje": "Los datos proporcionados son solo orientativos. Si tiene alguna duda sobre la salud de su mascota, consulte a su veterinario para obtener un diagnóstico y tratamiento adecuados." }
+}
+
+RECUERDA: responde ÚNICAMENTE con un único objeto JSON válido.
+"""
+
+
 # Mapeo de nombres de tipo_metrica a labels legibles
 TIPO_LABELS = {
     "activity": "Actividad Fisica",
@@ -29,7 +102,7 @@ def parse_ts_param(ts_str):
 def find_timestamp_attr(Model):
     """Devuelve el atributo timestamp usable en Model (Instrumented attribute) o None."""
     # orden de preferencia
-    for name in ("ts_init", "initial_date", "created_at", "created_on", "date", "timestamp", "fecha", "food_time"):
+    for name in ("ts_init", "ts_alta"):
         if hasattr(Model, name):
             return getattr(Model, name)
     return None
@@ -72,18 +145,16 @@ def mascota_report_range(mascota_id):
             pass
     metricas = db.session.execute(q_metric).scalars().all()
     # Agrupar metricas: tipo -> fecha -> tomar el registro más reciente del día
-    metricas_by_type = defaultdict(dict)  # { tipo: {date_str: {"Valor":..., "ts":...}}}
+    metricas_by_type = defaultdict(lambda: defaultdict(list))  # { tipo: {date_str: {"Valor":..., "ts":...}}}
     for m in metricas:
         if not m.ts_init:
             continue
         tipo = m.tipo_metrica_id or "unknown"
         fecha = m.ts_init.strftime("%d/%m/%Y")
-        existing = metricas_by_type[tipo].get(fecha)
-        if not existing or (m.ts_init and m.ts_init > datetime.fromisoformat(existing["ts"])):
-            metricas_by_type[tipo][fecha] = {
-                "Valor": m.valor_diario,
-                "ts": m.ts_init.isoformat()
-            }
+        metricas_by_type[tipo][fecha].append({
+            "Valor": m.valor_diario,
+            "ts": m.ts_init.isoformat()
+        })
     # --- 2) Analisis (urina) ---
     analysis_ts_col = find_timestamp_attr(Analysis)
     q_analisis = db.select(Analysis).where(Analysis.mascota_analysis_id == mascota_id)
@@ -99,17 +170,17 @@ def mascota_report_range(mascota_id):
         fecha = ts.strftime("%d/%m/%Y")
         analisis_by_date[fecha].append({
             "Foto del analisis de orina en base64": getattr(a, "foto_analysis", None),
+            "Blood en el analisis": getattr(a, "blood", None),
+            "Bilirubin en el analisis": getattr(a, "bilirubin", None),
+            "Urobiling en el analisis": getattr(a, "urobiling", None),
+            "Ketones en el analisis": getattr(a, "ketones", None),
+            "Glucose en el analisis": getattr(a, "glucose", None),
+            "Protein en el analisis": getattr(a, "protein", None),
+            "Nitrite en el analisis": getattr(a, "nitrite", None),
+            "Leukocytes en el analisis": getattr(a, "leukocytes", None),
+            "PH en el analisis": getattr(a, "ph", None),
             "ts": ts.isoformat()
         })
-    # Si quieres solo el último por día, convertimos a single dict (último)
-    analisis_by_date_single = {}
-    for fecha, items in analisis_by_date.items():
-        # escoger último por ts
-        last = sorted(items, key=lambda x: x.get("ts") or "", reverse=True)[0]
-        analisis_by_date_single[fecha] = {
-            "Foto del analisis de orina en base64": last.get("Foto del analisis de orina en base64"),
-            "ts": last.get("ts")
-        }
     # --- 3) Comida ---
     comida_ts_col = find_timestamp_attr(Comida)
     q_comida = db.select(Comida).where(Comida.mascota_comida_id == mascota_id)
@@ -134,10 +205,6 @@ def mascota_report_range(mascota_id):
             "Grasa": getattr(c, "grasa", None),
             "ts": ts.isoformat() if hasattr(ts, "isoformat") else None
         })
-    comidas_by_date_single = {}
-    for fecha, items in comidas_by_date.items():
-        last = sorted(items, key=lambda x: x.get("ts") or "", reverse=True)[0]
-        comidas_by_date_single[fecha] = {k: v for k, v in last.items() if k != "ts"}
     # --- 4) Incidencias ---
     inc_ts_col = find_timestamp_attr(Incidencias)
     q_inc = db.select(Incidencias).where(Incidencias.mascota_incidencia_id == mascota_id)
@@ -161,10 +228,6 @@ def mascota_report_range(mascota_id):
             "Fecha de fin de la incidencia": getattr(i, "final_date", None).isoformat() if getattr(i, "final_date", None) else None,
             "ts": ts.isoformat()
         })
-    incidencias_by_date_single = {}
-    for fecha, items in incidencias_by_date.items():
-        last = sorted(items, key=lambda x: x.get("ts") or "", reverse=True)[0]
-        incidencias_by_date_single[fecha] = {k: v for k, v in last.items() if k != "ts"}
     # --- Construir JSON final ---
     result = {
         "Descripcion de la Mascota": {
@@ -174,28 +237,28 @@ def mascota_report_range(mascota_id):
             "Campo en booleano si la mascota esta o no esterilizado": mascota.is_Esterilizado if hasattr(mascota, 'is_Esterilizado') else getattr(mascota, 'is_esterilizado', None),
             "Patologia de la mascota, si la tuviera": mascota.patologia
         },
-        "Analisis Orina": analisis_by_date_single,
-        "Comida": comidas_by_date_single,
-        "Incidencias": incidencias_by_date_single
+        "Analisis Orina": analisis_by_date,
+        "Comida": comidas_by_date,
+        "Incidencias": incidencias_by_date
     }
     # Añadimos Metricass bajo la sección Descripcion -> "Metricas": {tipo: {fecha: {Valor, ts}}}
     met_section = {}
     for tipo, bydate in metricas_by_type.items():
-        # normalizar nombres conocidos: activity -> "Actividad Fisica", etc.
-        name_map = {
-            "activity": "Actividad Fisica",
-            "temperature": "Temperatura",
-            "heart_rate": "Heart Rate",
-            "weight": "Peso"
-        }
-        display_tipo = name_map.get(tipo.lower(), tipo)
+        # normalizar nombres conocidos
+        display_tipo = TIPO_LABELS.get(tipo.lower(), tipo)
         met_section[display_tipo] = {}
-        for fecha, valobj in bydate.items():
-            # solo mantenemos "Valor" y "ts" (puedes quitar ts si prefieres)
-            met_section[display_tipo][fecha] = {
-                "Valor": valobj.get("Valor"),
-                "ts": valobj.get("ts")
-            }
+        # bydate[fecha] es una lista de dicts; mantenemos la lista tal cual (o puedes transformarla)
+        for fecha, entries in bydate.items():
+            # entries es una lista de dicts: [{"Valor":..., "ts":...}, ...]
+            try:
+                sorted_entries = sorted(entries, key=lambda x: x.get("ts") or "")
+            except Exception:
+                sorted_entries = entries
+            # si quieres devolver solo Valor y ts:
+            met_section[display_tipo][fecha] = [
+                {"Valor": e.get("Valor"), "ts": e.get("ts"), "nota": e.get("nota")} for e in sorted_entries
+            ]
+    # asignar al result
     result["Descripcion de la Mascota"]["Metricas"] = met_section
     response_body['results'] = result
     return response_body, 200
@@ -215,10 +278,12 @@ def generate_report():
         "role": "system",
         "content": (
             "Eres un veterinario experto. Analiza los datos para mascotas "
-            "Devuelve únicamente un JSON válido con keys: Descripcion de la Mascota, Analisis Orina, Comida y Accion, el valor de las tres primeras es un reporte explicando si es buena o mala la informacion enviada, "
-            "y da recomendaciones claras, no muestres los titulos de los datos enviados simplemente da tu opinion,"
-            "y genera un cuarto reporte para la parte (Accion) del JSON con los pasos a seguir para el futuro segun los reportes anteriores."
-            "No incluyas texto adicional fuera del JSON. solo devuelve un JSON del estilo {Descripcion: 'reporte', Analisis: 'reporte', Comida: 'reporte', Accion: 'reporte'}"
+            "Devuelve únicamente un JSON válido con keys: Descripcion de la Mascota para la etiqueta Descripcion, Analisis Orina pra la etiqueta Analisis, Comida, Accion "
+            "y los pasos a seguir en el Futuro, el valor de las cuatro primeros es un reporte explicando si es buena o mala la informacion enviada en el JSON de entrada tomando en cuenta que las Incidencias son para el reporte Accion, "
+            "y da recomendaciones claras, no muestres los titulos de los datos enviados simplemente da tu opinion profesional,"
+            "y genera un quinto reporte para la parte (Futuro) del JSON con los pasos a seguir para el futuro segun los reportes anteriores."
+            "No incluyas texto adicional fuera del JSON. solo devuelve un JSON del estilo {Descripcion: 'reporte', Analisis: 'reporte', Comida: 'reporte', Accion: 'reporte', Futuro: 'reporte'}. "
+            "Es importante que respetes los nombres de las etiquetas ya que las voy a buscar por ese exacto nombre al mostrarlas en mi front-end {Descripcion, Analisis, Comida, Accion, Futuro}"
         )
     }
     user_msg = {
@@ -247,3 +312,79 @@ def generate_report():
         current_app.logger.exception("OpenAI request failed")
         response_body['message'] = str(e)
         return response_body, 500
+    
+
+def upload_excel(path: str):
+    # El fichero debe subirse para que Code Interpreter pueda abrirlo
+    # (propósito “assistants” es válido para tools como code_interpreter/file_search)
+    up = client.files.create(file=open(path, "rb"), purpose="assistants")
+    return up.id
+
+def build_user_input(payload: dict) -> str:
+    # El modelo leerá este bloque como el “caso de evaluación”
+    return (
+        "Entrada (JSON):\n"
+        + json.dumps(payload, ensure_ascii=False)
+        + "\n\n"
+        "Acciones:\n"
+        "- Abre el Excel con Code Interpreter (pandas) y aplica las reglas indicadas.\n"
+        "- Devuelve exclusivamente el objeto JSON solicitado.\n"
+    )
+
+def vetcheck_eval(payload: dict, file_id: str):
+    """
+    Llama a Responses API con tool code_interpreter y el Excel adjunto.
+    """
+    resp = client.responses.create(
+        model="gpt-4o-mini",
+        tools=[{"type": "code_interpreter"}],
+        attachments=[
+            {"file_id": file_id, "tools": [{"type": "code_interpreter"}]}
+        ],
+        input=[
+            {"role": "system", "content": VETCHECK_RULES},
+            {"role": "user", "content": build_user_input(payload)}
+        ],
+        # JSON estricto: en algunas combinaciones con tools puede no estar disponible el json_schema;
+        # por eso validamos abajo con json.loads como cinturón de seguridad. :contentReference[oaicite:0]{index=0}
+        response_format={"type": "json_object"}  # si diera error, quítalo y confía en la validación local
+    )
+
+    # Extrae texto de salida y valida que sea JSON
+    out = getattr(resp, "output_text", None)
+    if not out:
+        # Fallback por si el SDK devuelve chunks; compón manualmente si fuera necesario
+        out = "".join([getattr(p, "content", "") for p in getattr(resp, "output", []) if hasattr(p, "content")])
+
+    try:
+        data = json.loads(out)
+    except Exception:
+        # Si no es JSON puro, intenta encontrar el primer bloque JSON
+        import re
+        m = re.search(r"\{.*\}", out, flags=re.DOTALL)
+        if not m:
+            raise ValueError(f"No se pudo parsear JSON.\nSalida bruta:\n{out}")
+        data = json.loads(m.group(0))
+    return data
+
+if __name__ == "__main__":
+    # 1) Sube el Excel una vez (puedes cachear el file_id en tu app)
+    file_id = upload_excel(EXCEL_PATH)
+
+    # 2) Ejemplo de payload
+    entrada = {
+        "especie": "perro",
+        "raza": "Beagle",
+        "tamano": "pequeño",
+        "edad_meses": 10,
+        "sexo": "m",
+        "esterilizado": "no",
+        "peso_kg": 5.2,
+        "agua_ml_dia": 480,
+        "actividad_min_dia": 60,
+        "temperatura_c": 38.2,
+        "pulso_bpm": 120
+    }
+
+    resultado = vetcheck_eval(entrada, file_id)
+    print(json.dumps(resultado, ensure_ascii=False, indent=2))

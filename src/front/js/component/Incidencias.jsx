@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { Context } from "../store/appContext";
+import { Alert } from "./Alert.jsx";
 
 export const Incidencias = () => {
     const { store, actions } = useContext(Context);
@@ -85,7 +86,10 @@ export const Incidencias = () => {
         store.alert = { text: "", background: "primary", visible: false };
 
         await actions.postIncidencia(dataToSend);
-        setShowModal(false);
+
+        if(store.fotoJsonIncidencia != null){
+            setShowModal(false);
+        }
     };
 
     const handleCapture = async (event) => {
@@ -130,6 +134,7 @@ export const Incidencias = () => {
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}></button>
                                 </div>
                                 <p className="col-md-12">Enter the details of the incident you want to record for your pet.</p>
+                                <Alert />
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit} className="row g-3">

@@ -1,13 +1,15 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext.js";
 import { useNavigate } from "react-router-dom";
+import { Alert } from "./Alert.jsx";
 
 
 export const SignUpVets = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-    
+
     const [username, setUsername] = useState('');
+    const [colegiado, setColegiado] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -18,6 +20,7 @@ export const SignUpVets = () => {
 
         const dataToSend = {
             username,
+            num_colegiado: colegiado,
             email,
             password,
             is_veterinario: true
@@ -34,9 +37,9 @@ export const SignUpVets = () => {
 
     const validatePassword = async (value) => {
         const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-        if(!isValid.test(value)){
+        if (!isValid.test(value)) {
             setError(true)
-        } else{
+        } else {
             store.alert = { text: "", background: "primary", visible: false };
             setError(false)
         }
@@ -67,13 +70,22 @@ export const SignUpVets = () => {
                     {/* Formulario */}
                     <div className="card p-5 shadow-lg border-0" style={{ maxWidth: "400px", width: "100%", borderRadius: "12px" }}>
                         <h3 className="text-center fw-bold mb-4" style={{ color: "#1B365D" }}>Create your account</h3>
+                        <Alert />
                         <form onSubmit={handleSubmit} className="row g-3">
                             {/* Campo Username */}
-                            <div className="col-12">
+                            <div className="col-6">
                                 <label className="form-label fw-semibold">Username</label>
                                 <div className="input-group">
                                     <span className="input-group-text">@</span>
                                     <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control" placeholder="Write your username" required />
+                                </div>
+                            </div>
+
+                            {/* Campo Colegiado */}
+                            <div className="col-6">
+                                <label className="form-label fw-semibold">Vet ID</label>
+                                <div className="input-group">
+                                    <input onChange={(event) => setColegiado(event.target.value)} value={colegiado} type="text" className="form-control" placeholder="Write your Vet ID" required />
                                 </div>
                             </div>
 
@@ -104,8 +116,9 @@ export const SignUpVets = () => {
                                 <div className="d-flex justify-content-center gap-3">
                                     <button
                                         className="btn fw-bold" type="submit"
-                                        style={{ color: "white", 
-                                            background:"#ff6100", 
+                                        style={{
+                                            color: "white",
+                                            background: "#ff6100",
                                             border: "#ff6100",
                                             borderRadius: "30px",
                                             padding: "10px 20px"
