@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { Context } from "../store/appContext";
+import { Alert } from "./Alert.jsx";
 
 export const Analysis = () => {
     const { store, actions } = useContext(Context);
@@ -17,10 +18,10 @@ export const Analysis = () => {
     const [nitrite, setNitrite] = useState('');
     const [leukocytes, setLeukocytes] = useState('');
     const [ph, setPh] = useState('');
-    
+
     const modalRef = useRef(null);
     const bsModal = useRef(null);
-    
+
     useEffect(() => {
         // Cargar modal de Bootstrap solo una vez
         if (modalRef.current) {
@@ -30,7 +31,7 @@ export const Analysis = () => {
             });
         }
     }, []);
-    
+
     useEffect(() => {
         if (bsModal.current) {
             showModal ? bsModal.current.show() : bsModal.current.hide();
@@ -39,15 +40,15 @@ export const Analysis = () => {
 
     const toggleChecks = (id) => {
         if (itemCheck.includes(id)) {
-        setItemCheck(itemCheck.filter((sid) => sid !== id));
+            setItemCheck(itemCheck.filter((sid) => sid !== id));
         } else {
-        setItemCheck([...itemCheck, id]);
+            setItemCheck([...itemCheck, id]);
         }
     };
-    
+
     const formatDateTime = (value) => {
         if (!value) return null;
-            
+
         const date = new Date(value);
         const yyyy = date.getFullYear();
         const mm = String(date.getMonth() + 1).padStart(2, '0');
@@ -55,15 +56,15 @@ export const Analysis = () => {
         const hh = String(date.getHours()).padStart(2, '0');
         const min = String(date.getMinutes()).padStart(2, '0');
         const ss = '00'; // datetime-local no incluye segundos
-    
+
         return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`;
     }
-    
+
     const handleSubmit = async (event) => {
         event.preventDefault();
-    
+
         const startDate = formatDateTime(date);
-    
+
         const dataToSend = {
             blood,
             bilirubin,
@@ -79,13 +80,15 @@ export const Analysis = () => {
             mascota_analysis_id: store.idParam
         }
         await actions.postAnalysis(dataToSend);
-        setShowModal(false);
+        if (store.fotoJsonAnalysis != null) {
+            setShowModal(false);
+        }
     };
-    
+
     const handleCapture = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
-    
+
         const reader = new FileReader();
         reader.onloadend = () => {
             const base64 = reader.result;
@@ -97,7 +100,7 @@ export const Analysis = () => {
     const handleDelete = async (event) => {
         event.preventDefault();
 
-        for(var i = 0; i < itemCheck.length; i++){
+        for (var i = 0; i < itemCheck.length; i++) {
             actions.deleteAnalysis(itemCheck[i]);
         }
 
@@ -124,6 +127,7 @@ export const Analysis = () => {
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}></button>
                                 </div>
                                 <p className="col-md-12">Enter the details of the urine analysis you want to record for your pet.</p>
+                                <Alert />
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit} className="row g-3">
@@ -224,9 +228,9 @@ export const Analysis = () => {
                             <tr key={index} className="text-center">
                                 <td>
                                     <input
-                                    type="checkbox"
-                                    checked={itemCheck.includes(item.id)}
-                                    onChange={() => toggleChecks(item.id)}
+                                        type="checkbox"
+                                        checked={itemCheck.includes(item.id)}
+                                        onChange={() => toggleChecks(item.id)}
                                     />
                                 </td>
                                 <td>{item.blood != null ? item.blood : '-'}</td>

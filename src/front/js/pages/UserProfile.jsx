@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
+import { Alert } from "../component/Alert.jsx";
 
 export const UserProfile = () => {
   const { store, actions } = useContext(Context);
@@ -66,7 +67,7 @@ export const UserProfile = () => {
           <h3 className="mt-2 fw-bold text-center">User Profile</h3>
         </div>
       </div>
-
+      <Alert />
       {/* Campos del formulario */}
       {store.usuario.is_veterinario ? (
         <form onSubmit={handleVetSubmit} className="row g-3">

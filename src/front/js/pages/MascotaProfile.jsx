@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
+import { Alert } from "../component/Alert.jsx";
 
 export const MascotaProfile = () => {
   const { store, actions } = useContext(Context);
@@ -56,6 +57,7 @@ export const MascotaProfile = () => {
           <h3 className="mt-2 fw-bold text-center">Pet Profile</h3>
         </div>
       </div>
+        <Alert />
         <form onSubmit={handleSubmit} className="row g-3">
           {/* Campos del formulario */}
           <div className="col-md-12">

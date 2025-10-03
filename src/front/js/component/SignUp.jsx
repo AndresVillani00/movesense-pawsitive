@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react"; 
 import { Context } from "../store/appContext.js"; 
 import { useNavigate } from "react-router-dom"; 
+import { Alert } from "./Alert.jsx";
 
 
 export const SignUp = () => { 
@@ -50,6 +51,7 @@ export const SignUp = () => {
                     {/* Formulario */} 
                     <div className="card p-5 shadow-lg border-0" style={{ maxWidth: "400px", width: "100%", borderRadius: "12px" }}> 
                         <h3 className="text-center fw-bold mb-4" style={{ color: "#1B365D" }}>Create your account</h3> 
+                        <Alert />
                         <form onSubmit={handleSubmit} className="row g-3"> 
                             {/* Campo Username */} 
                             <div className="col-12"> 

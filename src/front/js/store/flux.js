@@ -53,7 +53,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 				const dataJson = await response.json();
-				console.log(dataJson);
 				setStore({ JSONEntrada: dataJson.results });
 			},
 			reportOpenAI: async (prompt, dataToSend) => {
@@ -67,7 +66,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				if (!response.ok) {
 					return
 				}
-
 				const data = await response.json();
 				setStore({ reportAI: data })
 			},
@@ -192,7 +190,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 
 				if (dataToSend.foto_mascot == null) {
-					setStore({ alert: { text: 'There is no photo uploaded about the food', background: 'danger', visible: true } })
+					setStore({ alert: { text: 'There is no photo uploaded about the Pet', background: 'danger', visible: true } })
             		return;
         		}
 
@@ -267,6 +265,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			
 					const updatedMascotas = getStore().mascotas.filter(mascota => mascota.id !== id);
 					setStore({ mascotas: updatedMascotas });
+					getActions().getUsersMascotas();
 			
 					return true; 
 				} catch (error) {
@@ -309,7 +308,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 
 				if (dataToSend.foto_analysis == null) {
-					setStore({ alert: { text: 'There is no photo uploaded about the analysis', background: 'danger', visible: true } })
+					setStore({ alert: { text: `There isn't a photo uploaded about the analysis`, background: 'danger', visible: true } })
             		return;
         		}
 

@@ -14,7 +14,6 @@ import { Login } from "./component/Login.jsx";
 import { Home } from "./pages/Home.jsx";
 import { Explore } from "./pages/Explore.jsx";
 import { UserProfile } from "./pages/UserProfile.jsx";
-import { Alert } from "./component/Alert.jsx";
 import { AboutUs } from "./pages/AboutUs.jsx";
 import { Report } from "./pages/Report.jsx";
 import { Cart } from "./pages/Cart.jsx";
@@ -43,7 +42,6 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
-                    <Alert />
                     <Elements stripe={key}>
                         <Routes>
                             <Route element={<Home />} path="/" />

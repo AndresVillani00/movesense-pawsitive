@@ -27,7 +27,7 @@ export const Payment = () => {
             }}
             onClick={handleSubscribe}
           >
-            Subscribe for $7.99 / mounth
+            Subscribe for $7.99 / month
           </button>
         </div>
         :

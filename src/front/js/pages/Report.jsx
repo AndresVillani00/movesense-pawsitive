@@ -16,12 +16,13 @@ export const Report = () => {
             description_ia: store.reportAI.results.Descripcion,
             food_ia: store.reportAI.results.Comida,
             action_ia: store.reportAI.results.Accion,
+            future_ia: store.reportAI.results.Futuro,
             analysis_ia: store.reportAI.results.Analisis,
             mascota_reports_id: store.idParam
         }
 
         actions.postReport(dataToSend);
-        navigate('/home')
+        navigate(-1)
     }
 
     const handleRead = (event, id) => {
@@ -66,10 +67,20 @@ export const Report = () => {
                         </div>
                     </div>
 
-                    <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
-                        <h5 style={{ color: "#1B365D" }}>Action Plan</h5>
-                        <p>{store.reportAI.results.Accion}</p>
+                    <div className="row mb-4">
+                        <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
+                            <h5 style={{ color: "#1B365D" }}>Action Plan</h5>
+                            <p>{store.reportAI.results.Accion}</p>
+                        </div>
                     </div>
+
+                    <div className="row mb-4">
+                        <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
+                            <h5 style={{ color: "#1B365D" }}>Future Plan</h5>
+                            <p>{store.reportAI.results.Futuro}</p>
+                        </div>
+                    </div>
+
                     <div className="p-5 text-center">
                         <button className="btn fw-bold" onClick={event => sendReport(event)} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "30px", padding: "10px 20px"}}>
                             Share with Veterinarian
@@ -116,9 +127,18 @@ export const Report = () => {
                             </div>
                         </div>
 
-                        <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
-                            <h5 style={{ color: "#1B365D" }}>Action Plan</h5>
-                            <p>{report[report.length - 1].action_ia}</p>
+                        <div className="row mb-4">
+                            <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
+                                <h5 style={{ color: "#1B365D" }}>Action Plan</h5>
+                                <p>{report[report.length - 1].action_ia}</p>
+                            </div>
+                        </div>
+
+                        <div className="row mb-4">
+                            <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
+                                <h5 style={{ color: "#1B365D" }}>Future Plan</h5>
+                                <p>{report[report.length - 1].future_ia}</p>
+                            </div>
                         </div>
                     </div>
                 :

@@ -3,11 +3,11 @@ import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import { Tab, Nav, Container, Form } from 'react-bootstrap';
 import logo from '../../img/LogoPawsitive.png';
+import { Alert } from "../component/Alert.jsx";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
-
   const [showModal, setShowModal] = useState(false);
   const [activeKey, setActiveKey] = useState(store.isVeterinario ? 'alerts' : 'existing');
   const [itemCheck, setItemCheck] = useState([]);
@@ -95,7 +95,19 @@ export const Home = () => {
     await actions.postMascota(dataToSend);
     if(error){
       setActiveKey('register')
+    } else if (dataToSend.foto_mascot == null) {
+      setActiveKey('register')
     } else {
+      store.fotoMascota = null;
+      setMascotaId('');
+      setPassword('');
+      setNameMascot('');
+      setRaza('');
+      setMix(false);
+      setBirthdate('');
+      setGender('');
+      setEsterilizado(false);
+      setPatology('');
       setActiveKey('existing')
     }
     navigate('/home');
@@ -103,8 +115,8 @@ export const Home = () => {
 
   const handleMascotDelete = async (idMascot) => {
     actions.deleteMascota(idMascot);
+    store.alert = { text: '', background: 'primary', visible: false }
     setShowModal(false)
-    await actions.getUsersMascotas();
   }
 
   const handleCapture = async (event) => {
@@ -129,6 +141,7 @@ export const Home = () => {
     await actions.getIncidencia(mascota.id);
     await actions.getShareUsers(mascota.mascota_name_id);
     
+    store.alert = { text: '', background: 'primary', visible: false }
     navigate('/pet-details');
   };
 
@@ -138,6 +151,7 @@ export const Home = () => {
     actions.setCurrentMascota(mascota);
     actions.setIdParam(mascota.id)
     
+    store.alert = { text: '', background: 'primary', visible: false }
     navigate('/edit-pet');
   };
 
@@ -145,7 +159,6 @@ export const Home = () => {
     event.preventDefault();
 
     store.idMascotaReporte = id;
-
     navigate('/report');
   }
 
@@ -240,6 +253,7 @@ export const Home = () => {
             </Nav>
 
             <Tab.Content className="border p-4 bg-white mt-3 rounded shadow-sm">
+              <Alert />
               <Tab.Pane eventKey="existing">
                 <div className="row g-3">
                 {store.userMascotas.map((item, index) => (
@@ -355,6 +369,9 @@ export const Home = () => {
                   </div>
                   <div className="col-md-4 mb-3">
                     <label className="form-label fw-semibold">Pathology</label>
+                    <button type="button" class="btn border-0 bg-transparent" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="Tooltip on right">
+                      <i className="fa-solid fa-circle-info"></i>
+                    </button>
                     <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} >
                       <option value="">Select a Pathology</option>
                       <option value="food_pathology">Food pathology</option>
@@ -381,11 +398,11 @@ export const Home = () => {
                   </div>
                   <div className="col-md-6 mx-3 mb-3 form-check">
                     <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setEsterilizado(event.target.checked)}/>
-                    <label className="form-check-label" htmlFor="is_esterilizado">Is your pet Sterilized ?</label>
+                    <label className="form-check-label" htmlFor="is_esterilizado">Is your pet Spay / Neuter ?</label>
                   </div>
                   {/* Botones de acción */}
                   <div className="d-flex justify-content-between">
-                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Sign In Pet</button>
+                    <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Save Pet</button>
                   </div>
                 </form>
               </Tab.Pane>

@@ -46,6 +46,7 @@ class Users(db.Model):
 class Veterinarios(db.Model):
     __tablename__ = 'veterinarios'
     id = db.Column(db.Integer, primary_key=True)
+    num_colegiado = db.Column(db.String(), unique=True, nullable=True, default=" ")
     name_clinica = db.Column(db.String(), unique=False, nullable=True, default=" ")
     email_clinica = db.Column(db.String(), unique=True, nullable=True, default=" ")
     address_clinica = db.Column(db.String(), unique=False, nullable=True, default=" ")
@@ -59,6 +60,7 @@ class Veterinarios(db.Model):
     
     def serialize(self):
         return {'id': self.id,
+                'num_colegiado': self.num_colegiado,
                 'name_clinica': self.name_clinica,
                 'email_clinica': self.email_clinica,
                 'address_clinica': self.address_clinica,
@@ -162,9 +164,10 @@ class Reportes(db.Model):
     food_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     description_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     action_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
+    future_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     analysis_ia = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     status_read = db.Column(db.Enum('leido', 'noleido', name='status_read'), nullable=False, default='noleido')
-    ts_alta = db.Column(db.DateTime(), unique=False, nullable=False, default=datetime.utcnow)
+    ts_alta = db.Column(db.DateTime(), unique=False, nullable=True, default=datetime.utcnow)
     mascota_reports_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_reports_to = db.relationship('Mascotas', foreign_keys=[mascota_reports_id], backref=db.backref('mascota_reports_to'), lazy='select')
     
