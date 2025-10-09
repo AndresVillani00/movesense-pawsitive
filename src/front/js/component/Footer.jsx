@@ -11,12 +11,6 @@ export const Footer = () => {
                 <p className="mb-0">&copy; {new Date().getFullYear()} Pawsitive. All Rights Reserved.</p>
                 <div className="mt-3">
                     <a href="#" className="text-light mx-2">
-                        <i className="fab fa-facebook fa-lg"></i>
-                    </a>
-                    <a href="#" className="text-light mx-2">
-                        <i className="fab fa-twitter fa-lg"></i>
-                    </a>
-                    <a href="#" className="text-light mx-2">
                         <i className="fab fa-instagram fa-lg"></i>
                     </a>
                 </div>

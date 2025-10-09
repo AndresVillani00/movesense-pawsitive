@@ -28,9 +28,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			fotoJsonIncidencia: null,
 			fotoJsonFood: null,
 			reportAI: null,
+			semaforoAI: null,
 			descriptionReport: null,
 			analysisReport: null,
 			actionReport: null,
+			activeKey: null,
 			alert: { text: '', background: 'primary', visible: false },
 			message: null,
 		},
@@ -41,6 +43,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setFotoJsonIncidencia: (item) => { setStore({ fotoJsonIncidencia: item }) },
 			setFotoJsonAnalysis: (item) => { setStore({ fotoJsonAnalysis: item }) },
 			setFotoJsonFood: (item) => { setStore({ fotoJsonFood: item }) },
+			setActiveKey: (item) => { setStore({ activeKey: item }) },
 			generarJsonEntrada: async (mascota_id, start, end) => {
 				const uri = `${process.env.BACKEND_URL}/openaiApi/mascota/${mascota_id}/json-entrada?start_ts=${start}&end_ts=${end}`;
 				const options = {
@@ -68,6 +71,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				const data = await response.json();
 				setStore({ reportAI: data })
+			},
+			semaforoOpenAI: async (dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/openaiApi/vetcheck`;
+				const options = {
+					method: 'POST',
+					headers: { "Content-Type": "application/json" },
+    				body: JSON.stringify({ dataToSend })
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					return
+				}
+				const data = await response.json();
+				console.log('Entrada')
+				console.log(dataToSend)
+				console.log('Salida')
+				console.log(data)
+				setStore({ semaforoAI: data })
 			},
 			getUserProfile: async () => {
 				const token = localStorage.getItem("token");
@@ -797,7 +818,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 					isLogged: false,
 					isVeterinario: false,
 					usuario: {},
-					userMascotas:[]
+					userMascotas:[],
+					activeKey: null
 				})
 				localStorage.removeItem('token')
 			},

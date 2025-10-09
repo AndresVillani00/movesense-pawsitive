@@ -160,7 +160,19 @@ export const Activity = () => {
                                 <form onSubmit={handleSubmit} className="row g-3">
                                     <div className="col-md-6 mb-3">
                                         <label className="form-label fw-semibold">Activity Time</label>
-                                        <input type="text" name="weight" className="form-control" value={value} onChange={(event) => setValue(event.target.value)} />
+                                        <select className="form-select" aria-label="Default select example" value={value} onChange={(event) => setValue(event.target.value)}>
+                                            <option value={'0'}>0 min</option>
+                                            <option value={'10'}>10 min</option>
+                                            <option value={'20'}>20 min</option>
+                                            <option value={'30'}>30 min</option>
+                                            <option value={'40'}>40 min</option>
+                                            <option value={'50'}>50 min</option>
+                                            <option value={'60'}>60 min</option>
+                                            <option value={'90'}>90 min</option>
+                                            <option value={'120'}>120 min</option>
+                                            <option value={'150'}>150 min</option>
+                                            <option value={'180'}>180 min</option>
+                                        </select>
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label className="form-label fw-semibold">Creation Time</label>

@@ -29,6 +29,9 @@ export const SignUpVets = () => {
         await actions.signup(dataToSend);
         actions.setIsVeterinario(true);
 
+        if(store.isVeterinario){
+            actions.setActiveKey('alerts')
+        }
         if (store.isLogged && store.isVeterinario) {
             store.alert = { text: "", background: "primary", visible: false };
             navigate('/user-profile');
