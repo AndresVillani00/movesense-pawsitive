@@ -16,9 +16,10 @@ import { Incidencias } from "../component/Incidencias.jsx";
 export const MascotaDetalles = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
-
+    
     const [activeMenu, setActiveMenu] = useState('incident');
-    const [activeKey, setActiveKey] = useState('overview');
+    const [activeKeyDetail, setActiveKeyDetail] = useState('overview');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         actions.getIncidencia(store.idParam);
@@ -49,27 +50,61 @@ export const MascotaDetalles = () => {
     
         return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
     }
+
+    const getEdadEnMeses = (fechaNacimiento) => {
+        if (!fechaNacimiento) return 0;
+
+        const nacimiento = new Date(fechaNacimiento);
+        const hoy = new Date();
+
+        let meses = (hoy.getFullYear() - nacimiento.getFullYear()) * 12;
+        meses += hoy.getMonth() - nacimiento.getMonth();
+
+        // Si el día actual es menor que el día de nacimiento, resta un mes
+        if (hoy.getDate() < nacimiento.getDate()) {
+            meses--;
+        }
+
+        return meses < 0 ? 0 : meses;
+    };
     
+    const handleSemaforo = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+
+        const dataToSend = {
+            "especie": "perro",
+            "raza": store.currentMascota.raza,
+            "tamano": "pequeño",
+            "edad_meses": getEdadEnMeses(store.currentMascota.birth_date),
+            "sexo": store.currentMascota.gender,
+            "esterilizado": store.currentMascota.is_Esterilizado,
+            "peso_kg": metricasWeight[metricasWeight.length - 1].valor_diario,
+            "agua_ml_dia": 480,
+            "actividad_min_dia": metricasWeight[metricasWeight.length - 1].valor_diario,
+            "temperatura_c": metricasTemperature[metricasTemperature.length - 1].valor_diario,
+            "pulso_bpm": metricasHeartRate[metricasHeartRate.length - 1].valor_diario
+        }
+
+        try {
+            await actions.semaforoOpenAI(dataToSend)
+        } catch (e) {
+            store.alert = { text: "Error generating the Semaforo", background: "danger", visible: true };
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const handleShareDelete = async (event, userId) => {
         event.preventDefault();
 
         await actions.deleteShareMascot(store.idParam, userId)
     }
 
-    const reportData = {
-        score: 10,
-        description_ia: 'adasd',
-        food_ia: 'asdas',
-        action_ia: 'asdasd'
-    }
-
     return (
         <section className="container-fluid p-5">
             {store.isLogged ?
                 <div>
-                    <div className="p-2">
-                        <button className="btn btn-outline-secondary" onClick={() => navigate('/home')}>Volver</button>
-                    </div>
                     <div className="row g-3">
                             <div className="col-md-2">
                                 <div className="card border-0" style={{ borderRadius: "12px" }}>
@@ -81,13 +116,13 @@ export const MascotaDetalles = () => {
                                         </div>
                                     </div>
                                     <div className="card-body p-5">
-
+                                        
                                     </div>
-                                    <ReportButton data={reportData}/>
+                                    <ReportButton />
                                 </div>
                             </div>
                             <div className="col-md-8">                            
-                                <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
+                                <Tab.Container activeKey={activeKeyDetail} onSelect={(k) => setActiveKeyDetail(k)}>
                                     <Nav variant="tabs" className="bg-light justify-content-center rounded">
                                         <Nav.Item>
                                             <Nav.Link style={{ color: "#1B365D" }} eventKey="overview">Overview</Nav.Link>
@@ -108,18 +143,6 @@ export const MascotaDetalles = () => {
                                     <Tab.Content className="border-0 p-4 bg-transparent mt-3">
                                         <Tab.Pane eventKey="overview">
                                             <div className="row g-3">
-                                                <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('analysis')}>
-                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
-                                                        <div className="card-header d-flex justify-content-between" >
-                                                            Urine Analysis<i className="fa-solid fa-droplet p-1"></i>
-                                                        </div>
-                                                        <div className="card-body">
-                                                            Last analysis at: 
-                                                            <br></br>
-                                                            {analysis[0] != null ? (analysis.length > 0 ? formatDateTime(analysis[analysis.length - 1].ts_init) : formatDateTime(analysis[0].ts_init)) : ''}
-                                                        </div>
-                                                    </div>
-                                                </button>
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('weight')}>
                                                     <div className="card border-0" style={{ borderRadius: "12px" }}>
                                                         <div className="card-header d-flex justify-content-between">
@@ -137,6 +160,18 @@ export const MascotaDetalles = () => {
                                                         </div>
                                                         <div className="card-body">
                                                             {metricasActivity[0] != null ? (metricasActivity.length > 0 ? metricasActivity[metricasActivity.length - 1].valor_diario + ' min' : metricasActivity[0].valor_diario + ' min') : ''}
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                                <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('analysis')}>
+                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
+                                                        <div className="card-header d-flex justify-content-between" >
+                                                            Urine Analysis<i className="fa-solid fa-droplet p-1"></i>
+                                                        </div>
+                                                        <div className="card-body">
+                                                            Last analysis at: 
+                                                            <br></br>
+                                                            {analysis[0] != null ? (analysis.length > 0 ? formatDateTime(analysis[analysis.length - 1].ts_init) : formatDateTime(analysis[0].ts_init)) : ''}
                                                         </div>
                                                     </div>
                                                 </button>

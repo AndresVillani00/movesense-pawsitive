@@ -32,18 +32,24 @@ export const Navbar = () => {
                 <div className="collapse navbar-collapse" id="navbarNav" >
                     <ul className="navbar-nav mx-auto text-center">
                         <li className="nav-item">
-                            <Link className="nav-link mx-2 fw-medium" style={{ color:"#F5EFDE" }} to={`/home`}>
-                                <i class="fa-solid fa-house"></i>
+                            <Link className="nav-link mx-2 fw-medium" to={`/home`}>
+                                <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Home" style={{ color:"#F5EFDE" }}>
+                                    <i className="fa-solid fa-house"></i>
+                                </button>
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link mx-2 fw-medium" style={{ color:"#F5EFDE" }} to={`/incidencias`}>
-                                <i class="fa-solid fa-paw"></i>
+                                <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Incidents for pets" style={{ color:"#F5EFDE" }}>
+                                    <i className="fa-solid fa-paw"></i>
+                                </button>
                             </Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link mx-2 fw-medium" style={{ color:"#F5EFDE" }} to={`/about-us`}>
-                                <i class="fa-solid fa-users-rectangle"></i>
+                                <button type="button" className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="About us" style={{ color:"#F5EFDE" }}>
+                                    <i className="fa-solid fa-users-rectangle"></i>
+                                </button>
                             </Link>
                         </li>
                     </ul>
@@ -71,9 +77,15 @@ export const Navbar = () => {
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu align="end">
                                         <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
+                                        <Dropdown.Item as={Link} to="/home" onClick={() => actions.setActiveKey('register')}>
+                                            Register New Pet
+                                        </Dropdown.Item>
+                                        <Dropdown.Item as={Link} to="/home" onClick={() => actions.setActiveKey('existing')}>
+                                            Existing Pets
+                                        </Dropdown.Item>
                                         <Dropdown.Divider />
                                         <Dropdown.Item as={Link} to="/home" onClick={() => actions.logout()} className="text-danger">
-                                            Cerrar Sesión
+                                            Log Out
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>

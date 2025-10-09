@@ -29,6 +29,8 @@ const injectContext = PassedComponent => {
 		  store, instead use actions, like this:
 		*/
 		useEffect(() => {
+			const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    		[...tooltipTriggerList].map(el => new window.bootstrap.Tooltip(el));
 			state.actions.getUserProfile();
 			state.actions.getUsersMascotas();
 		}, []);

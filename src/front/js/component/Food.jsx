@@ -135,15 +135,15 @@ export const Food = () => {
                                     <div className="row g-3">
                                         <h3>Daily Meal</h3>
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Food Quantity</label>
+                                            <label className="form-label fw-semibold">Food Quantity (gr)</label>
                                             <input type="number" name="quantity" className="form-control" value={quantity} onChange={(event) => setQuantity(event.target.value)} required />
                                         </div>
                                         <div className="col-md-4 mb-3">
                                             <label className="form-label fw-semibold">Type of the Food</label>
                                             <select className="form-select" aria-label="Default select example" value={type_food} onChange={(event) => setTypeFood(event.target.value)} required >
                                                 <option value="">Select a type</option>
-                                                <option value="suave">Sueva</option>
-                                                <option value="dura">Dura</option>
+                                                <option value="suave">Soft</option>
+                                                <option value="dura">hard</option>
                                             </select>
                                         </div>
                                         <div className="col-md-4 mb-3">
@@ -224,7 +224,7 @@ export const Food = () => {
                                                 <tr key={index} className="text-center">
                                                     <td>{item.food_time != null ? item.food_time : '-'}</td>
                                                     <td>{item.type_food != null ? item.type_food : '-'}</td>
-                                                    <td>{item.quantity != null ? item.quantity + ' g' : '-'}</td>
+                                                    <td>{item.quantity != null ? item.quantity + ' gr' : '-'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>

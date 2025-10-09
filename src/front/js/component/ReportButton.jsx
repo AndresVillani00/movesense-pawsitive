@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import logo from '../../img/LogoPawsitive.png';
 import { jsPDF } from "jspdf";
 
-export const ReportButton = ({ data }) => {
+export const ReportButton = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
 
@@ -113,7 +113,10 @@ export const ReportButton = ({ data }) => {
     <div className="card-footer" style={{ background: "#ffffffff" }}>
       <div className="d-flex justify-content-between">
         <button className="btn fw-bold" onClick={() => generateAIReport()} disabled={loading} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px"}}>
-          {loading ? "Generating..." : "Health Report"}
+          {loading ? 
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div> : "Health Report"}
         </button>
       </div>
     </div>

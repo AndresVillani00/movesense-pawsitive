@@ -19,16 +19,16 @@ export const Login = () => {
         await actions.login(dataToSend);
 
         store.alert = { text: "", background: "primary", visible: false };
-        if (store.isLogged && store.userMascotas.length<2) {
-            actions.setCurrentMascota(store.userMascotas[0]);
-            actions.setIdParam(store.userMascotas[0].id)
-            await actions.getAnalysis(store.userMascotas[0].id);
-            await actions.getMetrica(store.userMascotas[0].id);
-            await actions.getIncidencia(store.userMascotas[0].id);
-            await actions.getShareUsers(store.userMascotas[0].mascota_name_id);
-            
-            navigate('/pet-details');
-        } else if (store.isLogged) {
+        
+        if(store.isVeterinario){
+            actions.setActiveKey('alerts')
+        } else if(store.userMascotas.length < 1) {
+            actions.setActiveKey('register')
+        } else {
+            actions.setActiveKey('existing')
+        }
+
+        if (store.isLogged) {
             navigate('/home');
         }
     }

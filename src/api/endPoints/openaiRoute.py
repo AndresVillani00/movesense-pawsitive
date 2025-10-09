@@ -1,5 +1,6 @@
 import os
 import json
+import tempfile
 from flask import Blueprint, request, jsonify, current_app
 from openai import OpenAI    
 from collections import defaultdict
@@ -11,7 +12,10 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 openai_api = Blueprint("openai_api", __name__)
 
-EXCEL_PATH = "files/Perros - Modelo de metricas y alertas.xlsx"
+# Ruta del excel
+EXCEL_PATH = "/workspaces/movesense-pawsitive/src/api/endPoints/files/Perros - Modelo de metricas y alertas.pdf"
+
+# Reglas
 VETCHECK_RULES = r"""
 Rol:
 Eres “VetCheck”, un evaluador de salud canina.
@@ -30,8 +34,8 @@ Fuentes y herramientas:
 - Salida solo en formato JSON válido (json.loads debe funcionar).
 
 Normalización de entrada:
-- esterilizado: "si"|"sí" → "Si", "no" → "No".
-- sexo: "m"|"macho" → "Macho", "h"|"hembra" → "Hembra".
+- esterilizado: "si"|"sí" → "Si", "no" → "No", "true" → "Si", "false" → "No".
+- sexo: "m"|"macho"|"male" → "Macho", "h"|"hembra"|"female" → "Hembra".
 - edad_meses: <12 → "Cachorro"; 12–96 → "Adulto"; >96 → "Viejo".
 - tamaño: capitaliza → "Pequeño", "Mediano", "Grande".
 - raza: usar el nombre tal como aparece en el Excel.
@@ -82,7 +86,6 @@ Formato de salida (OBLIGATORIO, SOLO JSON):
 
 RECUERDA: responde ÚNICAMENTE con un único objeto JSON válido.
 """
-
 
 # Mapeo de nombres de tipo_metrica a labels legibles
 TIPO_LABELS = {
@@ -296,7 +299,6 @@ def generate_report():
             model="gpt-4o-mini",
             messages=[system_msg, user_msg],
             temperature=1,
-            max_completion_tokens=1000,
             response_format={ "type": "json_object" }
         )
         # El texto generado
@@ -315,76 +317,92 @@ def generate_report():
     
 
 def upload_excel(path: str):
-    # El fichero debe subirse para que Code Interpreter pueda abrirlo
-    # (propósito “assistants” es válido para tools como code_interpreter/file_search)
-    up = client.files.create(file=open(path, "rb"), purpose="assistants")
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"Excel no encontrado: {path}")
+    print(f"[VetCheck] Subiendo Excel a OpenAI desde {path} ...")
+    with open(path, "rb") as f:
+        up = client.files.create(file=f, purpose="assistants")
+    print(f"[VetCheck] Excel subido con file_id: {up.id}")
     return up.id
 
 def build_user_input(payload: dict) -> str:
-    # El modelo leerá este bloque como el “caso de evaluación”
     return (
         "Entrada (JSON):\n"
         + json.dumps(payload, ensure_ascii=False)
-        + "\n\n"
-        "Acciones:\n"
+        + "\n\nAcciones:\n"
         "- Abre el Excel con Code Interpreter (pandas) y aplica las reglas indicadas.\n"
         "- Devuelve exclusivamente el objeto JSON solicitado.\n"
     )
 
-def vetcheck_eval(payload: dict, file_id: str):
-    """
-    Llama a Responses API con tool code_interpreter y el Excel adjunto.
-    """
-    resp = client.responses.create(
-        model="gpt-4o-mini",
-        tools=[{"type": "code_interpreter"}],
-        attachments=[
-            {"file_id": file_id, "tools": [{"type": "code_interpreter"}]}
-        ],
-        input=[
-            {"role": "system", "content": VETCHECK_RULES},
-            {"role": "user", "content": build_user_input(payload)}
-        ],
-        # JSON estricto: en algunas combinaciones con tools puede no estar disponible el json_schema;
-        # por eso validamos abajo con json.loads como cinturón de seguridad. :contentReference[oaicite:0]{index=0}
-        response_format={"type": "json_object"}  # si diera error, quítalo y confía en la validación local
-    )
-
-    # Extrae texto de salida y valida que sea JSON
-    out = getattr(resp, "output_text", None)
-    if not out:
-        # Fallback por si el SDK devuelve chunks; compón manualmente si fuera necesario
-        out = "".join([getattr(p, "content", "") for p in getattr(resp, "output", []) if hasattr(p, "content")])
-
-    try:
-        data = json.loads(out)
-    except Exception:
-        # Si no es JSON puro, intenta encontrar el primer bloque JSON
-        import re
-        m = re.search(r"\{.*\}", out, flags=re.DOTALL)
-        if not m:
-            raise ValueError(f"No se pudo parsear JSON.\nSalida bruta:\n{out}")
-        data = json.loads(m.group(0))
-    return data
-
-if __name__ == "__main__":
-    # 1) Sube el Excel una vez (puedes cachear el file_id en tu app)
-    file_id = upload_excel(EXCEL_PATH)
-
-    # 2) Ejemplo de payload
-    entrada = {
-        "especie": "perro",
-        "raza": "Beagle",
-        "tamano": "pequeño",
-        "edad_meses": 10,
-        "sexo": "m",
-        "esterilizado": "no",
-        "peso_kg": 5.2,
-        "agua_ml_dia": 480,
-        "actividad_min_dia": 60,
-        "temperatura_c": 38.2,
-        "pulso_bpm": 120
+def vetcheck_eval(payload: dict, file_id: str, save_raw_to: str | None = None):
+    system_msg = {
+        "role": "system", 
+        "content": VETCHECK_RULES
     }
+    user_msg = {
+        "role": "user", 
+        "content": [
+            {"type": "text", "text": build_user_input(payload)},
+            {"type": "file", "file": {"file_id": file_id}}
+        ],
+    }
+    try:
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[system_msg, user_msg],
+            temperature=1,
+            max_completion_tokens=1000,
+            response_format={"type": "json_object"},
+        )
 
-    resultado = vetcheck_eval(entrada, file_id)
-    print(json.dumps(resultado, ensure_ascii=False, indent=2))
+        out = getattr(resp, "output_text", None)
+        if not out:
+            out = "".join([
+                getattr(p, "content", "")
+                for p in getattr(resp, "output", [])
+                if hasattr(p, "content")
+            ])
+
+        if save_raw_to:
+            with open(save_raw_to, "w", encoding="utf-8") as f:
+                f.write(out)
+
+        return json.loads(out)
+
+    except Exception as e:
+        raise RuntimeError(f"Error llamando a OpenAI: {str(e)}")
+
+@openai_api.route("/vetcheck", methods=["POST"])
+def vetcheck_route():
+    try:
+        payload = request.get_json()
+        if not payload:
+            return jsonify({"error": "Debe enviar un JSON válido"}), 400
+
+        # Subir Excel y obtener file_id
+        file_id = upload_excel(EXCEL_PATH)
+
+        # Archivo temporal para debug (opcional)
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".txt") as tmp:
+            tmpfile = tmp.name
+
+        # Ejecutar evaluación
+        result = vetcheck_eval(payload, file_id, save_raw_to=tmpfile)
+
+        # Limpieza
+        try:
+            os.remove(tmpfile)
+        except:
+            pass
+
+        return jsonify(result), 200
+
+    except FileNotFoundError as e:
+        print(f"[VetCheck] {e}")
+        return jsonify({"error": str(e)}), 500
+    except RuntimeError as e:
+        print(f"[VetCheck] {e}")
+        return jsonify({"error": str(e)}), 500
+    except Exception as e:
+        print(f"[VetCheck] Error inesperado: {e}")
+        return jsonify({"error": str(e)}), 500

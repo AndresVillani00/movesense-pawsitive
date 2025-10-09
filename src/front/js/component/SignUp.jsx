@@ -20,6 +20,14 @@ export const SignUp = () => {
         
         await actions.signup(dataToSend); 
         
+        if(store.isVeterinario){
+            actions.setActiveKey('alerts')
+        } else if(store.userMascotas.length < 1) {
+            actions.setActiveKey('register')
+        } else {
+            actions.setActiveKey('existing')
+        }
+
         if (store.isLogged && !store.isVeterinario) { 
             store.alert = { text: "", background: "primary", visible: false }; 
             navigate('/home'); 
