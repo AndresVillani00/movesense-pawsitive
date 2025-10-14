@@ -73,6 +73,11 @@ export const Food = () => {
         reader.readAsDataURL(file);
     };
 
+    const handleCancel = () => {
+        setShowModal(false); 
+        store.alert = { text: "", background: "primary", visible: false }
+    }
+
     return (
         <section>
             <div className="d-flex justify-content-between mb-3">
@@ -94,7 +99,7 @@ export const Food = () => {
                             <div className="modal-header row">
                                 <div className="d-flex justify-content-between">
                                     <h1 className="modal-title fs-4 col-md-8">Record New Food</h1>
-                                    <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}></button>
+                                    <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel()}></button>
                                 </div>
                                 <p className="col-md-12">Enter the details of the food you want to record for your pet.</p>
                                 <Alert />
@@ -154,7 +159,7 @@ export const Food = () => {
                                     <div className="row">
                                         <div className="d-flex justify-content-between">
                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
-                                                onClick={() => setShowModal(false)} style={{
+                                                onClick={() => handleCancel()} style={{
                                                     borderRadius: "30px", padding: "10px 20px"
                                                 }}>Cancel</button>
                                             <button type="submit" className="btn btn-primary" style={{

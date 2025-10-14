@@ -71,6 +71,40 @@ def users():
         response_body['message'] = f'Agregar nuevo Usuario'
         response_body['results'] = row.serialize()
         return response_body, 200  
+    
+
+@users_api.route('/remember-user', methods=['GET'])
+@jwt_required()
+def get_current_user():
+    """
+    Devuelve la información del usuario actual autenticado según su token JWT.
+    """
+    claims = get_jwt()  # incluye los additional_claims que añadiste
+
+    user_id = claims.get('user_id', None)
+    if not user_id:
+        return jsonify({"message": "No se encontró el ID del usuario en el token"}), 400
+
+    # Busca el usuario en la base de datos
+    user = db.session.execute(
+        db.select(Users).where(Users.id == user_id)
+    ).scalar()
+
+    if not user:
+        return jsonify({"message": "Usuario no encontrado"}), 404
+
+    response_body = {
+        "message": "Usuario autenticado correctamente",
+        "results": user.serialize(),
+        "claims": {
+            "user_id": claims.get('user_id'),
+            "user_username": claims.get('user_username'),
+            "is_veterinario": claims.get('is_veterinario'),
+            "subscription_code": claims.get('subscription_code')
+        }
+    }
+
+    return jsonify(response_body), 200
 
 
 @users_api.route('/users', methods=['PUT'])

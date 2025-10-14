@@ -9,16 +9,15 @@ export const Login = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [remember, setRemember] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(false);
     
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const dataToSend = { username, password }
-
+        const dataToSend = { username, password, remember }
+        console.log(dataToSend)
         await actions.login(dataToSend);
-
-        store.alert = { text: "", background: "primary", visible: false };
         
         if(store.isVeterinario){
             actions.setActiveKey('alerts')
@@ -71,13 +70,10 @@ export const Login = () => {
                             {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                         </span>
                     </div>
-                    {/**<div className="d-flex justify-content-between align-items-center">
-                        <div className="form-check">
-                            <input className="form-check-input" type="checkbox" id="rememberMe" />
-                            <label className="form-check-label text-muted" htmlFor="rememberMe">Remember me</label>
-                        </div>
-                        <Link to="/home" className="text-decoration-none" style={{ color: "#1B365D" }}>Forgot password?</Link>
-                    </div>*/}
+                    <div className="form-check">
+                        <input className="form-check-input" type="checkbox" id="rememberMe" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+                        <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
+                    </div>
                     <div className="text-center">
                         <button type="submit" className="btn w-50 mt-4 fw-bold" style={{ color: "white", 
                             background:"#ff6100", 
@@ -87,7 +83,7 @@ export const Login = () => {
                         }}>Log In</button>
                     </div>
                     <div className="text-center mt-3">
-                        <p className="text-muted">Don't have an account? <Link to={"/sign-up"} className="text-decoration-none" style={{ color: "#1E1E50" }}>Sign Up</Link></p>
+                        <p className="text-muted">Don't have an account? <Link to={"/sign-up"} className="text-decoration-none" onClick={() => store.alert = { text: "", background: "primary", visible: false }} style={{ color: "#1E1E50" }}>Sign Up</Link></p>
                     </div>
                 </form>
             </div>

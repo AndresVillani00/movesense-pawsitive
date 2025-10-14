@@ -747,6 +747,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				getActions().getAlerts()
 			},
+			getStoredToken: () => {
+  				return localStorage.getItem('token') || null;
+			},
+			parseJwt: (token) => {
+				if (!token) return null;
+				try {
+					const parts = token.split('.');
+					if (parts.length < 2) return null;
+					const payload = parts[1];
+					const decoded = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+					return decoded;
+				} catch (e) {
+					return null;
+				}
+			},
+			isTokenValid: (token) => {
+				const payload = getActions().parseJwt(token);
+				if (!payload) return false;
+				if (!payload.exp) return true; // si no viene exp asumimos válido (no ideal)
+				const now = Math.floor(Date.now() / 1000);
+				return payload.exp > now;
+			},
 			signup: async (dataToSend) => {
 				const uri = `${process.env.BACKEND_URL}/usersApi/users`;
 				const options = {
@@ -802,7 +824,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 					}
 					return
 				}
+
 				const datos = await response.json();
+				console.log(datos)
+				if (dataToSend.remember) {
+					localStorage.setItem('token', datos.access_token);
+				} else {
+					localStorage.removeItem('token');
+				}
 				setStore({
 					isLogged: true,
 					usuario: datos.results
@@ -822,6 +851,50 @@ const getState = ({ getStore, getActions, setStore }) => {
 					activeKey: null
 				})
 				localStorage.removeItem('token')
+			},
+			checkAuth: async () => {
+				const token = getActions().getStoredToken();
+				if (!token) {
+					// usuario no logeado
+					setStore({ isLogged: false, usuario: null });
+					return;
+				}
+
+				// validar expiración del token (sin llamar al backend)
+				if (!getActions().isTokenValid(token)) {
+					// token expirado -> limpiar y salir
+					localStorage.removeItem('token');
+					setStore({ isLogged: false, usuario: null });
+					return;
+				}
+
+				const uri = `${process.env.BACKEND_URL}/usersApi/remember-user`; // devuelve user actual según token
+				const options = {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${token}`
+					}
+				};
+				const resp = await fetch(uri, options);
+				if (resp.ok) {
+					const result = await resp.json();
+					setStore({ isLogged: true, usuario: result.results });
+					if (result.results.is_veterinario) setStore({ isVeterinario: true });
+					getActions().getUsersMascotas();
+				} else {
+					// si la verificación falla en backend, limpiar
+					localStorage.removeItem('token');
+					setStore({ isLogged: false, usuario: null });
+				}
+
+				if(getStore().isVeterinario){
+					getActions().setActiveKey('alerts')
+				} else if(getStore().userMascotas.length < 1) {
+					getActions().setActiveKey('register')
+				} else {
+					getActions().setActiveKey('existing')
+				}
 			},
 			paymentIntent: async (dataToSend) => {
 				const token = localStorage.getItem("token");

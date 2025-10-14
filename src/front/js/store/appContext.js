@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import getState from "./flux.js";
-import { useParams } from "react-router-dom";
 
 // Don't change, here is where we initialize our context, by default it's just going to be null.
 export const Context = React.createContext(null);
@@ -29,10 +28,34 @@ const injectContext = PassedComponent => {
 		  store, instead use actions, like this:
 		*/
 		useEffect(() => {
-			const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-    		[...tooltipTriggerList].map(el => new window.bootstrap.Tooltip(el));
+			state.actions.checkAuth();
 			state.actions.getUserProfile();
 			state.actions.getUsersMascotas();
+
+			const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+    		[...tooltipTriggerList].map(el => new window.bootstrap.Tooltip(el));
+			
+			// --- BONUS: si hay token y la página fue recargada, redirigir a /home ---
+			try {
+				const token = localStorage.getItem("token");
+				const wasReloaded = sessionStorage.getItem("wasReloaded");
+
+				// Solo redirigir si hay token, ya fue recargada previamente y no estamos ya en /home
+				if (token && wasReloaded && window.location.pathname !== "/home") {
+					// dejamos un pequeño delay para que checkAuth() pueda terminar
+					setTimeout(() => {
+						// Usa replace para no agregar una entrada extra al historial
+						window.location.replace("/home");
+					}, 1000);
+				}
+
+				// Marcar que ya hubo al menos un montaje / posible recarga
+				// (esto hace que la siguiente recarga sea detectada como "wasReloaded")
+				sessionStorage.setItem("wasReloaded", "true");
+			} catch (err) {
+				// no hacer nada si falla el acceso a storage
+				console.warn("Error comprobando remember/reload:", err);
+			}
 		}, []);
 
 		// The initial value for the context is not null anymore, but the current state of this component,
