@@ -98,7 +98,8 @@ export const Navbar = () => {
                                         background: "#F5EFDE",
                                         borderRadius: "8px",
                                         padding: "8px 16px"
-                                    }}>
+                                    }}
+                                    onClick={() => store.alert = { text: "", background: "primary", visible: false }}>
                                         Log In</button>
                                 </Link>
                                 {<Link to="/sign-up">
@@ -107,7 +108,8 @@ export const Navbar = () => {
                                         background: "#F5EFDE",
                                         borderRadius: "8px",
                                         padding: "8px 16px"
-                                    }}>
+                                    }}
+                                    onClick={() => store.alert = { text: "", background: "primary", visible: false }}>
                                         Sign Up
                                     </button>
                                 </Link>}

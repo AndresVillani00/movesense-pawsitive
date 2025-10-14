@@ -51,6 +51,16 @@ export const MascotaDetalles = () => {
         return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
     }
 
+    const handleEdit = async (event, mascota) => {
+        event.preventDefault();
+
+        actions.setCurrentMascota(mascota);
+        actions.setIdParam(mascota.id)
+
+        store.alert = { text: '', background: 'primary', visible: false }
+        navigate('/edit-pet');
+    };
+
     const getEdadEnMeses = (fechaNacimiento) => {
         if (!fechaNacimiento) return 0;
 
@@ -114,6 +124,9 @@ export const MascotaDetalles = () => {
                                             <h5>{store.currentMascota.name_mascot}</h5>
                                             <p className="text-center">{store.currentMascota.raza}</p>
                                         </div>
+                                        <button type="button" className="btn border-0 bg-transparent p-0 mx-3" onClick={(event) => handleEdit(event, store.currentMascota)}>
+                                            <i className="fa-solid fa-pen-to-square text-primary"></i>
+                                        </button>
                                     </div>
                                     <div className="card-body p-5">
                                         
@@ -128,7 +141,7 @@ export const MascotaDetalles = () => {
                                             <Nav.Link style={{ color: "#1B365D" }} eventKey="overview">Overview</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="food">Food Tracking</Nav.Link>
+                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="food" onClick={() => toggleMenu('food')}>Food Tracking</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item>
                                             <Nav.Link style={{ color: "#1B365D" }} eventKey="medicine" disabled>Medicine</Nav.Link>
@@ -261,6 +274,9 @@ export const MascotaDetalles = () => {
                     )}
                     {activeMenu === 'incident' && (
                         <Incidencias />
+                    )}
+                    {activeMenu === 'food' && (
+                        <div></div>
                     )}
                 </div>
                 :

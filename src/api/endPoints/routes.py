@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required
 from flask_cors import CORS
 from api.models import db, Users, Mascotas, TipoMetrica
 from flask import jsonify
+from datetime import timedelta
 
 
 api = Blueprint('api', __name__)
@@ -19,6 +20,7 @@ def login():
     username = data.get('username', None)
     email = data.get('email', None)
     password = data.get('password', None)
+    remember = data.get('remember', False)
     if username is not None:
         row = db.session.execute(db.select(Users).where(Users.username == username, Users.password == password)).scalar()    
     if username is None:
@@ -35,14 +37,14 @@ def login():
         return response_body, 401
 
     user = row.serialize()
-    # Buscar si el usuario tiene Mascotas
-    mascotas = db.session.execute(db.select(Mascotas).where(Mascotas.user_id == user['id'])).scalar()
-    # user['id'] = mascotas.get('id') if mascotas else None
     claims = {'user_id': user['id'],
               'user_username': user['username'],
               'is_veterinario': user['is_veterinario'],
               'subscription_code': user['subscription_code']}
-    access_token = create_access_token(identity=username, additional_claims=claims)
+    if remember:
+        access_token = create_access_token(identity=username, additional_claims=claims, expires_delta=timedelta(days=3))
+    else:
+        access_token = create_access_token(identity=username, additional_claims=claims)
     response_body['access_token'] = access_token
     response_body['message'] = f'Usuario Logeado'
     response_body['results'] = user

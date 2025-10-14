@@ -341,11 +341,14 @@ export const Home = () => {
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold g-3">Pet Username</label>
-                        <i className="fa-solid fa-circle-info p-2" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Incidents for pets"></i>
+                        <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Nombre unico de unico de caada mascota. No existirá ninguna otra mascota con el el mismo nombre, como si fuera un correo electronico" style={{ color:"#1B365D" }}>
+                          <i className="fa-solid fa-circle-info p-2"></i>
+                        </button>
                         <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Pet Password</label>
+                        <i className="fa-solid fa-circle-info p-2"></i>
                         <div className="input-group">
                           <input type={showPassword ? "text" : "password"} name="password" className="form-control" value={password} onChange={(event) => validatePassword(event.target.value)} required />
                           <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}> {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>} </span>
@@ -353,6 +356,9 @@ export const Home = () => {
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Pet Name</label>
+                        <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="El nombre con el que tu mascota está acostumbrado" style={{ color:"#1B365D" }}>
+                          <i className="fa-solid fa-circle-info p-2"></i>
+                        </button>
                         <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} />
                       </div>
                       <div className="col-md-4 mb-3">
@@ -369,7 +375,9 @@ export const Home = () => {
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Pathology</label>
-                        <i className="fa-solid fa-circle-info p-2" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Incidents for pets"></i>
+                        <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Si el campo se deja vacío, debemos interpretar que no tiene ninguna pataologia" style={{ color:"#1B365D" }}>
+                          <i className="fa-solid fa-circle-info p-2"></i>
+                        </button>
                         <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} >
                           <option value="">Select a Pathology</option>
                           <option value="food_pathology">Food pathology</option>
