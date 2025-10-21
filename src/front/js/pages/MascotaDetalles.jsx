@@ -61,50 +61,6 @@ export const MascotaDetalles = () => {
         navigate('/edit-pet');
     };
 
-    const getEdadEnMeses = (fechaNacimiento) => {
-        if (!fechaNacimiento) return 0;
-
-        const nacimiento = new Date(fechaNacimiento);
-        const hoy = new Date();
-
-        let meses = (hoy.getFullYear() - nacimiento.getFullYear()) * 12;
-        meses += hoy.getMonth() - nacimiento.getMonth();
-
-        // Si el día actual es menor que el día de nacimiento, resta un mes
-        if (hoy.getDate() < nacimiento.getDate()) {
-            meses--;
-        }
-
-        return meses < 0 ? 0 : meses;
-    };
-    
-    const handleSemaforo = async (event) => {
-        event.preventDefault();
-        setLoading(true);
-
-        const dataToSend = {
-            "especie": "perro",
-            "raza": store.currentMascota.raza,
-            "tamano": "pequeño",
-            "edad_meses": getEdadEnMeses(store.currentMascota.birth_date),
-            "sexo": store.currentMascota.gender,
-            "esterilizado": store.currentMascota.is_Esterilizado,
-            "peso_kg": metricasWeight[metricasWeight.length - 1].valor_diario,
-            "agua_ml_dia": 480,
-            "actividad_min_dia": metricasWeight[metricasWeight.length - 1].valor_diario,
-            "temperatura_c": metricasTemperature[metricasTemperature.length - 1].valor_diario,
-            "pulso_bpm": metricasHeartRate[metricasHeartRate.length - 1].valor_diario
-        }
-
-        try {
-            await actions.semaforoOpenAI(dataToSend)
-        } catch (e) {
-            store.alert = { text: "Error generating the Semaforo", background: "danger", visible: true };
-        } finally {
-            setLoading(false);
-        }
-    }
-
     const handleShareDelete = async (event, userId) => {
         event.preventDefault();
 

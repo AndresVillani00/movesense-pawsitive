@@ -100,7 +100,10 @@ export const Peso = () => {
         await actions.postMetrica(dataToSend);
         setShowModal(false);
 
-        if(value <= 1 || value >= 40){
+        const result_peso = store.alertas.result_peso;
+        const alertasRojas = result_peso != null ? result_peso.filter(rojas => rojas.Alarma === "Rojo" ) : null;
+        const rangoPesoRojo = alertasRojas[0].RangoPeso;
+        if(value <= rangoPesoRojo.MenorQue || value >= rangoPesoRojo.MayorQue){
             setShowAlertModal(true);
         }
     };

@@ -1,7 +1,7 @@
 import os
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
-from .models import db, Users, Mascotas, Veterinarios, Metrica, TipoMetrica, Comida, Users_Mascotas, Incidencias, Reportes, Analysis, Sensor
+from .models import db, Users, Mascotas, Veterinarios, Metrica, TipoMetrica, MetricaJSON, Comida, Users_Mascotas, Incidencias, Reportes, Analysis, Sensor
 
 
 def setup_admin(app):
@@ -14,6 +14,7 @@ def setup_admin(app):
     admin.add_view(ModelView(Veterinarios, db.session)) 
     admin.add_view(ModelView(Metrica, db.session))  
     admin.add_view(ModelView(TipoMetrica, db.session)) 
+    admin.add_view(ModelView(MetricaJSON, db.session)) 
     admin.add_view(ModelView(Comida, db.session)) 
     admin.add_view(ModelView(Users_Mascotas, db.session))
     admin.add_view(ModelView(Incidencias, db.session))

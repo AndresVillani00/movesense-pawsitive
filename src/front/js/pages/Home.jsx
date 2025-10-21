@@ -25,6 +25,7 @@ export const Home = () => {
   const [gender, setGender] = useState('');
   const [isEsterilizado, setEsterilizado] = useState(false);
   const [patologia, setPatology] = useState('');
+  const [tamano, setTamano] = useState('');
   const [error, setError] = useState(false);
   const [searchName, setSearchName] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
@@ -89,6 +90,7 @@ export const Home = () => {
       birth_date,
       gender,
       patologia,
+      tamano,
       is_mix: isMix,
       is_Esterilizado: isEsterilizado
     }
@@ -109,6 +111,7 @@ export const Home = () => {
       setGender('');
       setEsterilizado(false);
       setPatology('');
+      setTamano('');
       actions.setActiveKey('existing')
     }
     navigate('/home');
@@ -141,6 +144,7 @@ export const Home = () => {
     await actions.getMetrica(mascota.id);
     await actions.getIncidencia(mascota.id);
     await actions.getShareUsers(mascota.mascota_name_id);
+    await actions.getCodeJson(mascota.id);
 
     store.alert = { text: '', background: 'primary', visible: false }
     navigate('/pet-details');
@@ -231,6 +235,35 @@ export const Home = () => {
       setError(false)
     }
     setPassword(value)
+  }
+
+  // Eliminar
+  const [f1, setF1] = useState(null);
+  const [f2, setF2] = useState(null);
+  const [f3, setF3] = useState(null);
+  const [f4, setF4] = useState(null);
+
+  const readJsonFile = async (file) => {
+    if (!file) return null;
+    const text = await file.text();
+    return JSON.parse(text); // lanzará si no es JSON válido
+  };
+
+  const handlejson = async (event) =>{
+    event.preventDefault();
+    const [actividad, peso, pulso, temperatura] = await Promise.all([
+      readJsonFile(f1),
+      readJsonFile(f2),
+      readJsonFile(f3),
+      readJsonFile(f4),
+    ]);
+    const data = {
+      json_actividad: actividad,
+      json_peso: peso,
+      json_pulso: pulso,
+      json_temperatura: temperatura
+    }
+    await actions.postjson(data);
   }
 
   return (
@@ -341,14 +374,18 @@ export const Home = () => {
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold g-3">Pet Username</label>
-                        <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Nombre unico de unico de caada mascota. No existirá ninguna otra mascota con el el mismo nombre, como si fuera un correo electronico" style={{ color:"#1B365D" }}>
-                          <i className="fa-solid fa-circle-info p-2"></i>
-                        </button>
+                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
+                          title="Nombre unico de unico de caada mascota. No existirá ninguna otra mascota con el el mismo nombre, como si fuera un correo electronico"
+                          style={{ color:"#1B365D", cursor: "pointer" }}>  
+                        </i>
                         <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Pet Password</label>
-                        <i className="fa-solid fa-circle-info p-2"></i>
+                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
+                          title="La contraseña debe tener al menos 8 caracteres y un símbolo."
+                          style={{ color:"#1B365D", cursor: "pointer" }}>  
+                        </i>
                         <div className="input-group">
                           <input type={showPassword ? "text" : "password"} name="password" className="form-control" value={password} onChange={(event) => validatePassword(event.target.value)} required />
                           <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}> {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>} </span>
@@ -356,9 +393,10 @@ export const Home = () => {
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Pet Name</label>
-                        <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="El nombre con el que tu mascota está acostumbrado" style={{ color:"#1B365D" }}>
-                          <i className="fa-solid fa-circle-info p-2"></i>
-                        </button>
+                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
+                          title="El nombre con el que tu mascota está acostumbrado"
+                          style={{ color:"#1B365D", cursor: "pointer" }}>  
+                        </i>
                         <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} />
                       </div>
                       <div className="col-md-4 mb-3">
@@ -375,9 +413,10 @@ export const Home = () => {
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Pathology</label>
-                        <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Si el campo se deja vacío, debemos interpretar que no tiene ninguna pataologia" style={{ color:"#1B365D" }}>
-                          <i className="fa-solid fa-circle-info p-2"></i>
-                        </button>
+                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
+                          title="Si el campo se deja vacío, debemos interpretar que no tiene ninguna pataologia"
+                          style={{ color:"#1B365D", cursor: "pointer" }}>  
+                        </i>
                         <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} >
                           <option value="">Select a Pathology</option>
                           <option value="food_pathology">Food pathology</option>
@@ -386,8 +425,27 @@ export const Home = () => {
                           <option value="cardiac_pathology">Cardiac pathology</option>
                         </select>
                       </div>
-                      <div className="col-md-12 mb-3">
+                      <div className="col-md-4 mb-3">
+                        <label className="form-label fw-semibold">Tamaño</label>
+                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
+                          title="Razas de perros pequeños: Pesan entre 3 y 10 kilos.
+                                 Razas de perros medianos: Con un peso de 10 a 25 kilos, son perros muy versátiles. Como pueden ser: El Border Collie y el Cocker Spaniel, Basset Hound.
+                                 Razas de perros grandes: Estos perros pesan entre 25 y 50 kilos. Son razas reconocidas y populares como el Golden Retriever, el Pastor Alemán y el Husky Siberiano. "
+                          style={{ color:"#1B365D", cursor: "pointer" }}>  
+                        </i>
+                        <select className="form-select" aria-label="Default select example" value={tamano} onChange={(event) => setTamano(event.target.value)} >
+                          <option value="">Seleccciona el Tamaño</option>
+                          <option value="Pequeño">Pequeño</option>
+                          <option value="Mediano">Mediano</option>
+                          <option value="Grande">Grande</option>
+                        </select>
+                      </div>
+                      <div className="col-md-8 mb-3">
                         <label className="form-label fw-semibold">Breed</label>
+                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
+                          title='Seleccionar "Otros" si no se conoce la Raza'
+                          style={{ color:"#1B365D", cursor: "pointer" }}>  
+                        </i>
                         <select className="form-select" aria-label="Default select example" value={raza} onChange={(event) => setRaza(event.target.value)} required >
                           <option value="">Select a Breed</option>
                           {razas.map((item) => {
@@ -623,6 +681,31 @@ export const Home = () => {
                 width: "100%", height: "100%", objectFit: "cover"
               }}
             />
+            {/**
+             <form onSubmit={handlejson}>
+              <div className="mb-2">
+                <label>Json Actividad</label>
+                <input className="form-control" type="file" accept=".json" onChange={e => setF1(e.target.files?.[0] ?? null)} />
+              </div>
+
+              <div className="mb-2">
+                <label>Json Peso</label>
+                <input className="form-control" type="file" accept=".json" onChange={e => setF2(e.target.files?.[0] ?? null)} />
+              </div>
+
+              <div className="mb-2">
+                <label>Json Pulso</label>
+                <input className="form-control" type="file" accept=".json" onChange={e => setF3(e.target.files?.[0] ?? null)} />
+              </div>
+
+              <div className="mb-2">
+                <label>Json Temperatura</label>
+                <input className="form-control" type="file" accept=".json" onChange={e => setF4(e.target.files?.[0] ?? null)} />
+              </div>
+
+              <button className="btn btn-primary" type="submit">Cargar JSONs</button>
+            </form>
+            */}
           </div>
         </section>
 

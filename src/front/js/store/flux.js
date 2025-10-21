@@ -7,6 +7,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			isNuevaMascota: false,
 			isVeterinario: false,
 			JSONEntrada: null,
+			alertas: {},
 			usuario: {},
 			veterinario: {},
 			report: {},
@@ -28,7 +29,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 			fotoJsonIncidencia: null,
 			fotoJsonFood: null,
 			reportAI: null,
-			semaforoAI: null,
 			descriptionReport: null,
 			analysisReport: null,
 			actionReport: null,
@@ -72,23 +72,56 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const data = await response.json();
 				setStore({ reportAI: data })
 			},
-			semaforoOpenAI: async (dataToSend) => {
-				const uri = `${process.env.BACKEND_URL}/openaiApi/vetcheck`;
+			postjson: async (data) => {
+				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas-json`;
 				const options = {
 					method: 'POST',
-					headers: { "Content-Type": "application/json" },
-    				body: JSON.stringify({ dataToSend })
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(data)
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					return
 				}
-				const data = await response.json();
-				console.log('Entrada')
-				console.log(dataToSend)
-				console.log('Salida')
-				console.log(data)
-				setStore({ semaforoAI: data })
+			},
+			getMetricasJSon: async (codigo) => {
+				try {
+					const uri = `${process.env.BACKEND_URL}/metricasApi/metricas-alertas/${codigo}`;
+					const options = {
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					};
+					const response = await fetch(uri, options);
+					if (!response.ok) {
+						console.log(response.error)
+						return
+					}
+					const data = await response.json();
+					console.log(data)
+					setStore({ alertas: data.results });
+				} catch (error) {
+					console.log("Error: ", error);
+				}
+			},
+			getCodeJson: async (id) => {
+				try {
+					const uri = `${process.env.BACKEND_URL}/metricasApi/codigo-final/${id}`;
+					const response = await fetch(uri, {
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json"
+						}
+					});
+					
+					const data = await response.json();
+					getActions().getMetricasJSon(data.results);
+				} catch (error) {
+					console.log("Error: ", error);
+				}
 			},
 			getUserProfile: async () => {
 				const token = localStorage.getItem("token");

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, useContext, useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import moment from "moment";
 import { Context } from "../store/appContext";
 import { Alert } from "./Alert.jsx";
 
@@ -64,8 +63,6 @@ export const Activity = () => {
         ticks.push(i);
     }
 
-    
-
     const toggleChecks = (id) => {
         if (itemCheck.includes(id)) {
         setItemCheck(itemCheck.filter((sid) => sid !== id));
@@ -103,7 +100,10 @@ export const Activity = () => {
         await actions.postMetrica(dataToSend);
         setShowModal(false);
 
-        if(value <= 20 || value >= 200){
+        const result_actividad = store.alertas.result_actividad;
+        const alertasRojas = result_actividad != null ? result_actividad.filter(rojas => rojas.Alarma === "Rojo" ) : null;
+        const rangoActividadRojo = alertasRojas[0].RangoActividad;
+        if(value <= rangoActividadRojo.MenorQue || value >= rangoActividadRojo.MayorQue){
             setShowAlertModal(true);
         }
     };
