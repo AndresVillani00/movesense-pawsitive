@@ -100,7 +100,10 @@ export const Temperature = () => {
         await actions.postMetrica(dataToSend);
         setShowModal(false);
 
-        if(value <= 35 || value >= 40){
+        const result_temperatura = store.alertas.result_temperatura;
+        const alertasRojas = result_temperatura != null ? result_temperatura.filter(rojas => rojas.Alarma === "Rojo" ) : null;
+        const rangoTemperaturaRojo = alertasRojas[0].RangoTemperatura;
+        if(value <= rangoTemperaturaRojo.MenorQue || value >= rangoTemperaturaRojo.MayorQue){
             setShowAlertModal(true);
         }
     };

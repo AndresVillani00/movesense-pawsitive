@@ -100,7 +100,10 @@ export const HeartRate = () => {
         await actions.postMetrica(dataToSend);
         setShowModal(false);
 
-        if(value <= 50 || value >= 180){
+        const result_pulso = store.alertas.result_pulso;
+        const alertasRojas = result_pulso != null ? result_pulso.filter(rojas => rojas.Alarma === "Rojo" ) : null;
+        const rangoPulsoRojo = alertasRojas[0].RangoPulso;
+        if(value <= rangoPulsoRojo.MenorQue || value >= rangoPulsoRojo.MayorQue){
             setShowAlertModal(true);
         }
     };

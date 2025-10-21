@@ -84,6 +84,8 @@ class Mascotas(db.Model):
     foto_mascot = db.Column(db.String(), unique=False, nullable=True, default=" ")
     name_mascot = db.Column(db.String(), unique=False, nullable=False, default=" ")
     patologia = db.Column(db.String(), unique=False, nullable=True, default=" ")
+    tamano = db.Column(db.String(), unique=False, nullable=True, default=" ")
+    json_mascota = db.Column(db.JSON(), unique=False, nullable=True)
     status = db.Column(db.Enum('active', 'nonactive', name='status'), nullable=False, default="active")
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     user_register = db.relationship('Users', back_populates='mascotas_registradas', lazy='select')
@@ -101,6 +103,8 @@ class Mascotas(db.Model):
                 'foto_mascot': self.foto_mascot,
                 'name_mascot': self.name_mascot,
                 'patologia': self.patologia,
+                'tamano': self.tamano,
+                'json_mascota': self.json_mascota,
                 'status': self.status,
                 'user_id': self.user_id,
                 'usuarios': [u.id for u in self.usuarios]}
@@ -141,7 +145,6 @@ class Incidencias(db.Model):
     ts_alta = db.Column(db.DateTime(), unique=False, nullable=False, default=datetime.utcnow)
     mascota_incidencia_id = db.Column(db.Integer, db.ForeignKey('mascotas.id'))
     mascota_incidencia_to = db.relationship('Mascotas', foreign_keys=[mascota_incidencia_id], backref=db.backref('mascota_incidencia_to'), lazy='select')
-    #alert_status = db.Column(db.Enum('Good', 'Bad', name='alert_status'), nullable=False)
     
     def serialize(self):
         return {'id': self.id,
@@ -217,6 +220,25 @@ class TipoMetrica(db.Model):
         return {
             'id': self.id,
             'metrica_name': self.metrica_name}
+    
+
+class MetricaJSON(db.Model):
+    __tablename__ = 'metrica_json'
+    id = db.Column(db.Integer, primary_key=True)
+    json_actividad = db.Column(db.JSON(), unique=False, nullable=True)
+    json_peso = db.Column(db.JSON(), unique=False, nullable=True)
+    json_pulso = db.Column(db.JSON(), unique=False, nullable=True)
+    json_temperatura = db.Column(db.JSON(), unique=False, nullable=True)
+    json_clasificacion = db.Column(db.JSON(), unique=False, nullable=True)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'json_actividad': self.json_actividad,
+            'json_peso': self.json_peso,
+            'json_pulso': self.json_pulso,
+            'json_temperatura': self.json_temperatura,
+            'json_clasificacion': self.json_clasificacion}
 
 
 class Analysis(db.Model):
