@@ -86,6 +86,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 			},
+			updateJsonMascota: async (json) => {
+
+			},
 			getMetricasJSon: async (codigo) => {
 				try {
 					const uri = `${process.env.BACKEND_URL}/metricasApi/metricas-alertas/${codigo}`;
@@ -101,7 +104,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return
 					}
 					const data = await response.json();
-					console.log(data)
 					setStore({ alertas: data.results });
 				} catch (error) {
 					console.log("Error: ", error);
@@ -122,6 +124,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.log("Error: ", error);
 				}
+			},
+			getAlarmaJson: async () => {
+
 			},
 			getUserProfile: async () => {
 				const token = localStorage.getItem("token");
@@ -262,7 +267,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 
-				setStore({ alert: { text: '', background: 'primary', visible: false } })
+				setStore({ alert: { text: 'Mascota registrada correctamente', background: 'primary', visible: true } })
 				getActions().getUsersMascotas()
 			},
 			updateMascota: async (dataToSend, id) => {
@@ -859,7 +864,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 				const datos = await response.json();
-				console.log(datos)
 				if (dataToSend.remember) {
 					localStorage.setItem('token', datos.access_token);
 				} else {
@@ -867,7 +871,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				setStore({
 					isLogged: true,
-					usuario: datos.results
+					usuario: datos.results,
+					alert: { text: 'Loggeado correctamente', background: 'primary', visible: true }
 				})
 				if (getStore().usuario.is_veterinario) {
 					setStore({ isVeterinario: true })

@@ -103,6 +103,7 @@ export const Activity = () => {
         const result_actividad = store.alertas.result_actividad;
         const alertasRojas = result_actividad != null ? result_actividad.filter(rojas => rojas.Alarma === "Rojo" ) : null;
         const rangoActividadRojo = alertasRojas[0].RangoActividad;
+        console.log(store.alertas)
         if(value <= rangoActividadRojo.MenorQue || value >= rangoActividadRojo.MayorQue){
             setShowAlertModal(true);
         }

@@ -18,13 +18,12 @@ def login():
     response_body = {}
     data = request.json
     username = data.get('username', None)
-    email = data.get('email', None)
     password = data.get('password', None)
     remember = data.get('remember', False)
-    if username is not None:
-        row = db.session.execute(db.select(Users).where(Users.username == username, Users.password == password)).scalar()    
-    if username is None:
-        row = db.session.execute(db.select(Users).where(Users.email == email, Users.password == password)).scalar()
+    if any(domain in username for domain in ["@gmail.com", "@hotmail.com", "@outlook.com", "@yahoo.com"]):
+        row = db.session.execute(db.select(Users).where(Users.email == username, Users.password == password)).scalar()    
+    else:
+        row = db.session.execute(db.select(Users).where(Users.username == username, Users.password == password)).scalar()
     if not row:
         response_body['message'] = f'El usuario no existe'
         return response_body, 404
