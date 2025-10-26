@@ -681,31 +681,7 @@ export const Home = () => {
                 width: "100%", height: "100%", objectFit: "cover"
               }}
             />
-            {/**
-             <form onSubmit={handlejson}>
-              <div className="mb-2">
-                <label>Json Actividad</label>
-                <input className="form-control" type="file" accept=".json" onChange={e => setF1(e.target.files?.[0] ?? null)} />
-              </div>
-
-              <div className="mb-2">
-                <label>Json Peso</label>
-                <input className="form-control" type="file" accept=".json" onChange={e => setF2(e.target.files?.[0] ?? null)} />
-              </div>
-
-              <div className="mb-2">
-                <label>Json Pulso</label>
-                <input className="form-control" type="file" accept=".json" onChange={e => setF3(e.target.files?.[0] ?? null)} />
-              </div>
-
-              <div className="mb-2">
-                <label>Json Temperatura</label>
-                <input className="form-control" type="file" accept=".json" onChange={e => setF4(e.target.files?.[0] ?? null)} />
-              </div>
-
-              <button className="btn btn-primary" type="submit">Cargar JSONs</button>
-            </form>
-            */}
+           
           </div>
         </section>
 
