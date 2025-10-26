@@ -373,7 +373,7 @@ export const Home = () => {
                         </div>
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold g-3">Pet Username</label>
+                        <label className="form-label fw-semibold g-3">Pet Username <span style={{ color: "red" }}>*</span></label>
                         <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
                           title="Nombre unico de unico de caada mascota. No existirá ninguna otra mascota con el el mismo nombre, como si fuera un correo electronico"
                           style={{ color:"#1B365D", cursor: "pointer" }}>  
@@ -381,7 +381,7 @@ export const Home = () => {
                         <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Pet Password</label>
+                        <label className="form-label fw-semibold">Pet Password <span style={{ color: "red" }}>*</span></label>
                         <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
                           title="La contraseña debe tener al menos 8 caracteres y un símbolo."
                           style={{ color:"#1B365D", cursor: "pointer" }}>  
@@ -392,15 +392,15 @@ export const Home = () => {
                         </div>
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Pet Name</label>
+                        <label className="form-label fw-semibold">Pet Name <span style={{ color: "red" }}>*</span></label>
                         <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
                           title="El nombre con el que tu mascota está acostumbrado"
                           style={{ color:"#1B365D", cursor: "pointer" }}>  
                         </i>
-                        <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} />
+                        <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} required/>
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Birth Date</label>
+                        <label className="form-label fw-semibold">Birth Date <span style={{ color: "red" }}>*</span></label>
                         <input type="date" name="birthdate" className="form-control" value={birth_date} onChange={(event) => setBirthdate(event.target.value)} required />
                       </div>
                       <div className="col-md-4 mb-3">
@@ -426,7 +426,7 @@ export const Home = () => {
                         </select>
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Tamaño</label>
+                        <label className="form-label fw-semibold">Tamaño <span style={{ color: "red" }}>*</span></label>
                         <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
                           title="Razas de perros pequeños: Pesan entre 3 y 10 kilos.
                                  Razas de perros medianos: Con un peso de 10 a 25 kilos, son perros muy versátiles. Como pueden ser: El Border Collie y el Cocker Spaniel, Basset Hound.
@@ -441,7 +441,7 @@ export const Home = () => {
                         </select>
                       </div>
                       <div className="col-md-8 mb-3">
-                        <label className="form-label fw-semibold">Breed</label>
+                        <label className="form-label fw-semibold">Breed <span style={{ color: "red" }}>*</span></label>
                         <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
                           title='Seleccionar "Otros" si no se conoce la Raza'
                           style={{ color:"#1B365D", cursor: "pointer" }}>  

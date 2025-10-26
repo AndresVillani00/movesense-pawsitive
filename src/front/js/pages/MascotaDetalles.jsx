@@ -19,7 +19,7 @@ export const MascotaDetalles = () => {
     
     const [activeMenu, setActiveMenu] = useState('incident');
     const [activeKeyDetail, setActiveKeyDetail] = useState('overview');
-    const [loading, setLoading] = useState(false);
+    const [selected, setSelected] = useState(null);
 
     useEffect(() => {
         actions.getIncidencia(store.idParam);
@@ -30,7 +30,14 @@ export const MascotaDetalles = () => {
     
     const toggleMenu = (menu) => {
         setActiveMenu((prev) => (prev === menu ? null : menu));
+        setSelected(menu);
     };
+
+    const buttonStyle = (key) => ({
+        boxShadow: selected === key ? "0 0 12px 3px rgba(13,110,253,0.6)" : "none", // azul Bootstrap primary
+        borderRadius: "12px",
+        transition: "box-shadow 0.3s ease-in-out",
+    });
 
     const analysis = store.analysis != null ? store.analysis.filter(analysis => analysis.mascota_analysis_id === store.idParam) : null;
     const metricasActivity = store.metricas != null ? store.metricas.filter(metricas => metricas.tipo_metrica_id === 'activity' && metricas.mascota_metrica_id === store.idParam) : null;
@@ -113,7 +120,7 @@ export const MascotaDetalles = () => {
                                         <Tab.Pane eventKey="overview">
                                             <div className="row g-3">
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('weight')}>
-                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
+                                                    <div className="card border-0" style={buttonStyle('weight')}>
                                                         <div className="card-header d-flex justify-content-between">
                                                             Weight<i className="fa-solid fa-weight-hanging"></i>
                                                         </div>
@@ -123,7 +130,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </button>
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('activity')}>
-                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
+                                                    <div className="card border-0" style={buttonStyle('activity')}>
                                                         <div className="card-header d-flex justify-content-between">
                                                             Activity<i className="fa-solid fa-chart-line p-1"></i>
                                                         </div>
@@ -133,7 +140,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </button>
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('analysis')}>
-                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
+                                                    <div className="card border-0" style={buttonStyle('analysis')}>
                                                         <div className="card-header d-flex justify-content-between" >
                                                             Urine Analysis<i className="fa-solid fa-droplet p-1"></i>
                                                         </div>
@@ -145,7 +152,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </button>
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('temperature')}>
-                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
+                                                    <div className="card border-0" style={buttonStyle('temperature')}>
                                                         <div className="card-header d-flex justify-content-between">
                                                             Temperature<i className="fa-solid fa-temperature-full p-1"></i>
                                                         </div>
@@ -155,7 +162,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </button>
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('heartrate')}>
-                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
+                                                    <div className="card border-0" style={buttonStyle('heartrate')}>
                                                         <div className="card-header d-flex justify-content-between">
                                                             Heart Rate<i className="fa-solid fa-heart p-1" ></i>
                                                         </div>
@@ -165,7 +172,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </button>
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('incident')}>
-                                                    <div className="card border-0" style={{ borderRadius: "12px" }}>
+                                                    <div className="card border-0" style={buttonStyle('incident')}>
                                                         <div className="card-header d-flex justify-content-between">
                                                             Incidents<i className="fa-solid fa-triangle-exclamation p-1"></i>
                                                         </div>
