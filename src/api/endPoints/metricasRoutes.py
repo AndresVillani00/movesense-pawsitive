@@ -76,7 +76,8 @@ def metricas_json():
         row = MetricaJSON(json_actividad=data.get('json_actividad'),
                      json_peso=data.get('json_peso'),
                      json_pulso=data.get('json_pulso'),
-                     json_temperatura=data.get('json_temperatura'))
+                     json_temperatura=data.get('json_temperatura'),
+                     json_clasificacion=data.get('json_clasificacion'))
         db.session.add(row)
         db.session.commit()
         response_body['message'] = f'Agregar nueva metrica'
