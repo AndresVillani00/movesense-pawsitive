@@ -684,6 +684,7 @@ export const Home = () => {
                 width: "100%", height: "100%", objectFit: "cover"
               }}
             />
+            {/**
             <form onSubmit={handlejson}>
               <div className="mb-2">
                 <label>Json Actividad</label>
@@ -712,7 +713,6 @@ export const Home = () => {
 
               <button className="btn btn-primary" type="submit">Cargar JSONs</button>
             </form>
-            {/**
             */}
           </div>
         </section>
