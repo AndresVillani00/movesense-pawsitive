@@ -73,7 +73,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({ reportAI: data })
 			},
 			postjson: async (data) => {
-				const uri = `https://musical-waffle-xx679jjpw6pcrw9-3001.app.github.dev//metricasApi/metricas-json`;
+				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas-json`;
 				const options = {
 					method: 'POST',
 					headers: {
