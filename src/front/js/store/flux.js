@@ -29,6 +29,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			fotoJsonIncidencia: null,
 			fotoJsonFood: null,
 			reportAI: null,
+			analisisAI: null,
 			descriptionReport: null,
 			analysisReport: null,
 			actionReport: null,
@@ -70,7 +71,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const data = await response.json();
+				console.log(data)
 				setStore({ reportAI: data })
+			},
+			analisisOpenAI: async (prompt, dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/openaiApi/generate-analisis`;
+				const options = {
+					method: 'POST',
+					headers: { "Content-Type": "application/json" },
+    				body: JSON.stringify({ prompt, dataToSend })
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					return
+				}
+				const data = await response.json();
+				setStore({ analisisAI: data.results })
 			},
 			postjson: async (data) => {
 				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas-json`;
@@ -685,6 +701,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 
 				getActions().getFood(dataToSend.mascota_comida_id);
+			},
+			deleteFood: async (id) => {
+				const token = localStorage.getItem("token");
+				if (!token) return false;  
+			
+				const uri = `${process.env.BACKEND_URL}/foodApi/foods/${id}`;  
+				const options = {
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${token}`,
+					},
+				};
+			
+				try {
+					const response = await fetch(uri, options);
+					if (!response.ok) throw new Error("No tienes permisos para eliminar esta comida");
+			
+					const updatedFoods = getStore().foods.filter(food => food.id !== id);
+					setStore({ foods: updatedFoods });
+			
+					return true; 
+				} catch (error) {
+					console.log("Error en deleteFood:", error);
+					return false; 
+				}
 			},
 			getReportes: async () => {
 				const uri = `${process.env.BACKEND_URL}/reportesApi/reportes`;

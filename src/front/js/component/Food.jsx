@@ -9,6 +9,7 @@ export const Food = () => {
 
     const [showModal, setShowModal] = useState(false);
     const [activeKey, setActiveKey] = useState('profile');
+    const [itemCheck, setItemCheck] = useState([]);
 
     const [title, setTitle] = useState('');
     const [marca, setMarca] = useState('');
@@ -50,13 +51,13 @@ export const Food = () => {
             fibra,
             quantity,
             food_time,
-            foto_food: store.fotoJsonFood != null ? store.fotoJsonFood.foto : null,
+            foto_food: store.fotoJsonFood != null ? store.fotoJsonFood.foto : '',
             mascota_comida_id: store.idParam
         }
 
         store.alert = { text: "", background: "primary", visible: false };
         await actions.postFood(dataToSend);
-        if(store.fotoJsonFood != null){
+        if(store.fotoJsonFood != null || dataToSend.foto_food == ''){
             setShowModal(false);
         }
     };
@@ -73,6 +74,24 @@ export const Food = () => {
         reader.readAsDataURL(file);
     };
 
+    const toggleChecks = (id) => {
+        if (itemCheck.includes(id)) {
+            setItemCheck(itemCheck.filter((sid) => sid !== id));
+        } else {
+            setItemCheck([...itemCheck, id]);
+        }
+    };
+
+    const handleDelete = async (event) => {
+        event.preventDefault();
+
+        for (var i = 0; i < itemCheck.length; i++) {
+            actions.deleteFood(itemCheck[i]);
+        }
+
+        setItemCheck([]); // Limpiar selección
+    };
+
     const handleCancel = () => {
         setShowModal(false); 
         store.alert = { text: "", background: "primary", visible: false }
@@ -82,7 +101,10 @@ export const Food = () => {
         <section>
             <div className="d-flex justify-content-between mb-3">
                 <h3>Food Tracking</h3>
-                <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                <div className="mx-3">
+                    <button className="btn btn-outline-secondary mx-3" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Delete</button>
+                </div>
             </div>
             <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
                 <Nav variant="tabs" className="bg-light justify-content-center rounded">
@@ -182,13 +204,16 @@ export const Food = () => {
                         {store.foods.map((item, index) => (
                             <div key={index} className="col-md-6">
                                 <div className="card shadow-sm h-100 m-auto">
-                                    <div className="card-title mt-3 mx-3">
-                                        <h4 style={{ color: "#1E1E50" }}>
-                                            {item.title}
-                                        </h4>
-                                        <h6 className="text-secondary">
-                                            {item.marca}
-                                        </h6>
+                                    <div className="card-title mt-3 mx-3 d-flex justify-content-between">
+                                        <div className="text-start">
+                                            <h4 style={{ color: "#1E1E50" }}>
+                                                {item.title}
+                                            </h4>
+                                            <h6 className="text-secondary">
+                                                {item.marca}
+                                            </h6>
+                                        </div>
+                                        <input type="checkbox" checked={itemCheck.includes(item.id)} onChange={() => toggleChecks(item.id)} />
                                     </div>
                                     <div className="card-body d-flex justify-content-between">
                                         <div className="text-center">
