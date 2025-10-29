@@ -202,7 +202,7 @@ export const Incidencias = () => {
                         </div>
                     </div>
                 </div>
-                <table className="table table-striped" >
+                <table className="table table-responsive" >
                     <thead style={{ color: "secondary" }}>
                         <tr className="text-center">
                             <th scope="col-md-2"></th>
