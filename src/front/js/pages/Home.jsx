@@ -40,6 +40,9 @@ export const Home = () => {
     'Setter Inglés', 'Shih Tzu', 'Staffordshire Bull Terrier / American Staffordshire Terrier', 'Teckel (Dachshund)', 'West Highland White Terrier', 'Yorkshire Terrier', 'Otros']
 
   useEffect(() => {
+    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+		[...popoverTriggerList].map(el => new window.bootstrap.Popover(el));
+
     if (store.activeKey === 'alerts') {
       actions.getIncidencias();
       actions.getReportes();
@@ -277,13 +280,13 @@ export const Home = () => {
               <Tab.Container activeKey={store.activeKey} onSelect={(k) => actions.setActiveKey(k)}>
                 <Nav variant="tabs" className="bg-light justify-content-center rounded">
                   <Nav.Item>
-                    <Nav.Link style={{ color: "#1B365D" }} eventKey="existing">Existing Pets</Nav.Link>
+                    <Nav.Link style={{ color: "#1B365D" }} eventKey="existing">Mis Mascotas</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link style={{ color: "#1B365D" }} eventKey="register">Register New Pet</Nav.Link>
+                    <Nav.Link style={{ color: "#1B365D" }} eventKey="register">Registrar Nueva Mascota</Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
-                    <Nav.Link style={{ color: "#1B365D" }} eventKey="sharing">Sharing Pet</Nav.Link>
+                    <Nav.Link style={{ color: "#1B365D" }} eventKey="sharing">Compartir Mascota</Nav.Link>
                   </Nav.Item>
                 </Nav>
 
@@ -296,7 +299,7 @@ export const Home = () => {
                           <div className="card border-0 shadow-sm h-100 bg-transparent">
                             <img
                               src={item.foto_mascot}
-                              alt={item.name_mascot}
+                              alt={item.mascota_name_id}
                               className="card-img-top rounded"
                               style={{ height: "300px", objectFit: "cover" }}
                             />
@@ -304,7 +307,7 @@ export const Home = () => {
                               <div className="card-title mb-3 d-flex justify-content-between">
                                 <div>
                                   <h4 style={{ color: "#1E1E50" }}>
-                                    {item.name_mascot}
+                                    {item.mascota_name_id}
                                   </h4>
                                   <h6 className="text-secondary">
                                     {item.raza}
@@ -321,7 +324,7 @@ export const Home = () => {
                                     <div className="modal-dialog modal-dialog-centered">
                                       <div className="container modal-content">
                                         <div className="modal-header row d-flex justify-content-between">
-                                          <h3 className="modal-title fs-4 col-md-8">Are your sure you want to delete this pet ?</h3>
+                                          <h3 className="modal-title fs-4 col-md-8">Estas Seguro que quieres Eliminar esta mascota ?</h3>
                                           <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}></button>
                                         </div>
                                         <div className="modal-body d-flex justify-content-end">
@@ -333,11 +336,11 @@ export const Home = () => {
                                             padding: "10px 20px"
                                           }}
                                             onClick={() => handleMascotDelete(item.id)}>
-                                            Delete
+                                            Eliminar
                                           </button>
                                           <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
                                             onClick={() => setShowModal(false)} style={{ borderRadius: "30px", padding: "10px 20px" }}>
-                                            Cancel
+                                            Cancelar
                                           </button>
                                         </div>
                                       </div>
@@ -351,7 +354,7 @@ export const Home = () => {
                                   background: "#ff6100",
                                   border: "#ff6100",
                                 }}>
-                                Details
+                                Detalles
                               </button>
                             </div>
                           </div>
@@ -374,66 +377,86 @@ export const Home = () => {
                         </div>
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold g-3">Pet Username <span style={{ color: "red" }}>*</span></label>
-                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
-                          title="Nombre unico de unico de caada mascota. No existirá ninguna otra mascota con el el mismo nombre, como si fuera un correo electronico"
-                          style={{ color:"#1B365D", cursor: "pointer" }}>  
-                        </i>
+                        <label className="form-label fw-semibold g-3">Username de Mascota <span style={{ color: "red" }}>*</span></label>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsername" aria-expanded="false" aria-controls="collapseUsername">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
+                        </button>
+                        <div class="collapse my-2" id="collapseUsername">
+                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
+                            Nombre unico de unico de cada mascota. No existirá ninguna otra mascota con el el mismo nombre, como si fuera un correo electronico.
+                          </div>
+                        </div>
                         <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Pet Password <span style={{ color: "red" }}>*</span></label>
-                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
-                          title="La contraseña debe tener al menos 8 caracteres y un símbolo."
-                          style={{ color:"#1B365D", cursor: "pointer" }}>  
-                        </i>
+                        <label className="form-label fw-semibold">Contraseña de Mascota <span style={{ color: "red" }}>*</span></label>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapsePassword" aria-expanded="false" aria-controls="collapsePassword">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
+                        </button>
+                        <div class="collapse my-2" id="collapsePassword">
+                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
+                            La contraseña debe tener al menos 8 caracteres y un símbolo.
+                          </div>
+                        </div>
                         <div className="input-group">
                           <input type={showPassword ? "text" : "password"} name="password" className="form-control" value={password} onChange={(event) => validatePassword(event.target.value)} required />
                           <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}> {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>} </span>
                         </div>
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Pet Name <span style={{ color: "red" }}>*</span></label>
-                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
-                          title="El nombre con el que tu mascota está acostumbrado"
-                          style={{ color:"#1B365D", cursor: "pointer" }}>  
-                        </i>
+                        <label className="form-label fw-semibold">Nombre de Mascota <span style={{ color: "red" }}>*</span></label>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapseName" aria-expanded="false" aria-controls="collapseName">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
+                        </button>
+                        <div class="collapse my-2" id="collapseName">
+                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
+                            El nombre con el que tu mascota está acostumbrado.
+                          </div>
+                        </div>
                         <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} required/>
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Birth Date <span style={{ color: "red" }}>*</span></label>
+                        <label className="form-label fw-semibold">Fecha de Nacimiento <span style={{ color: "red" }}>*</span></label>
                         <input type="date" name="birthdate" className="form-control" value={birth_date} onChange={(event) => setBirthdate(event.target.value)} required />
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Gender</label>
+                        <label className="form-label fw-semibold">Genero</label>
                         <select className="form-select" aria-label="Default select example" value={gender} onChange={(event) => setGender(event.target.value)}>
-                          <option value={''}>Select one</option>
-                          <option value={'Male'}>Male</option>
-                          <option value={'Female'}>Female</option>
+                          <option value={''}>Selecciona el genero</option>
+                          <option value={'Male'}>Macho</option>
+                          <option value={'Female'}>Hembra</option>
                         </select>
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Pathology</label>
-                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
-                          title="Si el campo se deja vacío, debemos interpretar que no tiene ninguna pataologia"
-                          style={{ color:"#1B365D", cursor: "pointer" }}>  
-                        </i>
+                        <label className="form-label fw-semibold">Patología</label>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapsePatologia" aria-expanded="false" aria-controls="collapsePatologia">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
+                        </button>
+                        <div class="collapse my-2" id="collapsePatologia">
+                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
+                            Si el campo se deja vacío, debemos interpretar que no tiene ninguna pataologia.
+                          </div>
+                        </div>
                         <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} >
-                          <option value="">Select a Pathology</option>
-                          <option value="food_pathology">Food pathology</option>
-                          <option value="movility_pathology">Movility pathology</option>
-                          <option value="skin_pathology">Skin pathology</option>
-                          <option value="cardiac_pathology">Cardiac pathology</option>
+                          <option value="">Selecciona una Patología</option>
+                          <option value="food_pathology">Patología de Comida</option>
+                          <option value="movility_pathology">Patología de Movilidad</option>
+                          <option value="skin_pathology">Patología en la Piel</option>
+                          <option value="cardiac_pathology">Patología Cardiaca</option>
                         </select>
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Tamaño <span style={{ color: "red" }}>*</span></label>
-                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
-                          title="Razas de perros pequeños: Pesan entre 3 y 10 kilos.
-                                 Razas de perros medianos: Con un peso de 10 a 25 kilos, son perros muy versátiles. Como pueden ser: El Border Collie y el Cocker Spaniel, Basset Hound.
-                                 Razas de perros grandes: Estos perros pesan entre 25 y 50 kilos. Son razas reconocidas y populares como el Golden Retriever, el Pastor Alemán y el Husky Siberiano. "
-                          style={{ color:"#1B365D", cursor: "pointer" }}>  
-                        </i>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapseTamano" aria-expanded="false" aria-controls="collapseTamano">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
+                        </button>
+                        <div class="collapse my-2" id="collapseTamano">
+                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
+                             - Razas de perros pequeños: Pesan entre 3 y 10 kilos.<br></br>
+                             - Razas de perros medianos: Con un peso de 10 a 25 kilos, son perros muy versátiles. Como pueden ser: El Border Collie y el Cocker Spaniel, Basset Hound.<br></br>
+                             - Razas de perros grandes: Estos perros pesan entre 25 y 50 kilos. Son razas reconocidas y populares como el Golden Retriever, el Pastor Alemán y el Husky Siberiano. "
+                          </div>
+                        </div>
                         <select className="form-select" aria-label="Default select example" value={tamano} onChange={(event) => setTamano(event.target.value)} >
                           <option value="">Seleccciona el Tamaño</option>
                           <option value="Pequeño">Pequeño</option>
@@ -442,13 +465,17 @@ export const Home = () => {
                         </select>
                       </div>
                       <div className="col-md-8 mb-3">
-                        <label className="form-label fw-semibold">Breed <span style={{ color: "red" }}>*</span></label>
-                        <i className="fa-solid fa-circle-info text-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="right" 
-                          title='Seleccionar "Otros" si no se conoce la Raza'
-                          style={{ color:"#1B365D", cursor: "pointer" }}>  
-                        </i>
+                        <label className="form-label fw-semibold">Raza <span style={{ color: "red" }}>*</span></label>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapseBreed" aria-expanded="false" aria-controls="collapseBreed">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
+                        </button>
+                        <div class="collapse my-2" id="collapseBreed">
+                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
+                            Seleccionar "Otros" si no se conoce la Raza.
+                          </div>
+                        </div>
                         <select className="form-select" aria-label="Default select example" value={raza} onChange={(event) => setRaza(event.target.value)} required >
-                          <option value="">Select a Breed</option>
+                          <option value="">Selecciona la Raza</option>
                           {razas.map((item) => {
                             return (
                               <option value={item}>{item}</option>
@@ -459,15 +486,15 @@ export const Home = () => {
                       </div>
                       <div className="col-md-6 mx-3 mb-3 form-check">
                         <input type="checkbox" className="form-check-input" id="is_mix" onChange={(event) => setMix(event.target.checked)} />
-                        <label className="form-check-label" htmlFor="is_mix">Is your pet mixed Breed?</label>
+                        <label className="form-check-label" htmlFor="is_mix">La Mascota es mezcla ?</label>
                       </div>
                       <div className="col-md-6 mx-3 mb-3 form-check">
                         <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setEsterilizado(event.target.checked)} />
-                        <label className="form-check-label" htmlFor="is_esterilizado">Is your pet Spay / Neuter ?</label>
+                        <label className="form-check-label" htmlFor="is_esterilizado">La Mascota esta esterilizada  ?</label>
                       </div>
                       {/* Botones de acción */}
                       <div className="d-flex justify-content-between">
-                        <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background: "#ff6100", border: "#ff6100" }} type="submit">Save Pet</button>
+                        <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background: "#ff6100", border: "#ff6100" }} type="submit">Registrar</button>
                       </div>
                     </form>
                   </Tab.Pane>
@@ -475,16 +502,16 @@ export const Home = () => {
                     <form onSubmit={handleShareSubmit} className="row g-3">
                       {/* Campos del formulario */}
                       <div className="col-md-12 mb-3">
-                        <label className="form-label fw-semibold">Pet Username</label>
+                        <label className="form-label fw-semibold">Username de Mascota</label>
                         <input type="text" name="mascota_id" className="form-control" value={share_mascota_name_id} onChange={(event) => setShareMascotaId(event.target.value)} />
                       </div>
                       <div className="col-md-12 mb-3">
-                        <label className="form-label fw-semibold">Pet Password</label>
+                        <label className="form-label fw-semibold">Contraseña de Mascota</label>
                         <input type="password" name="password" className="form-control" value={share_password} onChange={(event) => setSharePassword(event.target.value)} />
                       </div>
                       {/* Botones de acción */}
                       <div className="d-flex justify-content-between">
-                        <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background: "#ff6100", border: "#ff6100" }} type="submit">Sign In Pet</button>
+                        <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background: "#ff6100", border: "#ff6100" }} type="submit">Registrar</button>
                       </div>
                     </form>
                   </Tab.Pane>
@@ -509,8 +536,8 @@ export const Home = () => {
                     onChange={(e) => setFilterStatus(e.target.value)}
                   >
                     <option value="">Filtrar por estado...</option>
-                    <option value="leido">Readed</option>
-                    <option value="noleido">Un Readed</option>
+                    <option value="leido">Leído</option>
+                    <option value="noleido">No Leído</option>
                   </Form.Select>
                 </div>
                 <div className="col-md-3">
@@ -538,17 +565,17 @@ export const Home = () => {
                 <Nav variant="tabs" className="bg-light justify-content-center rounded">
                   <Nav.Item>
                     <Nav.Link style={{ color: "#1B365D" }} eventKey="alerts">
-                      Alerts
+                      Alertas
                     </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
                     <Nav.Link style={{ color: "#1B365D" }} eventKey="incidents">
-                      Incidents
+                      Incidencias
                     </Nav.Link>
                   </Nav.Item>
                   <Nav.Item>
                     <Nav.Link style={{ color: "#1B365D" }} eventKey="reports">
-                      Reports
+                      Reportes
                     </Nav.Link>
                   </Nav.Item>
                 </Nav>
@@ -562,14 +589,14 @@ export const Home = () => {
                     <table className="table table-striped">
                       <thead>
                         <tr className="text-center">
-                          <th>Mascot</th>
-                          <th>Type</th>
-                          <th>Source</th>
-                          <th>Value</th>
-                          <th>State</th>
-                          <th>Description</th>
-                          <th>Post Time</th>
-                          <th>Status</th>
+                          <th>Mascota</th>
+                          <th>Tipo</th>
+                          <th>Fuente</th>
+                          <th>Valor</th>
+                          <th>Estado</th>
+                          <th>Descripción</th>
+                          <th>Fecha de Alta</th>
+                          <th>Estado Lectura</th>
                           <th></th>
                         </tr>
                       </thead>
@@ -584,10 +611,10 @@ export const Home = () => {
                                 <td>{item.type != null ? item.type : "-"}</td>
                                 <td>{item.source != null ? item.source : "-"}</td>
                                 <td>{item.danger_value != null ? item.danger_value : "-"}</td>
-                                <td>{item.status_read != null ? (item.status_read == 'leido' ? 'Readed' : 'Un Readed') : "-"}</td>
+                                <td>{item.status_read != null ? (item.traffic_light == 'rojo' ? 'Peligro' : (item.traffic_light == 'amarillo' ? 'Medio' : 'Bueno')) : "-"}</td>
                                 <td>{item.description != null ? item.description : "-"}</td>
                                 <td>{item.post_time != null ? formatDateTime(item.post_time) : "-"}</td>
-                                <td>{item.traffic_light != null ? (item.traffic_light == 'rojo' ? 'Danger' : (item.traffic_light == 'amarillo' ? 'Medium' : 'Good')) : "-"}</td>
+                                <td>{item.status_read != null ? (item.status_read == 'leido' ? 'Leído' : 'No Leído') : "-"}</td>
                                 <td>
                                   <input
                                     type="checkbox"
@@ -608,12 +635,12 @@ export const Home = () => {
                     <table className="table table-striped">
                       <thead>
                         <tr className="text-center">
-                          <th>Mascot</th>
-                          <th>Type</th>
-                          <th>Start Time</th>
-                          <th>End Time</th>
-                          <th>Description</th>
-                          <th>Good/Bad</th>
+                          <th>Mascota</th>
+                          <th>Tipo</th>
+                          <th>Fecha de Inicio</th>
+                          <th>Fecha de Fin</th>
+                          <th>Descripción</th>
+                          <th>Bueno/Malo</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -642,11 +669,11 @@ export const Home = () => {
                     <table className="table table-striped">
                       <thead>
                         <tr className="text-center">
-                          <th>Mascot</th>
-                          <th>Score</th>
-                          <th>State</th>
-                          <th>Date</th>
-                          <th>Report</th>
+                          <th>Mascota</th>
+                          <th>Puntaje</th>
+                          <th>Estado</th>
+                          <th>Fecha</th>
+                          <th>Reporte</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -658,9 +685,9 @@ export const Home = () => {
                               <tr key={index} className="text-center">
                                 <td>{mascot ? mascot.mascota_name_id : "-"}</td>
                                 <td>{item.score != null ? item.score : "-"}</td>
-                                <td>{item.status_read != null ? (item.status_read == 'leido' ? 'Readed' : 'Un Readed') : "-"}</td>
+                                <td>{item.status_read != null ? (item.status_read == 'leido' ? 'Leído' : 'No Leído') : "-"}</td>
                                 <td>{item.ts_alta != null ? formatDateTime(item.ts_alta) : "-"}</td>
-                                <td><button className="btn fw-bold" onClick={(event) => handleReport(event, item.id)} style={{ color: "white", background: "#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px" }}>See</button></td>
+                                <td><button className="btn fw-bold" onClick={(event) => handleReport(event, item.id)} style={{ color: "white", background: "#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px" }}>Ver</button></td>
                               </tr>
                             );
                           }

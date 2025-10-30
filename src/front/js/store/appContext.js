@@ -32,10 +32,12 @@ const injectContext = PassedComponent => {
 			state.actions.getUserProfile();
 			state.actions.getUsersMascotas();
 
+			const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+			[...popoverTriggerList].map(el => new window.bootstrap.Popover(el));
+
 			const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
     		[...tooltipTriggerList].map(el => new window.bootstrap.Tooltip(el));
 			
-			// --- BONUS: si hay token y la página fue recargada, redirigir a /home ---
 			try {
 				const token = localStorage.getItem("token");
 				const wasReloaded = sessionStorage.getItem("wasReloaded");

@@ -100,19 +100,19 @@ export const Food = () => {
     return (
         <section>
             <div className="d-flex justify-content-between mb-3">
-                <h3>Food Tracking</h3>
+                <h3>Seguimiento de la Comida</h3>
                 <div className="mx-3">
-                    <button className="btn btn-outline-secondary mx-3" onClick={() => setShowModal(true)}>Add Manual Entry</button>
-                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Delete</button>
+                    <button className="btn btn-outline-secondary mx-3" onClick={() => setShowModal(true)}>Introducir valor manualmente</button>
+                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Eliminar</button>
                 </div>
             </div>
             <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
                 <Nav variant="tabs" className="bg-light justify-content-center rounded">
                     <Nav.Item>
-                        <Nav.Link style={{ color: "#1B365D" }} eventKey="profile">Food Profile</Nav.Link>
+                        <Nav.Link style={{ color: "#1B365D" }} eventKey="profile">Perfil de la Comida</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
-                        <Nav.Link style={{ color: "#1B365D" }} eventKey="schedule">Meal Schedule</Nav.Link>
+                        <Nav.Link style={{ color: "#1B365D" }} eventKey="schedule">Horario de Comida</Nav.Link>
                     </Nav.Item>
                 </Nav>
                 <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
@@ -120,10 +120,10 @@ export const Food = () => {
                         <div className="container modal-content">
                             <div className="modal-header row">
                                 <div className="d-flex justify-content-between">
-                                    <h1 className="modal-title fs-4 col-md-8">Record New Food</h1>
+                                    <h1 className="modal-title fs-4 col-md-8">Registrar Comida</h1>
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel()}></button>
                                 </div>
-                                <p className="col-md-12">Enter the details of the food you want to record for your pet.</p>
+                                <p className="col-md-12">Introduce los detalles de la Comida de tu mascota.</p>
                                 <Alert />
                             </div>
                             <div className="modal-body">
@@ -135,46 +135,46 @@ export const Food = () => {
                                             </div>
                                         )}
                                         <div className="text-center p-2 mb-3">
-                                            <label htmlFor="selectFotoComida" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the food</label>
+                                            <label htmlFor="selectFotoComida" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce foto de la Comida</label>
                                             <input id="selectFotoComida" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                                         </div>
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">Title</label>
+                                        <label className="form-label fw-semibold">Titulo</label>
                                         <input type="text" name="title" className="form-control" value={title} onChange={(event) => setTitle(event.target.value)} required />
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">Brand</label>
+                                        <label className="form-label fw-semibold">Marca</label>
                                         <input type="text" name="marca" className="form-control" value={marca} onChange={(event) => setMarca(event.target.value)} required />
                                     </div>
                                     <div className="col-md-4 mb-3">
-                                        <label className="form-label fw-semibold">Fat</label>
+                                        <label className="form-label fw-semibold">Grasa</label>
                                         <input type="text" name="grasa" className="form-control" value={grasa} onChange={(event) => setGrasa(event.target.value)} required />
                                     </div>
                                     <div className="col-md-4 mb-3">
-                                        <label className="form-label fw-semibold">Protein</label>
+                                        <label className="form-label fw-semibold">Proteina</label>
                                         <input type="text" name="proteina" className="form-control" value={proteina} onChange={(event) => setProteina(event.target.value)} required />
                                     </div>
                                     <div className="col-md-4 mb-3">
-                                        <label className="form-label fw-semibold">Fiber</label>
+                                        <label className="form-label fw-semibold">Fibra</label>
                                         <input type="text" name="fibra" className="form-control" value={fibra} onChange={(event) => setFibra(event.target.value)} required />
                                     </div>
                                     <div className="row g-3">
-                                        <h3>Daily Meal</h3>
+                                        <h3>Comida Diaria</h3>
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Food Quantity (gr)</label>
+                                            <label className="form-label fw-semibold">Cantidad (gr)</label>
                                             <input type="number" name="quantity" className="form-control" value={quantity} onChange={(event) => setQuantity(event.target.value)} required />
                                         </div>
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Type of the Food</label>
+                                            <label className="form-label fw-semibold">Tipo de Comida</label>
                                             <select className="form-select" aria-label="Default select example" value={type_food} onChange={(event) => setTypeFood(event.target.value)} required >
-                                                <option value="">Select a type</option>
-                                                <option value="suave">Soft</option>
-                                                <option value="dura">hard</option>
+                                                <option value="">Selecciona un Tipo</option>
+                                                <option value="suave">Suave</option>
+                                                <option value="dura">Dura</option>
                                             </select>
                                         </div>
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Time</label>
+                                            <label className="form-label fw-semibold">Hora del Día</label>
                                             <input type="time" name="food_time" className="form-control" value={food_time} onChange={(event) => setFoodTime(event.target.value)} required />
                                         </div>
                                     </div>
@@ -183,14 +183,14 @@ export const Food = () => {
                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
                                                 onClick={() => handleCancel()} style={{
                                                     borderRadius: "30px", padding: "10px 20px"
-                                                }}>Cancel</button>
+                                                }}>Cancelar</button>
                                             <button type="submit" className="btn btn-primary" style={{
                                                 color: "white",
                                                 background: "#ff6100",
                                                 border: "#ff6100",
                                                 borderRadius: "30px",
                                                 padding: "10px 20px"
-                                            }}>Save Food</button>
+                                            }}>Enviar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -217,15 +217,15 @@ export const Food = () => {
                                     </div>
                                     <div className="card-body d-flex justify-content-between">
                                         <div className="text-center">
-                                            <h5>Fat</h5>
+                                            <h5>Grasa</h5>
                                             <p>{item.grasa != null ? item.grasa + ' %' : '-'}</p>
                                         </div>
                                         <div className="text-center">
-                                            <h5>Proteine</h5>
+                                            <h5>Proteina</h5>
                                             <p>{item.proteina != null ? item.proteina + ' %' : '-'}</p>
                                         </div>
                                         <div className="text-center">
-                                            <h5>Fiber</h5>
+                                            <h5>Fibra</h5>
                                             <p>{item.fibra != null ? item.fibra + ' %' : '-'}</p>
                                         </div>
                                     </div>
@@ -238,15 +238,15 @@ export const Food = () => {
                         <div className="row">
                             <div className="card border-0" style={{ borderRadius: "12px" }}>
                                 <div className="card-header p-3" style={{ background: "#ffffffff" }}>
-                                    <h5>Daily Meal Schedule</h5>
+                                    <h5>Horario diario de la Comida</h5>
                                 </div>
                                 <div className="card-body p-5">
                                     <table className="table table-striped" >
                                         <thead style={{ color: "secondary" }}>
                                             <tr className="text-center">
-                                                <td>Time</td>
-                                                <td>Type</td>
-                                                <td>Quantity</td>
+                                                <td>Hora</td>
+                                                <td>Tipo</td>
+                                                <td>Cantidad</td>
                                             </tr>
                                         </thead>
                                         <tbody>

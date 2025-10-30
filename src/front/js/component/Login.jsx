@@ -53,25 +53,25 @@ export const Login = () => {
                 borderRadius: "12px",
                 border: "1px solid #DDD" // Borde sutil
             }}>
-                <Link to="/home" className="text-decoration-none mb-3" style={{ color: "#1B365D" }}>  <i className="fas fa-arrow-left"></i> go back home</Link>
-                <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1B365D" }}>Welcome Back</h2>
-                <p className="text-center" style={{ color: "#1B365D" }}>Log in to continue</p>
+                <Link to="/home" className="text-decoration-none mb-3" style={{ color: "#1B365D" }}>  <i className="fas fa-arrow-left"></i> Volver</Link>
+                <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1B365D" }}>Bienvenido de nuevo</h2>
+                <p className="text-center" style={{ color: "#1B365D" }}>Inicia Sesión para continuar</p>
                 <Alert />
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label className="form-label">Username</label>
-                        <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control border-0 shadow-sm" placeholder="Enter your Username or Email" required />
+                        <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control border-0 shadow-sm" placeholder="Introduce tu Usuario o Email" required />
                     </div>
                     <div className="mb-3 input-group">
-                        <label className="form-label col-12">Password</label>
-                        <input onChange={(event) => validatePassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className={`form-control ${error ? "is-invalid" : "is-valid"} border-0 shadow-sm`} placeholder="Enter your password" required />
+                        <label className="form-label col-12">Contraseña</label>
+                        <input onChange={(event) => validatePassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className={`form-control ${error ? "is-invalid" : "is-valid"} border-0 shadow-sm`} placeholder="Introdice tu Contraseña" required />
                         <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
                             {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                         </span>
                     </div>
                     <div className="form-check">
                         <input className="form-check-input" type="checkbox" id="rememberMe" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                        <label className="form-check-label" htmlFor="rememberMe">Remember me</label>
+                        <label className="form-check-label" htmlFor="rememberMe">Recuerdamé</label>
                     </div>
                     <div className="text-center">
                         <button type="submit" className="btn w-50 mt-4 fw-bold" style={{ color: "white", 
@@ -79,10 +79,10 @@ export const Login = () => {
                             border: "#ff6100",
                             borderRadius: "8px",
                             padding: "10px"
-                        }}>Log In</button>
+                        }}>Iniciar Sesión</button>
                     </div>
                     <div className="text-center mt-3">
-                        <p className="text-muted">Don't have an account? <Link to={"/sign-up"} className="text-decoration-none" onClick={() => store.alert = { text: "", background: "primary", visible: false }} style={{ color: "#1E1E50" }}>Sign Up</Link></p>
+                        <p className="text-muted">No tienes cuenta ? <Link to={"/sign-up"} className="text-decoration-none" onClick={() => store.alert = { text: "", background: "primary", visible: false }} style={{ color: "#1E1E50" }}>Registrate</Link></p>
                     </div>
                 </form>
             </div>

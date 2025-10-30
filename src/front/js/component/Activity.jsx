@@ -142,30 +142,30 @@ export const Activity = () => {
 
     return (
         <section className="col-md-12 p-5">
-            <h3>Activity History</h3>
+            <h3>Historico de la Actividad</h3>
             <br></br>
             <div className="card p-2 border-0" style={{ borderRadius: "12px" }}>
                 <div className="d-flex justify-content-end p-2">
                     <div className="mx-3">
-                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Introducir valor manualmente</button>
                     </div>
-                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Delete</button>
+                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Eliminar</button>
                 </div>
                 <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered">
                         <div className="container modal-content">
                             <div className="modal-header row">
                                 <div className="d-flex justify-content-between">
-                                    <h1 className="modal-title fs-4 col-md-8">Record New Activity</h1>
+                                    <h1 className="modal-title fs-4 col-md-8">Registrar Actividad</h1>
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel}></button>
                                 </div>
-                                <p className="col-md-12">Enter the details of the activity you want to record for your pet.</p>
+                                <p className="col-md-12">Introduce los detalles de la Actividad de tu mascota.</p>
                                 <Alert />
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit} className="row g-3">
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">Activity Time</label>
+                                        <label className="form-label fw-semibold">Tiempo de la Actividad</label>
                                         <select className="form-select" aria-label="Default select example" value={value} onChange={(event) => setValue(event.target.value)}>
                                             <option value={'0'}>0 min</option>
                                             <option value={'10'}>10 min</option>
@@ -181,11 +181,11 @@ export const Activity = () => {
                                         </select>
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">Creation Time</label>
+                                        <label className="form-label fw-semibold">Fecha de Alta</label>
                                         <input type="datetime-local" name="date" className="form-control" value={date} onChange={(event) => setDate(event.target.value)} required />
                                     </div>
                                     <div className="col-md-12 mb-3">
-                                        <label className="form-label fw-semibold">Note (Optional)</label>
+                                        <label className="form-label fw-semibold">Nota (Opcional)</label>
                                         <input type="text" name="note" className="form-control" value={note} onChange={(event) => setNote(event.target.value)} />
                                     </div>
                                     <div className="row my-3">
@@ -193,14 +193,14 @@ export const Activity = () => {
                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
                                                 onClick={() => handleCancel()} style={{
                                                     borderRadius: "30px", padding: "10px 20px"
-                                                }}>Cancel</button>
+                                                }}>Cancelar</button>
                                             <button type="submit" className="btn btn-primary" style={{
                                                 color: "white",
                                                 background: "#ff6100",
                                                 border: "#ff6100",
                                                 borderRadius: "30px",
                                                 padding: "10px 20px"
-                                            }}>Save Activity</button>
+                                            }}>Enviar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -213,25 +213,25 @@ export const Activity = () => {
                         <div className="container modal-content">
                             <div className="modal-header row">
                                 <div className="d-flex justify-content-between">
-                                    <h1 className="modal-title fs-4 col-md-8">Alert</h1>
+                                    <h1 className="modal-title fs-4 col-md-8">Alerta</h1>
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowAlertModal(false)}></button>
                                 </div>
                             </div>
                             <div className="modal-body">
-                                <p className="col-md-12">The value you just try to post it's in the danger range, do you want to inform a veterinarian of this alert ?</p>
+                                <p className="col-md-12">El valor que acabas de introducir se encuentra en el rango 'Peligro', desea informar a un Veterinario ?</p>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
                                     onClick={() => setShowAlertModal(false)} style={{
                                         borderRadius: "30px", padding: "10px 20px"
-                                    }}>Cancel</button>
+                                    }}>Cancelar</button>
                                 <button type="button" onClick={(event) => handleAlertSubmit(event)} className="btn btn-primary" style={{
                                     color: "white",
                                     background: "#ff6100",
                                     border: "#ff6100",
                                     borderRadius: "30px",
                                     padding: "10px 20px"
-                                }}>Send Alert</button>
+                                }}>Enviar</button>
                             </div>
                         </div>
                     </div>
@@ -269,9 +269,9 @@ export const Activity = () => {
                     <thead style={{ color: "secondary" }}>
                         <tr className="text-center">
                             <th scope="col-md-2"></th>
-                            <th scope="col-md-2">Time</th>
-                            <th scope="col-md-2">Activity Time</th>
-                            <th scope="col-md-2">Description</th>
+                            <th scope="col-md-2">Fecha de Alta</th>
+                            <th scope="col-md-2">Tiempo de la Actividad</th>
+                            <th scope="col-md-2">Descripción</th>
                         </tr>
                     </thead>
                     <tbody>

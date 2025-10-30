@@ -16,7 +16,7 @@ export const Payment = () => {
     <section>
       {store.isLogged ?
         <div className="container mt-5 text-center">
-          <h1 className="fw-bold">Premium Subscription</h1>
+          <h1 className="fw-bold">Subscripción Premium</h1>
           <p className="text-muted">Accede a todas las utilidades con tu suscripción mensual.</p>
           <button
             className="btn btn-lg fw-bold"
@@ -27,7 +27,7 @@ export const Payment = () => {
             }}
             onClick={handleSubscribe}
           >
-            Subscribe for $7.99 / month
+            Subscribete por €7.99 / mes
           </button>
         </div>
         :
