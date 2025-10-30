@@ -115,8 +115,8 @@ export const ReportButton = () => {
         <button className="btn fw-bold" onClick={() => generateAIReport()} disabled={loading} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px"}}>
           {loading ? 
             <div className="spinner-border" role="status">
-              <span className="visually-hidden">Loading...</span>
-            </div> : "Health Report"}
+              <span className="visually-hidden">Generando ...</span>
+            </div> : "Reporte de Salud"}
         </button>
       </div>
     </div>

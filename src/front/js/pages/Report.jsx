@@ -39,29 +39,28 @@ export const Report = () => {
                 <div className="container py-4" style={{ backgroundColor: "#F5EFDE", minHeight: "100vh" }}>
                     <div className="d-flex align-items-center mb-4">
                         <img src={logo} alt="Logo" style={{ height: "60px", marginRight: "15px" }} />
-                        <h2 style={{ color: "#1B365D", fontWeight: "bold" }}>Pawsitive Health Quality Report</h2>
+                        <h2 style={{ color: "#1B365D", fontWeight: "bold" }}>Reporte de Salud Pawsitive</h2>
                     </div>
 
                     <div className="p-3 mb-4 rounded shadow-sm" style={{ backgroundColor: "white", borderLeft: "6px solid #1B365D" }}>
-                        <h5 style={{ color: "#1B365D" }}>Overall Health Score: {store.reportAI.results.Score}/10</h5>
-                        <p>This report covers the last 30 days of your pet's health data</p>
+                        <h5 style={{ color: "#1B365D" }}>Puntuación general de salud: {store.reportAI.results.Score}/10</h5>
                     </div>
 
                     <div className="p-3 mb-4 rounded shadow-sm" style={{ backgroundColor: "white" }}>
-                        <h5 style={{ color: "#1B365D" }}>Patterns Detected</h5>
+                        <h5 style={{ color: "#1B365D" }}>Patrón detectado</h5>
                         <p>{store.reportAI.results.Descripcion}</p>
                     </div>
 
                     <div className="row mb-4">
                         <div className="col-md-6 mb-3">
                             <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
-                                <h5 style={{ color: "#1B365D" }}>Urine Analysis</h5>
+                                <h5 style={{ color: "#1B365D" }}>Analisis de Orina</h5>
                                 <p>{store.reportAI.results.Analisis}</p>
                             </div>
                         </div>
                         <div className="col-md-6 mb-3">
                             <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
-                                <h5 style={{ color: "#1B365D" }}>Food Analysis</h5>
+                                <h5 style={{ color: "#1B365D" }}>Analisis de Comida</h5>
                                 <p>{store.reportAI.results.Comida}</p>
                             </div>
                         </div>
@@ -69,21 +68,21 @@ export const Report = () => {
 
                     <div className="row mb-4">
                         <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
-                            <h5 style={{ color: "#1B365D" }}>Action Plan</h5>
+                            <h5 style={{ color: "#1B365D" }}>Plan de Acción</h5>
                             <p>{store.reportAI.results.Accion}</p>
                         </div>
                     </div>
 
                     <div className="row mb-4">
                         <div className="p-3 rounded shadow-sm" style={{ backgroundColor: "white" }}>
-                            <h5 style={{ color: "#1B365D" }}>Future Plan</h5>
+                            <h5 style={{ color: "#1B365D" }}>Plan a Futuro</h5>
                             <p>{store.reportAI.results.Futuro}</p>
                         </div>
                     </div>
 
                     <div className="p-5 text-center">
                         <button className="btn fw-bold" onClick={event => sendReport(event)} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "30px", padding: "10px 20px"}}>
-                            Share with Veterinarian
+                            Compartir con Veterinario
                         </button>
                     </div>
                 </div>

@@ -56,7 +56,7 @@ export const MascotaProfile = () => {
           </div>
           <div className="text-center mb-4">
             <div className="mt-3 text-end">
-              <h3 className="mt-2 fw-bold text-center">Pet Profile</h3>
+              <h3 className="mt-2 fw-bold text-center">Perfil de Mascota</h3>
             </div>
           </div>
           <Alert />
@@ -74,23 +74,27 @@ export const MascotaProfile = () => {
               </div>
             </div>
             <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">Pet Name</label>
+              <label className="form-label fw-semibold">Username de Mascota</label>
+              <span className="input-group-text">{store.currentMascota.mascota_name_id}</span>
+            </div>
+            <div className="col-md-6 mb-3">
+              <label className="form-label fw-semibold">Nombre</label>
               <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} />
             </div>
             <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">Pathology</label>
+              <label className="form-label fw-semibold">Patología</label>
               <select className="form-select" aria-label="Default select example" value={patologia} onChange={(event) => setPatology(event.target.value)} >
-                <option value="">Select a Pathology</option>
-                <option value="food_pathology">Food pathology</option>
-                <option value="movility_pathology">Movility pathology</option>
-                <option value="skin_pathology">Skin pathology</option>
-                <option value="cardiac_pathology">Cardiac pathology</option>
+                <option value="">Selecciona una Patología</option>
+                <option value="food_pathology">Patología de Comida</option>
+                <option value="movility_pathology">Patología de Movilidad</option>
+                <option value="skin_pathology">Patología en la Piel</option>
+                <option value="cardiac_pathology">Patología Cardiaca</option>
               </select>
             </div>
             <div className="col-md-6 mb-3">
-              <label className="form-label fw-semibold">Breed</label>
+              <label className="form-label fw-semibold">Raza</label>
               <select className="form-select" aria-label="Default select example" value={raza} onChange={(event) => setRaza(event.target.value)} required >
-                <option value="">Select a Breed</option>
+                <option value="">Selecciona una Raza</option>
                 {razas.map((item) => {
                   return (
                     <option value={item}>{item}</option>
@@ -100,19 +104,19 @@ export const MascotaProfile = () => {
               </select>
             </div>
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Change this if your pet is still active</label>
+              <label className="form-label fw-semibold">Cambia la siguiente opción si tu mascota ya no esta activa</label>
               <select className="form-select" aria-label="Default select example" value={status} onChange={(event) => setStatus(event.target.value)} required >
-                <option value="active">Still Active</option>
-                <option value="nonactive">Not Active</option>
+                <option value="active">Activa</option>
+                <option value="nonactive">No Activa</option>
               </select>
             </div>
             <div className="col-md-6 mx-3 mb-3 form-check">
               <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setIsEsterilizado(event.target.checked)} />
-              <label className="form-check-label" htmlFor="is_esterilizado">Is your pet Spay / Neuter ?</label>
+              <label className="form-check-label" htmlFor="is_esterilizado">Tu mascota esta Esterilizada ?</label>
             </div>
             {/* Botones de acción */}
             <div className="d-flex justify-content-between">
-              <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Update your pet</button>
+              <button className="btn btn-primary fw-bold m-3" style={{ color: "white", background:"#ff6100", border: "#ff6100"}} type="submit">Actualizar Mascota</button>
             </div>
           </form>
         </div>

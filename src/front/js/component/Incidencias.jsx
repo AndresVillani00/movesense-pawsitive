@@ -17,7 +17,7 @@ export const Incidencias = () => {
     const modalRef = useRef(null);
     const bsModal = useRef(null);
 
-    const checkform = ['Vomit', 'Diarrhea', 'Skin Issue', 'Fight', 'Inside Home', 'Outside Home', 'Others']
+    const checkform = ['Vomitp', 'Diarrea', 'Problema de la piel', 'Pelea', 'Dentro de casa', 'Fuera de casa', 'Otro']
 
     useEffect(() => {
         // Cargar modal de Bootstrap solo una vez
@@ -121,24 +121,24 @@ export const Incidencias = () => {
 
     return (
         <section className="col-md-12 p-5">
-            <h3>Incidents History</h3>
+            <h3>Historico de Incidencias</h3>
             <br></br>
             <div className="card p-2 border-0" style={{ borderRadius: "12px" }}>
                 <div className="d-flex justify-content-end p-2">
                     <div className="mx-3">
-                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Introducir valor manualmente</button>
                     </div>
-                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Delete</button>
+                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Eliminar</button>
                 </div>
                 <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered">
                         <div className="container modal-content">
                             <div className="modal-header row">
                                 <div className="d-flex justify-content-between">
-                                    <h1 className="modal-title fs-4 col-md-8">Record New Incident</h1>
+                                    <h1 className="modal-title fs-4 col-md-8">Registrar Incidencia</h1>
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel()}></button>
                                 </div>
-                                <p className="col-md-12">Enter the details of the incident you want to record for your pet.</p>
+                                <p className="col-md-12">Introduce los detalles de la Incidencia de tu mascota.</p>
                                 <Alert />
                             </div>
                             <div className="modal-body">
@@ -150,7 +150,7 @@ export const Incidencias = () => {
                                             </div>
                                         )}
                                         <div className="text-center p-2 mb-3">
-                                            <label htmlFor="selectFotoIncidencia" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the incident</label>
+                                            <label htmlFor="selectFotoIncidencia" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce foto del Incidente</label>
                                             <input id="selectFotoIncidencia" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                                         </div>
                                     </div>
@@ -165,21 +165,21 @@ export const Incidencias = () => {
                                         ))}
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">Start Time</label>
+                                        <label className="form-label fw-semibold">Fecha de Inicio</label>
                                         <input type="datetime-local" name="initialDate" className="form-control" value={initialDate} onChange={(event) => setInitialDate(event.target.value)} required />
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">End Time (Optional)</label>
+                                        <label className="form-label fw-semibold">Fecha de Fin (Opcional)</label>
                                         <input type="datetime-local" name="finalDate" className="form-control" value={finalDate} onChange={(event) => setFinalDate(event.target.value)} required />
                                     </div>
                                     <div className="col-md-12 mb-3">
-                                        <label className="form-label fw-semibold">Description (Optional)</label>
+                                        <label className="form-label fw-semibold">Descripción (Opcional)</label>
                                         <textarea className="form-control" id="descriptionID" rows="3" value={description} onChange={(event) => setDescription(event.target.value)}></textarea>
                                     </div>
                                     <div className="form-check form-switch mb-3">
                                         <input className="form-check-input" type="checkbox" id="checkNativeSwitch" onChange={(event) => setStatus(event.target.checked ? 'Good' : 'Bad')} />
                                         <label className="form-check-label" htmlFor="checkNativeSwitch">
-                                            This is a positive incident
+                                            Incidencidente Positivo
                                         </label>
                                     </div>
                                     <div className="row">
@@ -187,14 +187,14 @@ export const Incidencias = () => {
                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
                                                 onClick={() => handleCancel()} style={{
                                                     borderRadius: "30px", padding: "10px 20px"
-                                                }}>Cancel</button>
+                                                }}>Cancelar</button>
                                             <button type="submit" className="btn btn-primary" style={{
                                                 color: "white",
                                                 background: "#ff6100",
                                                 border: "#ff6100",
                                                 borderRadius: "30px",
                                                 padding: "10px 20px"
-                                            }}>Save Incident</button>
+                                            }}>Enviar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -206,11 +206,11 @@ export const Incidencias = () => {
                     <thead style={{ color: "secondary" }}>
                         <tr className="text-center">
                             <th scope="col-md-2"></th>
-                            <th scope="col-md-2">Type</th>
-                            <th scope="col-md-2">Start Time</th>
-                            <th scope="col-md-2">End Time</th>
-                            <th scope="col-md-2">Description</th>
-                            <th scope="col-md-2">Good/Bad</th>
+                            <th scope="col-md-2">Tipo</th>
+                            <th scope="col-md-2">Fecha de Inicio</th>
+                            <th scope="col-md-2">Fecha de Fin</th>
+                            <th scope="col-md-2">Descripción</th>
+                            <th scope="col-md-2">Bueno/Malo</th>
                         </tr>
                     </thead>
                     <tbody>

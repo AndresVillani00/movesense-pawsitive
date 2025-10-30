@@ -265,18 +265,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(dataToSend)
 				};
 
-				if (dataToSend.foto_mascot == null) {
-					setStore({ alert: { text: 'There is no photo uploaded about the Pet', background: 'danger', visible: true } })
-            		return;
-        		}
-
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 400) {
-						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'La contraseña necesita al menos 8 caracteres', background: 'danger', visible: true } })
 					}
 					if (response.status == 401) {
-						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
 					}
 					if (response.status == 404) {
 						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
@@ -303,10 +298,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 400) {
-						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'La contraseña necesita al menos 8 caracteres', background: 'danger', visible: true } })
 					}
 					if (response.status == 401) {
-						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
 					}
 					if (response.status == 404) {
 						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
@@ -334,7 +329,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					const response = await fetch(uri, options);
 					if (!response.ok) {
 						if (response.status == 403) {
-							setStore({ alert: { text: `This User don't have permission to delete this Pet`, background: 'danger', visible: true } })
+							setStore({ alert: { text: `No tienes permisos para eliminar la mascota`, background: 'danger', visible: true } })
 						}
 						return
 					}
@@ -384,14 +379,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 
 				if (dataToSend.foto_analysis == null) {
-					setStore({ alert: { text: `There isn't a photo uploaded about the analysis`, background: 'danger', visible: true } })
+					setStore({ alert: { text: `Necesitas ingresar una foto del analisis`, background: 'danger', visible: true } })
             		return;
         		}
 
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 401) {
-						setStore({ alert: { text: 'La Analysis que intenta registrar ya existe', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'El Analysis que intenta registrar ya existe', background: 'danger', visible: true } })
 					}
 					return
 				}
@@ -573,7 +568,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				
 				if (dataToSend.foto_incidencia == null) {
-					setStore({ alert: { text: 'There is no photo uploaded about the incident', background: 'danger', visible: true } })
+					setStore({ alert: { text: 'Necesitas Ingresar una foto de la Incidencia', background: 'danger', visible: true } })
             		return;
         		}
 				
@@ -689,7 +684,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 
 				if (dataToSend.foto_food == null) {
-					setStore({ alert: { text: 'There is no photo uploaded about the food', background: 'danger', visible: true } })
+					setStore({ alert: { text: 'Necesitas Ingresar una foto de la comida', background: 'danger', visible: true } })
             		return;
         		}
 
@@ -804,7 +799,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 400) {
-						setStore({ alert: { text: 'Error changing to read the report', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'No se pudo leer el reporte', background: 'danger', visible: true } })
 					}
 					return
 				}
@@ -822,7 +817,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 400) {
-						setStore({ alert: { text: 'Error changing to read the alert', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'No se pudo leer la Alerta', background: 'danger', visible: true } })
 					}
 					return
 				}
@@ -862,10 +857,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 400) {
-						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'La contraseña necesita al menos 8 caracteres', background: 'danger', visible: true } })
 					}
 					if (response.status == 401) {
-						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
 					}
 					if (response.status == 404) {
 						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
@@ -895,13 +890,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 400) {
-						setStore({ alert: { text: 'The password need to have  at least 8 characters', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'La contraseña necesita al menos 8 caracteres', background: 'danger', visible: true } })
 					}
 					if (response.status == 401) {
-						setStore({ alert: { text: 'The password must have an special character', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
 					}
 					if (response.status == 404) {
-						setStore({ alert: { text: 'Incorrect User or password', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
 					}
 					return
 				}

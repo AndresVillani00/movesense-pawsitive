@@ -102,19 +102,19 @@ export const MascotaDetalles = () => {
                                 <Tab.Container activeKey={activeKeyDetail} onSelect={(k) => setActiveKeyDetail(k)}>
                                     <Nav variant="tabs" className="bg-light justify-content-center rounded">
                                         <Nav.Item>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="overview">Overview</Nav.Link>
+                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="overview">Vista General</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="food" onClick={() => toggleMenu('food')}>Food Tracking</Nav.Link>
+                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="food" onClick={() => toggleMenu('food')}>Seguimiento de Comida</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item style={{ backgroundColor: "#cacacaff" }} >
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="medicine" disabled>Medicine</Nav.Link>
+                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="medicine" disabled>Medicina</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item style={{ backgroundColor: "#cacacaff" }}>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="appoiment" disabled>Appoiment</Nav.Link>
+                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="appoiment" disabled>Citas</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item style={{ backgroundColor: "#cacacaff" }}>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="result" disabled>Result</Nav.Link>
+                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="result" disabled>Resultados</Nav.Link>
                                         </Nav.Item>
                                     </Nav>
                                     <Tab.Content className="border-0 p-4 bg-transparent mt-3">
@@ -123,7 +123,7 @@ export const MascotaDetalles = () => {
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('weight')}>
                                                     <div className="card border-0" style={buttonStyle('weight')}>
                                                         <div className="card-header d-flex justify-content-between">
-                                                            Weight<i className="fa-solid fa-weight-hanging"></i>
+                                                            Peso<i className="fa-solid fa-weight-hanging"></i>
                                                         </div>
                                                         <div className="card-body">
                                                             {metricasWeight[0] != null ? (metricasWeight.length > 0 ? metricasWeight[metricasWeight.length - 1].valor_diario + ' kg' : metricasWeight[0].valor_diario + ' kg') : ''}
@@ -133,7 +133,7 @@ export const MascotaDetalles = () => {
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('activity')}>
                                                     <div className="card border-0" style={buttonStyle('activity')}>
                                                         <div className="card-header d-flex justify-content-between">
-                                                            Activity<i className="fa-solid fa-chart-line p-1"></i>
+                                                            Actividad<i className="fa-solid fa-chart-line p-1"></i>
                                                         </div>
                                                         <div className="card-body">
                                                             {metricasActivity[0] != null ? (metricasActivity.length > 0 ? metricasActivity[metricasActivity.length - 1].valor_diario + ' min' : metricasActivity[0].valor_diario + ' min') : ''}
@@ -143,10 +143,10 @@ export const MascotaDetalles = () => {
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('analysis')}>
                                                     <div className="card border-0" style={buttonStyle('analysis')}>
                                                         <div className="card-header d-flex justify-content-between" >
-                                                            Urine Analysis<i className="fa-solid fa-droplet p-1"></i>
+                                                            Analisis de Orina<i className="fa-solid fa-droplet p-1"></i>
                                                         </div>
                                                         <div className="card-body">
-                                                            Last analysis at: 
+                                                            Ultimo analisis: 
                                                             <br></br>
                                                             {analysis[0] != null ? (analysis.length > 0 ? formatDateTime(analysis[analysis.length - 1].ts_init) : formatDateTime(analysis[0].ts_init)) : ''}
                                                         </div>
@@ -155,7 +155,7 @@ export const MascotaDetalles = () => {
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('temperature')}>
                                                     <div className="card border-0" style={buttonStyle('temperature')}>
                                                         <div className="card-header d-flex justify-content-between">
-                                                            Temperature<i className="fa-solid fa-temperature-full p-1"></i>
+                                                            Temperatura<i className="fa-solid fa-temperature-full p-1"></i>
                                                         </div>
                                                         <div className="card-body">
                                                             {metricasTemperature[0] != null ? (metricasTemperature.length > 0 ? metricasTemperature[metricasTemperature.length - 1].valor_diario + ' ºC' : metricasTemperature[0].valor_diario + ' ºC') : ''}
@@ -165,7 +165,7 @@ export const MascotaDetalles = () => {
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('heartrate')}>
                                                     <div className="card border-0" style={buttonStyle('heartrate')}>
                                                         <div className="card-header d-flex justify-content-between">
-                                                            Heart Rate<i className="fa-solid fa-heart p-1" ></i>
+                                                            Pulso<i className="fa-solid fa-heart p-1" ></i>
                                                         </div>
                                                         <div className="card-body">
                                                             {metricasHeartRate[0] != null ? (metricasHeartRate.length > 0 ? metricasHeartRate[metricasHeartRate.length - 1].valor_diario + ' bpm' : metricasHeartRate[0].valor_diario + ' bpm') : ''}
@@ -175,7 +175,7 @@ export const MascotaDetalles = () => {
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('incident')}>
                                                     <div className="card border-0" style={buttonStyle('incident')}>
                                                         <div className="card-header d-flex justify-content-between">
-                                                            Incidents<i className="fa-solid fa-triangle-exclamation p-1"></i>
+                                                            Incidencias<i className="fa-solid fa-triangle-exclamation p-1"></i>
                                                         </div>
                                                         <div className="card-body">
                                                             {store.incidencias.length}
@@ -201,7 +201,7 @@ export const MascotaDetalles = () => {
                                     <table className="table table-striped" >
                                         <thead style={{ color: "secondary" }}>
                                             <tr className="text-center">
-                                                <th scope="col-md-4">Profiles Sharing</th>
+                                                <th scope="col-md-4">Usuarios Compartidos</th>
                                                 <th scope="col-md-4"></th>
                                             </tr>
                                         </thead>

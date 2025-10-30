@@ -64,7 +64,7 @@ export const UserProfile = () => {
     <div className="container mt-5 p-4 d-flex justify-content-center card p-4 shadow-lg border-0" style={{ maxWidth: "600px", width: "100%", borderRadius: "12px" }}>
       <div className="text-center mb-4">
         <div className="mt-3 text-end">
-          <h3 className="mt-2 fw-bold text-center">User Profile</h3>
+          <h3 className="mt-2 fw-bold text-center">Perfil de Usuario</h3>
         </div>
       </div>
       <Alert />
@@ -72,52 +72,52 @@ export const UserProfile = () => {
       {store.usuario.is_veterinario ? (
         <form onSubmit={handleVetSubmit} className="row g-3">
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Clinic Name</label>
+            <label className="form-label fw-semibold">Nombre de la Clinica</label>
             <input type="text" name="name_clinica" className="form-control" value={name_clinica} onChange={(event) => setNameClinica(event.target.value)} />
           </div>
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Clinic Email</label>
+            <label className="form-label fw-semibold">Email de la Clinica</label>
             <input type="text" name="email_clinica" className="form-control" value={email_clinica} onChange={(event) => setEmailClinica(event.target.value)} />
           </div>
           <div className="col-md-8">
-            <label className="form-label fw-semibold">Clinic Address</label>
+            <label className="form-label fw-semibold">Dirección de la Clinica</label>
             <input type="text" name="address_clinica" className="form-control" value={address_clinica} onChange={(event) => setAddressClinica(event.target.value)} required />
           </div>
           <div className="col-md-4">
-            <label className="form-label fw-semibold">Clinic Phone</label>
+            <label className="form-label fw-semibold">Telefono de la Clinica</label>
             <input type="text" name="phone_clinica" className="form-control" value={phone_clinica} onChange={(event) => setPhoneClinica(event.target.value)} required />
           </div>
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Doctor Name</label>
+            <label className="form-label fw-semibold">Nombre del Doctor/a</label>
             <input type="text" name="name_doctor" className="form-control" value={name_doctor} onChange={(event) => setNameDoctor(event.target.value)} required />
           </div>
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Doctor Last Name</label>
+            <label className="form-label fw-semibold">Apellido del Doctor/a</label>
             <input type="text" name="last_name_doctor" className="form-control" value={last_name_doctor} onChange={(event) => setLastNameDoctor(event.target.value)} required />
           </div>
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Doctor Email</label>
+            <label className="form-label fw-semibold">Email del Doctor/a</label>
             <input type="text" name="email_doctor" className="form-control" value={email_doctor} onChange={(event) => setEmailDoctor(event.target.value)} required />
           </div>
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Doctor Phone</label>
+            <label className="form-label fw-semibold">Telefono del Doctor/a</label>
             <input type="text" name="phone_doctor" className="form-control" value={phone_doctor} onChange={(event) => setPhoneDoctor(event.target.value)} required />
           </div>
           {/* Botones de acción */}
           <div className="d-flex">
             <div className="col-7">
-              <button className="btn btn-primary w-50 fw-bold m-3" type="submit">Save Changes</button>
+              <button className="btn btn-primary w-50 fw-bold m-3" type="submit">Actualizar</button>
             </div>
           </div>
         </form>
       ) : (
         <form onSubmit={handleUserSubmit} className="row g-3">
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Name</label>
+            <label className="form-label fw-semibold">Nombre</label>
             <input type="text" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} />
           </div>
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Last Name</label>
+            <label className="form-label fw-semibold">Apelliso</label>
             <input type="text" name="lastName" className="form-control" value={last_name} onChange={(event) => setLastName(event.target.value)} />
           </div>
           <div className="col-md-6">
@@ -125,21 +125,21 @@ export const UserProfile = () => {
             <input type="email" name="email" className="form-control" value={email} onChange={(event) => setEmail(event.target.value)} required />
           </div>
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Phone</label>
+            <label className="form-label fw-semibold">Telefono</label>
             <input type="text" name="phone" className="form-control" value={phone} onChange={(event) => setPhone(event.target.value)} />
           </div>
           <div className="col-md-8">
-            <label className="form-label fw-semibold">Address</label>
+            <label className="form-label fw-semibold">Dirección</label>
             <input type="text" name="address" className="form-control" value={address} onChange={(event) => setAddress(event.target.value)} />
           </div>
           <div className="col-md-4">
-            <label className="form-label fw-semibold">Country</label>
+            <label className="form-label fw-semibold">País</label>
             <input type="text" className="form-control" value={country} onChange={(event) => setCountry(event.target.value)} />
           </div>
           {/* Botones de acción */}
           <div className="d-flex">
             <div className="col-7">
-              <button className="btn btn-primary w-50 fw-bold m-3" type="submit">Save Changes</button>
+              <button className="btn btn-primary w-50 fw-bold m-3" type="submit">Actualizar</button>
             </div>
           </div>
         </form>

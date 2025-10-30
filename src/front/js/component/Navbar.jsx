@@ -17,13 +17,13 @@ export const Navbar = () => {
 
                 {/* Menú colapsable */}
                 <div className="d-flex justify-content-between" id="navbarNav" >
-                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Home" style={{ color:"#F5EFDE" }}>
+                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Inicio" style={{ color:"#F5EFDE" }}>
                         <i className="fa-solid fa-house"></i>
                     </button>
-                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Incidents for pets" style={{ color:"#F5EFDE" }}>
+                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Incidencias de Mascotas" style={{ color:"#F5EFDE" }}>
                         <i className="fa-solid fa-paw"></i>
                     </button>
-                    <button type="button" className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="About us" style={{ color:"#F5EFDE" }}>
+                    <button type="button" className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Sobre Nosotros" style={{ color:"#F5EFDE" }}>
                         <i className="fa-solid fa-users-rectangle"></i>
                     </button>
                 </div>  
@@ -40,7 +40,7 @@ export const Navbar = () => {
                                     borderRadius: "8px",
                                     padding: "8px 16px"
                                 }}>
-                                    Subscribe
+                                    Subscribete
                                 </button>
                             </Link>
                             <Dropdown className="ms-3">
@@ -50,14 +50,14 @@ export const Navbar = () => {
                                 <Dropdown.Menu align="end">
                                     <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
                                     <Dropdown.Item as={Link} to="/home" onClick={() => actions.setActiveKey('register')}>
-                                        Register New Pet
+                                        Registrar nueva Mascota
                                     </Dropdown.Item>
                                     <Dropdown.Item as={Link} to="/home" onClick={() => actions.setActiveKey('existing')}>
-                                        Existing Pets
+                                        Mis Mascotas
                                     </Dropdown.Item>
                                     <Dropdown.Divider />
                                     <Dropdown.Item as={Link} to="/home" onClick={() => actions.logout()} className="text-danger">
-                                        Log Out
+                                        Cerrar Sesión
                                     </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
@@ -72,7 +72,7 @@ export const Navbar = () => {
                                     padding: "8px 16px"
                                 }}
                                 onClick={() => store.alert = { text: "", background: "primary", visible: false }}>
-                                    Log In</button>
+                                    Inicia Sesión</button>
                             </Link>
                             {<Link to="/sign-up">
                                 <button className="btn fw-bold" style={{
@@ -82,7 +82,7 @@ export const Navbar = () => {
                                     padding: "8px 16px"
                                 }}
                                 onClick={() => store.alert = { text: "", background: "primary", visible: false }}>
-                                    Sign Up
+                                    Registrate
                                 </button>
                             </Link>}
                         </div>
