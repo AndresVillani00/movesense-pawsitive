@@ -101,7 +101,7 @@ export const ReportButton = () => {
       try {
         await actions.reportOpenAI(prompt, store.JSONEntrada);
       } catch (e) {
-        store.alert = { text: "Error generating the report", background: "danger", visible: true };
+        store.alert = { text: "Error generando el reporte", background: "danger", visible: true };
       } finally {
         setLoading(false);
         navigate('/report')
@@ -114,8 +114,8 @@ export const ReportButton = () => {
       <div className="d-flex justify-content-between">
         <button className="btn fw-bold" onClick={() => generateAIReport()} disabled={loading} style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "8px", padding: "8px 16px"}}>
           {loading ? 
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden">Loading...</span>
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div> : "Health Report"}
         </button>
       </div>

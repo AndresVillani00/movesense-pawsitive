@@ -141,38 +141,38 @@ export const HeartRate = () => {
 
     return (
         <section className="col-md-12 p-5">
-            <h3>Heart Rate History</h3>
+            <h3>Historico del Pulso</h3>
             <br></br>
             <div className="card p-2 border-0" style={{ borderRadius: "12px" }}>
                 <div className="d-flex justify-content-end p-2">
                     <div className="mx-3">
-                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Introducir valor manualmente</button>
                     </div>
-                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Delete</button>
+                    <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Eliminar</button>
                 </div>
                 <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered">
                         <div className="container modal-content">
                             <div className="modal-header row">
                                 <div className="d-flex justify-content-between">
-                                    <h1 className="modal-title fs-4 col-md-8">Record New Heart Rate</h1>
+                                    <h1 className="modal-title fs-4 col-md-8">Registrar Pulso</h1>
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel()}></button>
                                 </div>
-                                <p className="col-md-12">Enter the details of the Heart Rate you want to record for your pet.</p>
+                                <p className="col-md-12">Introduce los detalles del pulso de tu mascota</p>
                                 <Alert />
                             </div>
                             <div className="modal-body">
                                 <form onSubmit={handleSubmit} className="row g-3">
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">Heart Rate</label>
+                                        <label className="form-label fw-semibold">Pulso (bpm)</label>
                                         <input type="text" name="weight" className="form-control" value={value} onChange={(event) => setValue(event.target.value)} />
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">Creation Time</label>
+                                        <label className="form-label fw-semibold">Fecha de alta</label>
                                         <input type="datetime-local" name="date" className="form-control" value={date} onChange={(event) => setDate(event.target.value)} required />
                                     </div>
                                     <div className="col-md-12 mb-3">
-                                        <label className="form-label fw-semibold">Note (Optional)</label>
+                                        <label className="form-label fw-semibold">Nota (Opcional)</label>
                                         <input type="text" name="note" className="form-control" value={note} onChange={(event) => setNote(event.target.value)} />
                                     </div>
                                     <div className="row my-3">
@@ -180,14 +180,14 @@ export const HeartRate = () => {
                                             <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
                                                 onClick={() => handleCancel()} style={{
                                                     borderRadius: "30px", padding: "10px 20px"
-                                                }}>Cancel</button>
+                                                }}>Cancelar</button>
                                             <button type="submit" className="btn btn-primary" style={{
                                                 color: "white",
                                                 background: "#ff6100",
                                                 border: "#ff6100",
                                                 borderRadius: "30px",
                                                 padding: "10px 20px"
-                                            }}>Save Heart Rate</button>
+                                            }}>Enviar</button>
                                         </div>
                                     </div>
                                 </form>
@@ -200,12 +200,12 @@ export const HeartRate = () => {
                         <div className="container modal-content">
                             <div className="modal-header row">
                                 <div className="d-flex justify-content-between">
-                                    <h1 className="modal-title fs-4 col-md-8">Alert</h1>
+                                    <h1 className="modal-title fs-4 col-md-8">Alerta</h1>
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowAlertModal(false)}></button>
                                 </div>
                             </div>
                             <div className="modal-body">
-                                <p className="col-md-12">The value you just try to post it's in the danger range, do you want to inform a veterinarian of this alert ?</p>
+                                <p className="col-md-12">El valor que acabas de introducir se encuentra en el rango 'Peligro', desea informar a un Veterinario ?</p>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
@@ -218,7 +218,7 @@ export const HeartRate = () => {
                                     border: "#ff6100",
                                     borderRadius: "30px",
                                     padding: "10px 20px"
-                                }}>Send Alert</button>
+                                }}>Enviar</button>
                             </div>
                         </div>
                     </div>
@@ -256,9 +256,9 @@ export const HeartRate = () => {
                     <thead style={{ color: "secondary" }}>
                         <tr className="text-center">
                             <th scope="col-md-2"></th>
-                            <th scope="col-md-2">Time</th>
-                            <th scope="col-md-2">Heart Rate</th>
-                            <th scope="col-md-2">Description</th>
+                            <th scope="col-md-2">Fecha</th>
+                            <th scope="col-md-2">Pulso</th>
+                            <th scope="col-md-2">Descripción</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -272,7 +272,7 @@ export const HeartRate = () => {
                                     />
                                 </td>
                                 <td>{item.ts_init != null ? formatDateTime(item.ts_init) : '-'}</td>
-                                <td>{item.valor_diario != null ? item.valor_diario : '-'}</td>
+                                <td>{item.valor_diario != null ? item.valor_diario + " bpm" : '-'}</td>
                                 <td>{item.note != null ? item.note : '-'}</td>
                             </tr>
                         ))}

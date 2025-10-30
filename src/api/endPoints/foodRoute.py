@@ -56,3 +56,18 @@ def mascotas_food(id):
     response_body['message'] = f'Food de la mascota con id: {id}'
     response_body['results'] = food_list
     return response_body, 200
+
+
+@food_api.route('/foods/<int:id>', methods=['DELETE'])
+def delete_foods(id):
+    response_body = {}
+    row = db.session.execute(db.select(Comida).where(Comida.id == id)).scalar()
+    if not row:
+       response_body['message'] = f'La comida con el id: {id} no existe en nuestros registros'
+       return response_body, 400
+    if request.method == 'DELETE':
+       db.session.delete(row)
+       db.session.commit()
+       response_body['message'] = f'La comida con el id {id} se ha eliminado correctamente.'
+       response_body['results'] = row.serialize() 
+       return response_body, 200  

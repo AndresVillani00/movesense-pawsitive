@@ -281,12 +281,13 @@ def generate_report():
         "role": "system",
         "content": (
             "Eres un veterinario experto. Analiza los datos para mascotas "
-            "Devuelve únicamente un JSON válido con keys: Descripcion de la Mascota para la etiqueta Descripcion, Analisis Orina pra la etiqueta Analisis, Comida, Accion "
-            "y los pasos a seguir en el Futuro, el valor de las cuatro primeros es un reporte explicando si es buena o mala la informacion enviada en el JSON de entrada tomando en cuenta que las Incidencias son para el reporte Accion, "
+            "Devuelve únicamente un JSON válido con keys: Score, Descripcion, Analisis, Comida, Accion, Futuro. "
+            "El valor de las etiquetas Descripcion, Analisis, Comida, Accion es un reporte explicando si es buena o mala la informacion enviada en el JSON de entrada tomando en cuenta que las Incidencias son para el reporte Accion, "
             "y da recomendaciones claras, no muestres los titulos de los datos enviados simplemente da tu opinion profesional,"
             "y genera un quinto reporte para la parte (Futuro) del JSON con los pasos a seguir para el futuro segun los reportes anteriores."
-            "No incluyas texto adicional fuera del JSON. solo devuelve un JSON del estilo {Descripcion: 'reporte', Analisis: 'reporte', Comida: 'reporte', Accion: 'reporte', Futuro: 'reporte'}. "
-            "Es importante que respetes los nombres de las etiquetas ya que las voy a buscar por ese exacto nombre al mostrarlas en mi front-end {Descripcion, Analisis, Comida, Accion, Futuro}"
+            "Por ultimo para la primera etiqueta Score dame una puntuacion del 1 al 10 sin usar decimales basandote en el posible estado de la mascota segun los datos de cada reporte, donde 1 es muy malo y 10 es muy bueno. "
+            "No incluyas texto adicional fuera del JSON. solo devuelve un JSON del estilo {Score:'puntuacion', Descripcion: 'reporte', Analisis: 'reporte', Comida: 'reporte', Accion: 'reporte', Futuro: 'reporte'}. "
+            "Es importante que respetes los nombres de las etiquetas ya que las voy a buscar por ese exacto nombre al mostrarlas en mi front-end {Score, Descripcion, Analisis, Comida, Accion, Futuro}"
         )
     }
     user_msg = {
@@ -371,6 +372,55 @@ def vetcheck_eval(payload: dict, file_id: str, save_raw_to: str | None = None):
 
     except Exception as e:
         raise RuntimeError(f"Error llamando a OpenAI: {str(e)}")
+    
+
+@openai_api.route("/generate-analisis", methods=["POST"])
+def generate_analisis():
+    response_body = {} 
+    body = request.get_json(force=True, silent=True) or {}
+    prompt = body.get("prompt")
+    data = body.get("dataToSend")
+    if not prompt:
+        response_body['message'] = f"Falta el campo 'prompt'"
+        return response_body, 400
+    # Construimos el contexto: system + user message que incluye el JSON
+    system_msg = {
+        "role": "system",
+        "content": (
+            "Eres un veterinario experto. Analiza los datos sobre los analisis de orina enviados "
+            "Devuelve únicamente un JSON válido con keys: [blood, bilirubin, urobiling, ketones, glucose, protein, nitrite, leukocytes, ph] "
+            "Rellena las keys del json con los datos de la foto enviada en base64 del json en la etiqueta AnalisisEnviado basandote en los datos de la imagen en base64 del json en la etiqueta AnalisisBase "
+            "Necesito que los valores que me devuelvas para cada keys del json sea un numero aproximado y si es necesario con al menos un decimal al valor del color que representa, si el valor es Negativo devuelveme Negativo "
+            "No incluyas texto adicional fuera del JSON. solo devuelve un JSON del estilo {blood: 'valor', bilirubin: 'valor', urobiling: 'valor', ketones: 'valor', glucose: 'valor', protein: 'valor', nitrite: 'valor', leukocytes: 'valor', ph: 'valor'}. "
+        )
+    }
+    user_msg = {
+        "role": "user",
+        "content": f"Instrucción: {prompt}\n\nDatos:\n{json.dumps(data, ensure_ascii=False)}"
+    }
+    try:
+        # Llamada al endpoint chat completions (síncrona)
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[system_msg, user_msg],
+            temperature=1,
+            max_completion_tokens=1000,
+            response_format={ "type": "json_object" }
+        )
+        # El texto generado
+        text = resp.choices[0].message.content
+        # Intentamos parsear a JSON (si pedimos JSON al modelo es ideal)
+        try:
+            parsed = json.loads(resp.choices[0].message.content)
+            return jsonify({"status": "ok", "results": parsed}), 200
+        except Exception:
+            # Si no es JSON válido devolvemos el texto crudo para debugging
+            return jsonify({"ok": True, "report_text": text}), 200
+    except Exception as e:
+        current_app.logger.exception("OpenAI request failed")
+        response_body['message'] = str(e)
+        return response_body, 500
+    
 
 @openai_api.route("/vetcheck", methods=["POST"])
 def vetcheck_route():

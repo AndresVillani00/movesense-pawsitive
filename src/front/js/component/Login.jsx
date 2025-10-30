@@ -16,7 +16,6 @@ export const Login = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const dataToSend = { username, password, remember }
-        console.log(dataToSend)
         await actions.login(dataToSend);
         
         if(store.isVeterinario){

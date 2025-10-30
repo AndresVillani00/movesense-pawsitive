@@ -12,7 +12,7 @@ export const Report = () => {
         event.preventDefault();
 
         const dataToSend = {
-            score: 10,
+            score: store.reportAI.results.Score,
             description_ia: store.reportAI.results.Descripcion,
             food_ia: store.reportAI.results.Comida,
             action_ia: store.reportAI.results.Accion,
@@ -43,7 +43,7 @@ export const Report = () => {
                     </div>
 
                     <div className="p-3 mb-4 rounded shadow-sm" style={{ backgroundColor: "white", borderLeft: "6px solid #1B365D" }}>
-                        <h5 style={{ color: "#1B365D" }}>Overall Health Score: {store.report.score}/10</h5>
+                        <h5 style={{ color: "#1B365D" }}>Overall Health Score: {store.reportAI.results.Score}/10</h5>
                         <p>This report covers the last 30 days of your pet's health data</p>
                     </div>
 

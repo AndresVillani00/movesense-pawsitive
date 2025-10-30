@@ -145,6 +145,7 @@ export const Home = () => {
     await actions.getIncidencia(mascota.id);
     await actions.getShareUsers(mascota.mascota_name_id);
     await actions.getCodeJson(mascota.id);
+    await actions.getReport(mascota.id);
 
     store.alert = { text: '', background: 'primary', visible: false }
     navigate('/pet-details');
