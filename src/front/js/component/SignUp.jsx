@@ -72,7 +72,7 @@ export const SignUp = () => {
                             <div className="col-12"> 
                                 <label className="form-label fw-semibold">Contraseña</label> 
                                 <div className="input-group"> 
-                                    <input onChange={(event) => validatePassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className="form-control" placeholder="Introdice tu Contraseña" required /> 
+                                    <input onChange={(event) => validatePassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className="form-control" placeholder="Introduce tu Contraseña" required /> 
                                     <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}> {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>} </span> 
                                 </div> 
                             </div> 

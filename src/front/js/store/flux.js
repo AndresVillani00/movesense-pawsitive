@@ -896,7 +896,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
 					}
 					if (response.status == 404) {
-						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'Usuario que intenta registrar es erroneo o no existe', background: 'danger', visible: true } })
 					}
 					return
 				}

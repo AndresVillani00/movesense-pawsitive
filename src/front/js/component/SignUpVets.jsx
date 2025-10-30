@@ -93,7 +93,7 @@ export const SignUpVets = () => {
                                                 value={password}
                                                 type={showPassword ? "text" : "password"}
                                                 className="form-control"
-                                                placeholder="Introdice tu Contraseña"
+                                                placeholder="Introduce tu Contraseña"
                                                 required
                                             />
                                             <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
