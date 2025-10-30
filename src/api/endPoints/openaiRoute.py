@@ -390,7 +390,7 @@ def generate_analisis():
             "Eres un veterinario experto. Analiza los datos sobre los analisis de orina enviados "
             "Devuelve únicamente un JSON válido con keys: [blood, bilirubin, urobiling, ketones, glucose, protein, nitrite, leukocytes, ph] "
             "Rellena las keys del json con los datos de la foto enviada en base64 del json en la etiqueta AnalisisEnviado basandote en los datos de la imagen en base64 del json en la etiqueta AnalisisBase "
-            "Necesito que los valores que me devuelvas para cada keys del json sea un numero aproximado y si es necesario con al menos un decimal al valor del color que representa, si el valor es Negativo devuelveme -1 "
+            "Necesito que los valores que me devuelvas para cada keys del json sea un numero aproximado y si es necesario con al menos un decimal al valor del color que representa, si el valor es Negativo devuelveme Negativo "
             "No incluyas texto adicional fuera del JSON. solo devuelve un JSON del estilo {blood: 'valor', bilirubin: 'valor', urobiling: 'valor', ketones: 'valor', glucose: 'valor', protein: 'valor', nitrite: 'valor', leukocytes: 'valor', ph: 'valor'}. "
         )
     }
