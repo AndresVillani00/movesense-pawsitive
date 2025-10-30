@@ -17,7 +17,7 @@ export const Incidencias = () => {
     const modalRef = useRef(null);
     const bsModal = useRef(null);
 
-    const checkform = ['Vomitp', 'Diarrea', 'Problema de la piel', 'Pelea', 'Dentro de casa', 'Fuera de casa', 'Otro']
+    const checkform = ['Vómito', 'Diarrea', 'Problema de la piel', 'Pelea', 'Dentro de casa', 'Fuera de casa', 'Otro']
 
     useEffect(() => {
         // Cargar modal de Bootstrap solo una vez

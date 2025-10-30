@@ -372,7 +372,7 @@ export const Home = () => {
                           </div>
                         )}
                         <div className="text-center my-5 mb-3">
-                          <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of your Pet</label>
+                          <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce foto de tu Mascota</label>
                           <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                         </div>
                       </div>

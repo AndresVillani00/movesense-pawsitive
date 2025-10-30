@@ -64,7 +64,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const options = {
 					method: 'POST',
 					headers: { "Content-Type": "application/json" },
-    				body: JSON.stringify({ prompt, dataToSend })
+					body: JSON.stringify({ prompt, dataToSend })
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
@@ -79,7 +79,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const options = {
 					method: 'POST',
 					headers: { "Content-Type": "application/json" },
-    				body: JSON.stringify({ prompt, dataToSend })
+					body: JSON.stringify({ prompt, dataToSend })
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
@@ -134,7 +134,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							"Content-Type": "application/json"
 						}
 					});
-					
+
 					const data = await response.json();
 					getActions().getMetricasJSon(data.results);
 				} catch (error) {
@@ -196,7 +196,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log("Error obteniendo la lista de mascotas");
 						return;
 					}
-					
+
 					const data = await response.json();
 					setStore({ mascotas: data.results });
 				} catch (error) {
@@ -313,9 +313,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			deleteMascota: async (id) => {
 				const token = localStorage.getItem("token");
-				if (!token) return false;  
-			
-				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;  
+				if (!token) return false;
+
+				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -323,7 +323,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						Authorization: `Bearer ${token}`,
 					},
 				};
-			
+
 				try {
 					const response = await fetch(uri, options);
 					if (!response.ok) {
@@ -332,15 +332,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 						return
 					}
-			
+
 					const updatedMascotas = getStore().mascotas.filter(mascota => mascota.id !== id);
 					setStore({ mascotas: updatedMascotas });
 					getActions().getUsersMascotas();
-			
-					return true; 
+
+					return true;
 				} catch (error) {
 					console.log("Error en deleteMascota:", error);
-					return false; 
+					return false;
 				}
 			},
 			getAnalysis: async (id) => {
@@ -366,7 +366,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			postAnalysis: async (dataToSend) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
-				
+
 				const uri = `${process.env.BACKEND_URL}/analysisApi/analysis`;
 				const options = {
 					method: 'POST',
@@ -379,8 +379,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				if (dataToSend.foto_analysis == null) {
 					setStore({ alert: { text: `Necesitas ingresar una foto del analisis`, background: 'danger', visible: true } })
-            		return;
-        		}
+					return;
+				}
 
 				const response = await fetch(uri, options);
 				if (!response.ok) {
@@ -394,9 +394,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			deleteAnalysis: async (id) => {
 				const token = localStorage.getItem("token");
-				if (!token) return false;  
-			
-				const uri = `${process.env.BACKEND_URL}/analysisApi/analysis/${id}`;  
+				if (!token) return false;
+
+				const uri = `${process.env.BACKEND_URL}/analysisApi/analysis/${id}`;
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -404,18 +404,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 						Authorization: `Bearer ${token}`,
 					},
 				};
-			
+
 				try {
 					const response = await fetch(uri, options);
 					if (!response.ok) throw new Error("No tienes permisos para eliminar este analysis");
-			
+
 					const updatedAnalysis = getStore().analysis.filter(analysis => analysis.id !== id);
 					setStore({ analysis: updatedAnalysis });
-			
-					return true; 
+
+					return true;
 				} catch (error) {
 					console.log("Error en deleteAnalysis:", error);
-					return false; 
+					return false;
 				}
 			},
 			getMetrica: async (id) => {
@@ -432,7 +432,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						console.log("Error obteniendo la lista de metricas");
 						return;
 					}
-					
+
 					const data = await response.json();
 					setStore({ metricas: data.results });
 				} catch (error) {
@@ -442,7 +442,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			postMetrica: async (dataToSend) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
-				
+
 				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas`;
 				const options = {
 					method: 'POST',
@@ -464,9 +464,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			deleteMetrica: async (id) => {
 				const token = localStorage.getItem("token");
-				if (!token) return false;  
-			
-				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas/${id}`;  
+				if (!token) return false;
+
+				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas/${id}`;
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -474,18 +474,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 						Authorization: `Bearer ${token}`,
 					},
 				};
-			
+
 				try {
 					const response = await fetch(uri, options);
 					if (!response.ok) throw new Error("No tienes permisos para eliminar esta metrica");
-			
+
 					const updatedMetricas = getStore().metricas.filter(metrica => metrica.id !== id);
 					setStore({ metricas: updatedMetricas });
-			
-					return true; 
+
+					return true;
 				} catch (error) {
 					console.log("Error en deleteMetrica:", error);
-					return false; 
+					return false;
 				}
 			},
 			getIncidencias: async () => {
@@ -565,12 +565,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 					},
 					body: JSON.stringify(dataToSend)
 				};
-				
+
 				if (dataToSend.foto_incidencia == null) {
 					setStore({ alert: { text: 'Necesitas Ingresar una foto de la Incidencia', background: 'danger', visible: true } })
-            		return;
-        		}
-				
+					return;
+				}
+
 				const response = await fetch(uri, options);
 				if (!response.ok) {
 					if (response.status == 401) {
@@ -583,9 +583,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			deleteIncidencia: async (id) => {
 				const token = localStorage.getItem("token");
-				if (!token) return false;  
-			
-				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias/${id}`;  
+				if (!token) return false;
+
+				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias/${id}`;
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -593,18 +593,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 						Authorization: `Bearer ${token}`,
 					},
 				};
-			
+
 				try {
 					const response = await fetch(uri, options);
 					if (!response.ok) throw new Error("No tienes permisos para eliminar esta incidencia");
-			
+
 					const updatedIncidencias = getStore().incidencias.filter(incidencia => incidencia.id !== id);
 					setStore({ incidencias: updatedIncidencias });
-			
-					return true; 
+
+					return true;
 				} catch (error) {
 					console.log("Error en deleteIncidencia:", error);
-					return false; 
+					return false;
 				}
 			},
 			getAlerts: async () => {
@@ -671,7 +671,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			postFood: async (dataToSend) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
-				
+
 				const uri = `${process.env.BACKEND_URL}/foodApi/food`;
 				const options = {
 					method: 'POST',
@@ -684,8 +684,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				if (dataToSend.foto_food == null) {
 					setStore({ alert: { text: 'Necesitas Ingresar una foto de la comida', background: 'danger', visible: true } })
-            		return;
-        		}
+					return;
+				}
 
 				const response = await fetch(uri, options);
 				if (!response.ok) {
@@ -699,9 +699,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			deleteFood: async (id) => {
 				const token = localStorage.getItem("token");
-				if (!token) return false;  
-			
-				const uri = `${process.env.BACKEND_URL}/foodApi/foods/${id}`;  
+				if (!token) return false;
+
+				const uri = `${process.env.BACKEND_URL}/foodApi/foods/${id}`;
 				const options = {
 					method: "DELETE",
 					headers: {
@@ -709,18 +709,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 						Authorization: `Bearer ${token}`,
 					},
 				};
-			
+
 				try {
 					const response = await fetch(uri, options);
 					if (!response.ok) throw new Error("No tienes permisos para eliminar esta comida");
-			
+
 					const updatedFoods = getStore().foods.filter(food => food.id !== id);
 					setStore({ foods: updatedFoods });
-			
-					return true; 
+
+					return true;
 				} catch (error) {
 					console.log("Error en deleteFood:", error);
-					return false; 
+					return false;
 				}
 			},
 			getReportes: async () => {
@@ -766,7 +766,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			postReport: async (dataToSend) => {
 				const token = localStorage.getItem("token");
 				if (!token) return;
-				
+
 				const uri = `${process.env.BACKEND_URL}/reportesApi/reportes`;
 				const options = {
 					method: 'POST',
@@ -823,7 +823,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getAlerts()
 			},
 			getStoredToken: () => {
-  				return localStorage.getItem('token') || null;
+				return localStorage.getItem('token') || null;
 			},
 			parseJwt: (token) => {
 				if (!token) return null;
@@ -895,7 +895,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 						setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
 					}
 					if (response.status == 404) {
-						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
+						setStore({ alert: { text: 'Usuario que intenta registrar es erroneo o no existe', background: 'danger', visible: true } })
 					}
 					return
 				}
@@ -922,7 +922,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					isLogged: false,
 					isVeterinario: false,
 					usuario: {},
-					userMascotas:[],
+					userMascotas: [],
 					activeKey: null
 				})
 				localStorage.removeItem('token')
@@ -963,9 +963,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 					setStore({ isLogged: false, usuario: null });
 				}
 
-				if(getStore().isVeterinario){
+				if (getStore().isVeterinario) {
 					getActions().setActiveKey('alerts')
-				} else if(getStore().userMascotas.length < 1) {
+				} else if (getStore().userMascotas.length < 1) {
 					getActions().setActiveKey('register')
 				} else {
 					getActions().setActiveKey('existing')
@@ -1027,7 +1027,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const uri = `${process.env.BACKEND_URL}/veterinariosApi/veterinarios`;
 				const token = localStorage.getItem("token");
 				if (!token) return;
-				
+
 				const options = {
 					method: 'PUT',
 					headers: {
@@ -1044,7 +1044,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const datos = await response.json();
-				setStore({ 
+				setStore({
 					veterinario: datos.results,
 					isVeterinario: true
 				})
@@ -1124,14 +1124,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				try {
 					const response = await fetch(uri, options);
 					if (!response.ok) throw new Error("No tienes permisos para eliminar esta usuario");
-			
+
 					const updatedMascotUsers = getStore().mascotUsers.filter(users => users.id !== userId);
 					setStore({ mascotUsers: updatedMascotUsers });
-			
-					return true; 
+
+					return true;
 				} catch (error) {
 					console.log("Error en deleteShareMascot:", error);
-					return false; 
+					return false;
 				}
 			},
 			uploadImage: async (file) => {
@@ -1190,7 +1190,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const options = {
 					method: 'POST',
 				};
-				
+
 				await fetch(uri, options);
 			},
 			defaultMetricas: async () => {
@@ -1198,7 +1198,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				const options = {
 					method: 'POST',
 				};
-				
+
 				await fetch(uri, options);
 			}
 		}

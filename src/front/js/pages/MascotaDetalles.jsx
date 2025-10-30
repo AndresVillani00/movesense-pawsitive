@@ -93,7 +93,7 @@ export const MascotaDetalles = () => {
                                         </button>
                                     </div>
                                     <div className="card-body p-5">
-                                        <p className="text-center">{store.reportes[0] != null ? store.reportes[0].score +"/10" : "No se ha generado un reporte de mascota aún, rellene los datos y genere un reporte para obtener un puntaje relacionado con el estado de " + store.currentMascota.name_mascot}</p>
+                                        <p className="text-center">{store.reportes[0] != null ? (store.reportes.length > 0 ? store.reportes[store.reportes.length - 1].score + '/10' : store.reportes[0].score + '/10') : "No se ha generado un reporte de mascota aún, rellene los datos y genere un reporte para obtener un puntaje relacionado con el estado de " + store.currentMascota.name_mascot}</p>
                                     </div>
                                     <ReportButton />
                                 </div>
