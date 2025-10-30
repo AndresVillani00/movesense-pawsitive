@@ -99,6 +99,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
+					console.log(response.error)
 					return
 				}
 			},
