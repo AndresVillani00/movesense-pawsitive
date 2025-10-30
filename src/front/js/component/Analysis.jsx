@@ -70,15 +70,15 @@ export const Analysis = () => {
         const startDate = formatDateTime(date);
 
         const dataToSend = {
-            blood,
-            bilirubin,
-            urobiling,
-            ketones,
-            glucose,
-            protein,
-            nitrite,
-            leukocytes,
-            ph,
+            blood: store.analisisAI != null ? store.analisisAI.blood : blood,
+            bilirubin: store.analisisAI != null ? store.analisisAI.bilirubin : bilirubin,
+            urobiling: store.analisisAI != null ? store.analisisAI.urobiling : urobiling,
+            ketones: store.analisisAI != null ? store.analisisAI.ketones : ketones,
+            glucose: store.analisisAI != null ? store.analisisAI.glucose : glucose,
+            protein: store.analisisAI != null ? store.analisisAI.protein : protein,
+            nitrite: store.analisisAI != null ? store.analisisAI.nitrite : nitrite,
+            leukocytes: store.analisisAI != null ? store.analisisAI.leukocytes : leukocytes,
+            ph: store.analisisAI != null ? store.analisisAI.ph : ph,
             foto_analysis: store.fotoJsonAnalysis != null ? store.fotoJsonAnalysis.foto : null,
             ts_init: startDate,
             mascota_analysis_id: store.idParam

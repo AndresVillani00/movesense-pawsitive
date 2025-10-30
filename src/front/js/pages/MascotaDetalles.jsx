@@ -26,8 +26,9 @@ export const MascotaDetalles = () => {
         actions.getMetrica(store.idParam);
         actions.getAnalysis(store.idParam);
         actions.getFood(store.idParam);
+        actions.getReport(store.idParam);
     }, [])
-    
+
     const toggleMenu = (menu) => {
         setActiveMenu((prev) => (prev === menu ? null : menu));
         setSelected(menu);
@@ -92,7 +93,7 @@ export const MascotaDetalles = () => {
                                         </button>
                                     </div>
                                     <div className="card-body p-5">
-                                        
+                                        <p className="text-center">{store.reportes[0] != null ? store.reportes[0].score +"/10" : "No se ha generado un reporte de mascota aún, rellene los datos y genere un reporte para obtener un puntaje relacionado con el estado de " + store.currentMascota.name_mascot}</p>
                                     </div>
                                     <ReportButton />
                                 </div>
@@ -106,13 +107,13 @@ export const MascotaDetalles = () => {
                                         <Nav.Item>
                                             <Nav.Link style={{ color: "#1B365D" }} eventKey="food" onClick={() => toggleMenu('food')}>Food Tracking</Nav.Link>
                                         </Nav.Item>
-                                        <Nav.Item>
+                                        <Nav.Item style={{ backgroundColor: "#cacacaff" }} >
                                             <Nav.Link style={{ color: "#1B365D" }} eventKey="medicine" disabled>Medicine</Nav.Link>
                                         </Nav.Item>
-                                        <Nav.Item>
+                                        <Nav.Item style={{ backgroundColor: "#cacacaff" }}>
                                             <Nav.Link style={{ color: "#1B365D" }} eventKey="appoiment" disabled>Appoiment</Nav.Link>
                                         </Nav.Item>
-                                        <Nav.Item>
+                                        <Nav.Item style={{ backgroundColor: "#cacacaff" }}>
                                             <Nav.Link style={{ color: "#1B365D" }} eventKey="result" disabled>Result</Nav.Link>
                                         </Nav.Item>
                                     </Nav>
