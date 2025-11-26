@@ -1,9 +1,29 @@
-import React from "react";
-
+import React, { useContext, useEffect, useRef } from "react";
+import { Context } from "../store/appContext";
 
 export const Footer = () => {
+    const brandFooterRef = useRef(null);
+    const { actions } = useContext(Context);
+
+    useEffect(() => {
+    const observer = new IntersectionObserver(
+        ([entry]) => {
+            actions.setBrandVisible(entry.isIntersecting);
+        },
+        { threshold: 0.1 }
+    );
+
+    if (brandFooterRef.current) {
+        observer.observe(brandFooterRef.current);
+    }
+
+    return () => observer.disconnect();
+    }, []);
+
     return (
-        <footer className="text-light py-4 mt-auto" style={{
+        <footer className="text-light py-4 mt-auto" 
+        ref={brandFooterRef} 
+        style={{
             background: "#1B365D",
             fontFamily: "'Montserrat', sans-serif"
         }}>

@@ -10,7 +10,7 @@ export const Analysis = () => {
     const [date, setDate] = useState('');
     const [itemCheck, setItemCheck] = useState([]);
     const [loading, setLoading] = useState(false);
-    
+
     const [base64Analisis, setBase64] = useState('');
     const [blood, setBlood] = useState('');
     const [bilirubin, setBilirubin] = useState('');
@@ -187,8 +187,8 @@ export const Analysis = () => {
         setLoading(true);
 
         const prompt = "Actua como un experto veterinario, Interpreta, analiza y rellena los datos necesarios para un analises de orina en un perro comparando el AnalisisBase y el AnalisisEnviado el cual es el analisis que le realice a mi mascota";
-        
-        if(base64Analisis == null || foto == null) {
+
+        if (base64Analisis == null || foto == null) {
             store.alert = { text: "No se pudo analisar con IA el Analisis de orina", background: "danger", visible: true };
             setLoading(false);
         }
@@ -202,12 +202,12 @@ export const Analysis = () => {
             await actions.analisisOpenAI(prompt, json);
             console.log(store.analisisAI)
         } catch (e) {
-            store.alert = { text: `Error generando el analisis, Error: ${e}` , background: "danger", visible: true };
+            store.alert = { text: `Error generando el analisis, Error: ${e}`, background: "danger", visible: true };
             setLoading(false);
         } finally {
             setLoading(false);
         }
-    } 
+    }
 
     const handleDelete = async (event) => {
         event.preventDefault();
@@ -220,7 +220,7 @@ export const Analysis = () => {
     };
 
     const handleCancel = () => {
-        setShowModal(false); 
+        setShowModal(false);
         store.alert = { text: "", background: "primary", visible: false }
     }
 
@@ -231,7 +231,7 @@ export const Analysis = () => {
             <div className="card p-2 border-0" style={{ borderRadius: "12px" }}>
                 <div className="d-flex justify-content-end p-2">
                     <div className="mx-3">
-                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Introducir valor manualmente</button>
+                        <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus"></i></button>
                     </div>
                     <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Eliminar</button>
                 </div>
@@ -258,40 +258,40 @@ export const Analysis = () => {
                                             <label htmlFor="selectFotoAnalysis" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce foto de Analisis</label>
                                             <input id="selectFotoAnalysis" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                                             <button className="btn btn-primary mx-2" type="button"
-                                                onClick={() => handleAnalisisIA(store.fotoJsonAnalysis.foto)} 
+                                                onClick={() => handleAnalisisIA(store.fotoJsonAnalysis.foto)}
                                                 style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>
-                                                    {loading ? 
-                                                        <div className="spinner-border" role="status">
-                                                            <span className="visually-hidden">Generando ...</span>
-                                                        </div> 
+                                                {loading ?
+                                                    <div className="spinner-border" role="status">
+                                                        <span className="visually-hidden">Generando ...</span>
+                                                    </div>
                                                     : "Analizar con IA"}</button>
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Sangre</label>
+                                            <label className="form-label fw-semibold">Sangre (cacells/µl)</label>
                                             <input type="text" name="blood" className="form-control" value={store.analisisAI != null ? store.analisisAI.blood : blood} onChange={(event) => setBlood(event.target.value)} />
                                         </div>
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Bilirubina</label>
+                                            <label className="form-label fw-semibold">Bilirubina (µmol/l)</label>
                                             <input type="text" name="bilirubin" className="form-control" value={store.analisisAI != null ? store.analisisAI.bilirubin : bilirubin} onChange={(event) => setBilirubin(event.target.value)} />
                                         </div>
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Urobilinógeno</label>
+                                            <label className="form-label fw-semibold">Urobilinógeno (µmol/l)</label>
                                             <input type="text" name="urobiling" className="form-control" value={store.analisisAI != null ? store.analisisAI.urobiling : urobiling} onChange={(event) => setUrobiling(event.target.value)} />
                                         </div>
                                     </div>
                                     <div className="row">
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Cetonas</label>
+                                            <label className="form-label fw-semibold">Cetonas (mmol/l)</label>
                                             <input type="text" name="ketones" className="form-control" value={store.analisisAI != null ? store.analisisAI.ketones : ketones} onChange={(event) => setKetones(event.target.value)} />
                                         </div>
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Glucosa</label>
+                                            <label className="form-label fw-semibold">Glucosa (mmol/l)</label>
                                             <input type="text" name="glucose" className="form-control" value={store.analisisAI != null ? store.analisisAI.glucose : glucose} onChange={(event) => setGlucose(event.target.value)} />
                                         </div>
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Proteina</label>
+                                            <label className="form-label fw-semibold">Proteina (g/l)</label>
                                             <input type="text" name="protein" className="form-control" value={store.analisisAI != null ? store.analisisAI.protein : protein} onChange={(event) => setProtein(event.target.value)} />
                                         </div>
                                     </div>
@@ -301,7 +301,7 @@ export const Analysis = () => {
                                             <input type="text" name="nitrite" className="form-control" value={store.analisisAI != null ? store.analisisAI.nitrite : nitrite} onChange={(event) => setNitrite(event.target.value)} />
                                         </div>
                                         <div className="col-md-4 mb-3">
-                                            <label className="form-label fw-semibold">Leucocitos</label>
+                                            <label className="form-label fw-semibold">Leucocitos (cacells/µl)</label>
                                             <input type="text" name="leukocytes" className="form-control" value={store.analisisAI != null ? store.analisisAI.leukocytes : leukocytes} onChange={(event) => setLeukocytes(event.target.value)} />
                                         </div>
                                         <div className="col-md-4 mb-3">
@@ -310,7 +310,7 @@ export const Analysis = () => {
                                         </div>
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">Fecha de Alta</label>
+                                        <label className="form-label fw-semibold">Fecha de Inicio</label>
                                         <input type="datetime-local" name="date" className="form-control" value={date} onChange={(event) => setDate(event.target.value)} required />
                                     </div>
                                     <div className="row my-3">
@@ -337,14 +337,14 @@ export const Analysis = () => {
                     <thead style={{ color: "secondary" }}>
                         <tr className="text-center">
                             <th scope="col-md-2"></th>
-                            <th scope="col-md-2">Sangre</th>
-                            <th scope="col-md-2">Bilirubina</th>
-                            <th scope="col-md-2">Urobilinógeno</th>
-                            <th scope="col-md-2">Cetonas</th>
-                            <th scope="col-md-2">Glucosa</th>
-                            <th scope="col-md-2">Proteina</th>
+                            <th scope="col-md-2">Sangre (cacells/µl)</th>
+                            <th scope="col-md-2">Bilirubina (µmol/l)</th>
+                            <th scope="col-md-2">Urobilinógeno (µmol/l)</th>
+                            <th scope="col-md-2">Cetonas (mmol/l)</th>
+                            <th scope="col-md-2">Glucosa (mmol/l)</th>
+                            <th scope="col-md-2">Proteina (g/l)</th>
                             <th scope="col-md-2">Nitritos</th>
-                            <th scope="col-md-2">Leucocitos</th>
+                            <th scope="col-md-2">Leucocitos (cacells/µl)</th>
                             <th scope="col-md-2">PH</th>
                         </tr>
                     </thead>

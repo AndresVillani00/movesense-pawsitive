@@ -104,7 +104,7 @@ export const MascotaProfile = () => {
               </select>
             </div>
             <div className="col-md-6">
-              <label className="form-label fw-semibold">Cambia la siguiente opción si tu mascota ya no esta activa</label>
+              <label className="form-label fw-semibold">Marca esta opción si {name_mascot} ha fallecido.</label>
               <select className="form-select" aria-label="Default select example" value={status} onChange={(event) => setStatus(event.target.value)} required >
                 <option value="active">Activa</option>
                 <option value="nonactive">No Activa</option>

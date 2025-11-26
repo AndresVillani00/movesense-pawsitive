@@ -34,6 +34,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			analysisReport: null,
 			actionReport: null,
 			activeKey: null,
+			brandVisible: null,
 			alert: { text: '', background: 'primary', visible: false },
 			message: null,
 		},
@@ -45,6 +46,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setFotoJsonAnalysis: (item) => { setStore({ fotoJsonAnalysis: item }) },
 			setFotoJsonFood: (item) => { setStore({ fotoJsonFood: item }) },
 			setActiveKey: (item) => { setStore({ activeKey: item }) },
+			setBrandVisible: (item) => { setStore({ brandVisible: item }) },
 			generarJsonEntrada: async (mascota_id, start, end) => {
 				const uri = `${process.env.BACKEND_URL}/openaiApi/mascota/${mascota_id}/json-entrada?start_ts=${start}&end_ts=${end}`;
 				const options = {
@@ -910,7 +912,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({
 					isLogged: true,
 					usuario: datos.results,
-					alert: { text: 'Loggeado correctamente', background: 'primary', visible: true }
+					alert: { text: '', background: 'primary', visible: false }
 				})
 				if (getStore().usuario.is_veterinario) {
 					setStore({ isVeterinario: true })

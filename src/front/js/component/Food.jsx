@@ -100,21 +100,13 @@ export const Food = () => {
     return (
         <section>
             <div className="d-flex justify-content-between mb-3">
-                <h3>Seguimiento de la Comida</h3>
+                <h3>Comida</h3>
                 <div className="mx-3">
                     <button className="btn btn-outline-secondary mx-3" onClick={() => setShowModal(true)}>Introducir valor manualmente</button>
                     <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Eliminar</button>
                 </div>
             </div>
             <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
-                <Nav variant="tabs" className="bg-light justify-content-center rounded">
-                    <Nav.Item>
-                        <Nav.Link style={{ color: "#1B365D" }} eventKey="profile">Perfil de la Comida</Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item>
-                        <Nav.Link style={{ color: "#1B365D" }} eventKey="schedule">Horario de Comida</Nav.Link>
-                    </Nav.Item>
-                </Nav>
                 <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
                     <div className="modal-dialog modal-dialog-centered">
                         <div className="container modal-content">
@@ -264,6 +256,24 @@ export const Food = () => {
                         </div>
                     </Tab.Pane>
                 </Tab.Content>
+                <footer  className="w-100 bg-white border-top" style={{ position: "fixed", bottom: "70px", left: 0, zIndex: 10000, height: "65px" }}>
+                    <Nav className="d-flex justify-content-around align-items-center h-100">
+                        {/* Perfil de la Comida */}
+                        <Nav.Item>
+                            <Nav.Link eventKey="profile" onClick={() => setActiveKey("profile")} className="text-center" style={{ color: "#1B365D" }}>
+                                <i className="fa-solid fa-utensils fa-lg"></i>
+                                <div style={{ fontSize: "12px" }}>Perfil</div>
+                            </Nav.Link>
+                        </Nav.Item>
+                        {/* Horario */}
+                        <Nav.Item>
+                            <Nav.Link eventKey="schedule" onClick={() => setActiveKey("schedule")} className="text-center" style={{ color: "#1B365D" }}>
+                                <i className="fa-solid fa-clock fa-lg"></i>
+                                <div style={{ fontSize: "12px" }}>Horario</div>
+                            </Nav.Link>
+                        </Nav.Item>
+                    </Nav>
+                </footer>
             </Tab.Container>
         </section>
     );

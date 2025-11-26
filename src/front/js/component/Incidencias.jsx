@@ -17,7 +17,7 @@ export const Incidencias = () => {
     const modalRef = useRef(null);
     const bsModal = useRef(null);
 
-    const checkform = ['Vómito', 'Diarrea', 'Problema de la piel', 'Pelea', 'Dentro de casa', 'Fuera de casa', 'Otro']
+    const checkform = ['Vómito', 'Diarrea', 'Problema de la piel', 'Pelea', 'Otro']
 
     useEffect(() => {
         // Cargar modal de Bootstrap solo una vez
@@ -170,17 +170,11 @@ export const Incidencias = () => {
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label className="form-label fw-semibold">Fecha de Fin (Opcional)</label>
-                                        <input type="datetime-local" name="finalDate" className="form-control" value={finalDate} onChange={(event) => setFinalDate(event.target.value)} required />
+                                        <input type="datetime-local" name="finalDate" className="form-control" value={finalDate} onChange={(event) => setFinalDate(event.target.value)} />
                                     </div>
                                     <div className="col-md-12 mb-3">
                                         <label className="form-label fw-semibold">Descripción (Opcional)</label>
                                         <textarea className="form-control" id="descriptionID" rows="3" value={description} onChange={(event) => setDescription(event.target.value)}></textarea>
-                                    </div>
-                                    <div className="form-check form-switch mb-3">
-                                        <input className="form-check-input" type="checkbox" id="checkNativeSwitch" onChange={(event) => setStatus(event.target.checked ? 'Good' : 'Bad')} />
-                                        <label className="form-check-label" htmlFor="checkNativeSwitch">
-                                            Incidencidente Positivo
-                                        </label>
                                     </div>
                                     <div className="row">
                                         <div className="d-flex justify-content-between">
