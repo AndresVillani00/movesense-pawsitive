@@ -80,7 +80,7 @@ export const MascotaDetalles = () => {
             {store.isLogged ?
                 <div>
                     <div className="row g-3">
-                            <div className="col-md-2">
+                        <div className="col-md-2">
                                 <div className="card border-0" style={{ borderRadius: "12px" }}>
                                     <div className="card-header d-flex p-3" style={{ background: "#ffffffff" }}>
                                         <img src={store.currentMascota.foto_mascot} alt="Profile" className="rounded-circle m-1" width="50" height="50"></img>
@@ -93,32 +93,16 @@ export const MascotaDetalles = () => {
                                         </button>
                                     </div>
                                     <div className="card-body p-5">
-                                        <p className="text-center">{store.reportes[0] != null ? store.reportes[0].score +"/10" : "No se ha generado un reporte de mascota aún, rellene los datos y genere un reporte para obtener un puntaje relacionado con el estado de " + store.currentMascota.name_mascot}</p>
+                                        <p className="text-center">{store.reportes[0] != null ? store.reportes[0].score +"/10" : "Aún no has generado ningún reporte de "+ store.currentMascota.name_mascot +". Introduce los datos de las métricas y genera un reporte para obtener una valoración del estado de salud de  " + store.currentMascota.name_mascot}</p>
                                     </div>
                                     <ReportButton />
                                 </div>
-                            </div>
-                            <div className="col-md-8">                            
-                                <Tab.Container activeKey={activeKeyDetail} onSelect={(k) => setActiveKeyDetail(k)}>
-                                    <Nav variant="tabs" className="bg-light justify-content-center rounded">
-                                        <Nav.Item>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="overview">Vista General</Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="food" onClick={() => toggleMenu('food')}>Seguimiento de Comida</Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item style={{ backgroundColor: "#cacacaff" }} >
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="medicine" disabled>Medicina</Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item style={{ backgroundColor: "#cacacaff" }}>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="appoiment" disabled>Citas</Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item style={{ backgroundColor: "#cacacaff" }}>
-                                            <Nav.Link style={{ color: "#1B365D" }} eventKey="result" disabled>Resultados</Nav.Link>
-                                        </Nav.Item>
-                                    </Nav>
+                        </div>
+                        <div className="col-md-8">                            
+                            <Tab.Container activeKey={activeKeyDetail} onSelect={(k) => setActiveKeyDetail(k)}>
                                     <Tab.Content className="border-0 p-4 bg-transparent mt-3">
                                         <Tab.Pane eventKey="overview">
+                                            <h3>Vista General</h3>
                                             <div className="row g-3">
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('weight')}>
                                                     <div className="card border-0" style={buttonStyle('weight')}>
@@ -143,7 +127,10 @@ export const MascotaDetalles = () => {
                                                 <button className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('analysis')}>
                                                     <div className="card border-0" style={buttonStyle('analysis')}>
                                                         <div className="card-header d-flex justify-content-between" >
-                                                            Analisis de Orina<i className="fa-solid fa-droplet p-1"></i>
+                                                            <div className="p-2">
+                                                                Analisis de Orina<i className="fa-solid fa-droplet mx-2 p-1"></i>
+                                                            </div>
+                                                            <button className="btn btn-outline-secondary"><i className="fa-solid fa-plus"></i></button>
                                                         </div>
                                                         <div className="card-body">
                                                             Ultimo analisis: 
@@ -194,9 +181,9 @@ export const MascotaDetalles = () => {
                                         <Tab.Pane eventKey="result">
                                         </Tab.Pane>
                                     </Tab.Content>
-                                </Tab.Container>
-                            </div>
-                            <div className="col-md-2">
+                            </Tab.Container>
+                        </div>
+                        <div className="col-md-2">
                                 <div className="card border-0" style={{ borderRadius: "12px" }}>
                                     <table className="table table-striped" >
                                         <thead style={{ color: "secondary" }}>
@@ -219,8 +206,43 @@ export const MascotaDetalles = () => {
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
                         </div>
+                        <footer className="w-100 bg-white border-top shadow-sm" style={{ position: "fixed", bottom: store.brandVisible ? "110px" : "0", left: 0, zIndex: 9999, height: "70px"}}>
+                            <Nav className="d-flex justify-content-around align-items-center h-100">
+                                <Nav.Item>
+                                    <Nav.Link eventKey="overview" onClick={() => { setActiveKeyDetail("overview") }} className="text-center" style={{ color: "#1B365D" }}>
+                                        <i className="fa-solid fa-house fa-lg"></i>
+                                        <div style={{ fontSize: "12px" }}>Home</div>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="food" onClick={() => { setActiveKeyDetail("food"); toggleMenu("food"); }} className="text-center" style={{ color: "#1B365D" }}>
+                                        <i className="fa-solid fa-bowl-food fa-lg"></i>
+                                        <div style={{ fontSize: "12px" }}>Food</div>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link disabled className="text-center" style={{ color: "#999" }}>
+                                    <i className="fa-solid fa-prescription-bottle-medical fa-lg"></i>
+                                        <div style={{ fontSize: "12px" }}>Medicine</div>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link disabled className="text-center" style={{ color: "#999" }}>
+                                        <i className="fa-solid fa-calendar-check fa-lg"></i>
+                                        <div style={{ fontSize: "12px" }}>Appointments</div>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link disabled className="text-center" style={{ color: "#999" }}>
+                                        <i className="fa-solid fa-chart-line fa-lg"></i>
+                                        <div style={{ fontSize: "12px" }}>Results</div>
+                                    </Nav.Link>
+                                </Nav.Item>
+                            </Nav>
+                        </footer>
+
+                    </div>
                     {activeMenu === 'analysis' && (
                         <Analysis />
                     )}

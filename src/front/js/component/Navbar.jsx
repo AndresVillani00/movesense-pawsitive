@@ -8,22 +8,22 @@ export const Navbar = () => {
     const { store, actions } = useContext(Context);
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light shadow-sm sticky-top" style={{ background: "#1B365D" }}>
-            <div className="container d-flex justify-content-between">
+        <nav className="navbar navbar-expand-lg navbar-light bg-white sticky-top">
+            <div className="container">
                 {/* Logo */}
-                <Link to="/home" className="navbar-brand fw-bold" style={{ color: "#F5EFDE", fontSize: "1.5rem" }}>
+                <Link to="/home" className="navbar-brand fw-bold" style={{ fontSize: "1.5rem" }}>
                     <img src={logo} className="m-auto" width="70" height="70"></img>
                 </Link>
 
                 {/* Menú colapsable */}
                 <div className="d-flex justify-content-between" id="navbarNav" >
-                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Inicio" style={{ color:"#F5EFDE" }}>
+                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Inicio" style={{ color:"#1B365D" }}>
                         <i className="fa-solid fa-house"></i>
                     </button>
-                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Incidencias de Mascotas" style={{ color:"#F5EFDE" }}>
+                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Incidencias de Mascotas" style={{ color:"#1B365D" }}>
                         <i className="fa-solid fa-paw"></i>
                     </button>
-                    <button type="button" className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Sobre Nosotros" style={{ color:"#F5EFDE" }}>
+                    <button type="button" className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Sobre Nosotros" style={{ color:"#1B365D" }}>
                         <i className="fa-solid fa-users-rectangle"></i>
                     </button>
                 </div>  
@@ -40,12 +40,12 @@ export const Navbar = () => {
                                     borderRadius: "8px",
                                     padding: "8px 16px"
                                 }}>
-                                    Subscribete
+                                    Hazte Premium
                                 </button>
                             </Link>
                             <Dropdown className="ms-3">
-                                <Dropdown.Toggle variant="light" className="d-flex align-items-center border-0">
-                                    <span className="fw-bold text-dark ms-2">{store.usuario.username}</span>
+                                <Dropdown.Toggle variant="light" className="d-flex align-items-center border-0" style={{ color: "#F5EFDE", background: "#1B365D" }}>
+                                    <span className="fw-bold ms-2">{store.usuario.username}</span>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu align="end">
                                     <Dropdown.Item as={Link} to="/user-profile">Perfil</Dropdown.Item>
@@ -66,8 +66,8 @@ export const Navbar = () => {
                         <div className="d-flex ms-3">
                             <Link to="/login">
                                 <button className="btn me-2 fw-bold" style={{
-                                    color: "#1B365D",
-                                    background: "#F5EFDE",
+                                    color: "#F5EFDE",
+                                    background: "#1B365D",
                                     borderRadius: "8px",
                                     padding: "8px 16px"
                                 }}
@@ -76,8 +76,8 @@ export const Navbar = () => {
                             </Link>
                             {<Link to="/sign-up">
                                 <button className="btn fw-bold" style={{
-                                    color: "#1B365D",
-                                    background: "#F5EFDE",
+                                    color: "#F5EFDE",
+                                    background: "#1B365D",
                                     borderRadius: "8px",
                                     padding: "8px 16px"
                                 }}

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Tab, Nav, Container, Form } from 'react-bootstrap';
-import logo from '../../img/LogoPawsitive.png';
 import defaultProfilePet from '../../img/defaultProfilePet.png';
 import { Alert } from "../component/Alert.jsx";
 
@@ -31,6 +30,10 @@ export const Home = () => {
   const [filterStatus, setFilterStatus] = useState('');
   const [filterDate, setFilterDate] = useState('');
 
+  // Parametros LogIn
+  const [username, setUsername] = useState('');
+  const [remember, setRemember] = useState(false);
+
   const modalRef = useRef(null);
   const bsModal = useRef(null);
 
@@ -41,7 +44,7 @@ export const Home = () => {
 
   useEffect(() => {
     const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
-		[...popoverTriggerList].map(el => new window.bootstrap.Popover(el));
+    [...popoverTriggerList].map(el => new window.bootstrap.Popover(el));
 
     if (store.activeKey === 'alerts') {
       actions.getIncidencias();
@@ -253,7 +256,7 @@ export const Home = () => {
     return JSON.parse(text); // lanzará si no es JSON válido
   };
 
-  const handlejson = async (event) =>{
+  const handlejson = async (event) => {
     event.preventDefault();
     const [actividad, peso, pulso, temperatura] = await Promise.all([
       readJsonFile(f1),
@@ -268,6 +271,24 @@ export const Home = () => {
       json_temperatura: temperatura
     }
     await actions.postjson(data);
+  }
+
+  const handleSubmitLogin = async (event) => {
+    event.preventDefault();
+    const dataToSend = { username, password, remember }
+    await actions.login(dataToSend);
+    console.log(store.userMascotas.length)
+    if (store.isVeterinario) {
+      actions.setActiveKey('alerts')
+    } else if (store.userMascotas.length < 1) {
+      actions.setActiveKey('register')
+    } else {
+      actions.setActiveKey('existing')
+    }
+
+    if (store.isLogged) {
+      navigate('/home');
+    }
   }
 
   return (
@@ -376,44 +397,9 @@ export const Home = () => {
                           <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                         </div>
                       </div>
-                      <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold g-3">Username de Mascota <span style={{ color: "red" }}>*</span></label>
-                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapseUsername" aria-expanded="false" aria-controls="collapseUsername">
-                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
-                        </button>
-                        <div class="collapse my-2" id="collapseUsername">
-                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
-                            Nombre unico de unico de cada mascota. No existirá ninguna otra mascota con el el mismo nombre, como si fuera un correo electronico.
-                          </div>
-                        </div>
-                        <input type="text" name="mascota_id" className="form-control" value={mascota_name_id} onChange={(event) => setMascotaId(event.target.value)} />
-                      </div>
-                      <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Contraseña de Mascota <span style={{ color: "red" }}>*</span></label>
-                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapsePassword" aria-expanded="false" aria-controls="collapsePassword">
-                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
-                        </button>
-                        <div class="collapse my-2" id="collapsePassword">
-                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
-                            La contraseña debe tener al menos 8 caracteres y un símbolo.
-                          </div>
-                        </div>
-                        <div className="input-group">
-                          <input type={showPassword ? "text" : "password"} name="password" className="form-control" value={password} onChange={(event) => validatePassword(event.target.value)} required />
-                          <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}> {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>} </span>
-                        </div>
-                      </div>
-                      <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Nombre de Mascota <span style={{ color: "red" }}>*</span></label>
-                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapseName" aria-expanded="false" aria-controls="collapseName">
-                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
-                        </button>
-                        <div class="collapse my-2" id="collapseName">
-                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
-                            El nombre con el que tu mascota está acostumbrado.
-                          </div>
-                        </div>
-                        <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} required/>
+                      <div className="col-md-12 mb-3">
+                        <label className="form-label fw-semibold">Nombre de tu mascota <span style={{ color: "red" }}>*</span></label>
+                        <input type="text" name="mascotname" className="form-control" value={name_mascot} onChange={(event) => setNameMascot(event.target.value)} required />
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Fecha de Nacimiento <span style={{ color: "red" }}>*</span></label>
@@ -429,8 +415,8 @@ export const Home = () => {
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Patología</label>
-                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapsePatologia" aria-expanded="false" aria-controls="collapsePatologia">
-                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{ boxShadow: "none" }} type="button" data-bs-toggle="collapse" data-bs-target="#collapsePatologia" aria-expanded="false" aria-controls="collapsePatologia">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color: "#1B365D" }}></i>
                         </button>
                         <div class="collapse my-2" id="collapsePatologia">
                           <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
@@ -447,14 +433,14 @@ export const Home = () => {
                       </div>
                       <div className="col-md-4 mb-3">
                         <label className="form-label fw-semibold">Tamaño <span style={{ color: "red" }}>*</span></label>
-                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapseTamano" aria-expanded="false" aria-controls="collapseTamano">
-                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{ boxShadow: "none" }} type="button" data-bs-toggle="collapse" data-bs-target="#collapseTamano" aria-expanded="false" aria-controls="collapseTamano">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color: "#1B365D" }}></i>
                         </button>
                         <div class="collapse my-2" id="collapseTamano">
                           <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
-                             - Razas de perros pequeños: Pesan entre 3 y 10 kilos.<br></br>
-                             - Razas de perros medianos: Con un peso de 10 a 25 kilos, son perros muy versátiles. Como pueden ser: El Border Collie y el Cocker Spaniel, Basset Hound.<br></br>
-                             - Razas de perros grandes: Estos perros pesan entre 25 y 50 kilos. Son razas reconocidas y populares como el Golden Retriever, el Pastor Alemán y el Husky Siberiano. "
+                            - Razas de perros pequeños: Pesan entre 3 y 10 kilos.<br></br>
+                            - Razas de perros medianos: Con un peso de 10 a 25 kilos, son perros muy versátiles. Como pueden ser: El Border Collie y el Cocker Spaniel, Basset Hound.<br></br>
+                            - Razas de perros grandes: Estos perros pesan entre 25 y 50 kilos. Son razas reconocidas y populares como el Golden Retriever, el Pastor Alemán y el Husky Siberiano. "
                           </div>
                         </div>
                         <select className="form-select" aria-label="Default select example" value={tamano} onChange={(event) => setTamano(event.target.value)} >
@@ -466,8 +452,8 @@ export const Home = () => {
                       </div>
                       <div className="col-md-8 mb-3">
                         <label className="form-label fw-semibold">Raza <span style={{ color: "red" }}>*</span></label>
-                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{boxShadow: "none"}} type="button" data-bs-toggle="collapse" data-bs-target="#collapseBreed" aria-expanded="false" aria-controls="collapseBreed">
-                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color:"#1B365D" }}></i>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{ boxShadow: "none" }} type="button" data-bs-toggle="collapse" data-bs-target="#collapseBreed" aria-expanded="false" aria-controls="collapseBreed">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color: "#1B365D" }}></i>
                         </button>
                         <div class="collapse my-2" id="collapseBreed">
                           <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
@@ -486,7 +472,7 @@ export const Home = () => {
                       </div>
                       <div className="col-md-6 mx-3 mb-3 form-check">
                         <input type="checkbox" className="form-check-input" id="is_mix" onChange={(event) => setMix(event.target.checked)} />
-                        <label className="form-check-label" htmlFor="is_mix">La Mascota es mezcla ?</label>
+                        <label className="form-check-label" htmlFor="is_mix">La Mascota es mezcla de varias razas ?</label>
                       </div>
                       <div className="col-md-6 mx-3 mb-3 form-check">
                         <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setEsterilizado(event.target.checked)} />
@@ -703,12 +689,52 @@ export const Home = () => {
         :
         <section className="container py-5 d-flex justify-content-center align-items-center">
           <div className="position-relative w-100" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            {/* Imagen de fondo difuminada */}
-            <img src={logo} alt="Background" className="img-fluid position-absolutetranslate-middle"
-              style={{
-                width: "100%", height: "100%", objectFit: "cover"
-              }}
-            />
+            <div className="container-fluid d-flex justify-content-center align-items-center vh-100" style={{
+              background: "#F5EFDE", // Fondo claro y limpio
+              color: "#333" // Texto oscuro para contraste
+            }}>
+              <div className="card p-5 shadow-lg border-0" style={{
+                maxWidth: "420px",
+                width: "100%",
+                background: "#FFFFFF", // Card blanca para elegancia
+                borderRadius: "12px",
+                border: "1px solid #DDD" // Borde sutil
+              }}>
+                <Link to="/home" className="text-decoration-none mb-3" style={{ color: "#1B365D" }}>  <i className="fas fa-arrow-left"></i> Volver</Link>
+                <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1B365D" }}>Bienvenido de nuevo</h2>
+                <p className="text-center" style={{ color: "#1B365D" }}>Inicia Sesión para continuar</p>
+                <Alert />
+                <form onSubmit={handleSubmitLogin}>
+                  <div className="mb-3">
+                    <label className="form-label">Username</label>
+                    <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control border-0 shadow-sm" placeholder="Introduce tu Usuario o Email" required />
+                  </div>
+                  <div className="mb-3 input-group">
+                    <label className="form-label col-12">Contraseña</label>
+                    <input onChange={(event) => validatePassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className={`form-control ${error ? "is-invalid" : "is-valid"} border-0 shadow-sm`} placeholder="Introduce tu Contraseña" required />
+                    <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
+                      {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+                    </span>
+                  </div>
+                  <div className="form-check">
+                    <input className="form-check-input" type="checkbox" id="rememberMe" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
+                    <label className="form-check-label" htmlFor="rememberMe">Recuerdamé</label>
+                  </div>
+                  <div className="text-center">
+                    <button type="submit" className="btn w-50 mt-4 fw-bold" style={{
+                      color: "white",
+                      background: "#ff6100",
+                      border: "#ff6100",
+                      borderRadius: "8px",
+                      padding: "10px"
+                    }}>Iniciar Sesión</button>
+                  </div>
+                  <div className="text-center mt-3">
+                    <p className="text-muted">No tienes cuenta ? <Link to={"/sign-up"} className="text-decoration-none" onClick={() => store.alert = { text: "", background: "primary", visible: false }} style={{ color: "#1E1E50" }}>Registrate</Link></p>
+                  </div>
+                </form>
+              </div>
+            </div>
             {/**
              <form onSubmit={handlejson}>
               <div className="mb-2">

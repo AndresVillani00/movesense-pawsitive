@@ -181,7 +181,7 @@ export const Activity = () => {
                                         </select>
                                     </div>
                                     <div className="col-md-6 mb-3">
-                                        <label className="form-label fw-semibold">Fecha de Alta</label>
+                                        <label className="form-label fw-semibold">Fecha de Inicio</label>
                                         <input type="datetime-local" name="date" className="form-control" value={date} onChange={(event) => setDate(event.target.value)} required />
                                     </div>
                                     <div className="col-md-12 mb-3">
