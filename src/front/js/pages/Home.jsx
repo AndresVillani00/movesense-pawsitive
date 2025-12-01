@@ -687,7 +687,7 @@ export const Home = () => {
           }
         </section>
         :
-        <section className="container py-5 d-flex justify-content-center align-items-center">
+        <section className="container py-3 d-flex justify-content-center align-items-center">
           <div className="position-relative w-100" style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
             <div className="container-fluid d-flex justify-content-center align-items-center vh-100" style={{
               background: "#F5EFDE", // Fondo claro y limpio
@@ -702,7 +702,7 @@ export const Home = () => {
               }}>
                 <Link to="/home" className="text-decoration-none mb-3" style={{ color: "#1B365D" }}>  <i className="fas fa-arrow-left"></i> Volver</Link>
                 <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1B365D" }}>Bienvenido de nuevo</h2>
-                <p className="text-center" style={{ color: "#1B365D" }}>Inicia Sesión para continuar</p>
+                <p className="text-center" style={{ color: "#1B365D" }}>Inicia sesión para continuar</p>
                 <Alert />
                 <form onSubmit={handleSubmitLogin}>
                   <div className="mb-3">
@@ -718,7 +718,7 @@ export const Home = () => {
                   </div>
                   <div className="form-check">
                     <input className="form-check-input" type="checkbox" id="rememberMe" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                    <label className="form-check-label" htmlFor="rememberMe">Recuerdamé</label>
+                    <label className="form-check-label" htmlFor="rememberMe">Recuérdame</label>
                   </div>
                   <div className="text-center">
                     <button type="submit" className="btn w-50 mt-4 fw-bold" style={{
@@ -727,10 +727,10 @@ export const Home = () => {
                       border: "#ff6100",
                       borderRadius: "8px",
                       padding: "10px"
-                    }}>Iniciar Sesión</button>
+                    }}>Iniciar sesión</button>
                   </div>
                   <div className="text-center mt-3">
-                    <p className="text-muted">No tienes cuenta ? <Link to={"/sign-up"} className="text-decoration-none" onClick={() => store.alert = { text: "", background: "primary", visible: false }} style={{ color: "#1E1E50" }}>Registrate</Link></p>
+                    <p className="text-muted">No tienes cuenta ? <Link to={"/sign-up"} className="text-decoration-none" onClick={() => store.alert = { text: "", background: "primary", visible: false }} style={{ color: "#1E1E50" }}>Regístrate</Link></p>
                   </div>
                 </form>
               </div>
