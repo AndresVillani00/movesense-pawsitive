@@ -4,7 +4,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import injectContext, { Context } from "./store/appContext.js";
 // Custom component
 import { Navbar } from "./component/Navbar.jsx";
-import { Footer } from "./component/Footer.jsx";
 import ScrollToTop from "./component/ScrollToTop.jsx";
 import { BackendURL } from "./component/BackendURL.jsx";
 import { SignUp } from "./component/SignUp.jsx";
@@ -63,7 +62,6 @@ const Layout = () => {
                             <Route element={<h1>Not    found!</h1>} path='*' />
                         </Routes>
                     </Elements>
-                    <Footer />
                 </ScrollToTop>
             </BrowserRouter>
         </div>

@@ -57,7 +57,7 @@ export const Food = () => {
 
         store.alert = { text: "", background: "primary", visible: false };
         await actions.postFood(dataToSend);
-        if(store.fotoJsonFood != null || dataToSend.foto_food == ''){
+        if (store.fotoJsonFood != null || dataToSend.foto_food == '') {
             setShowModal(false);
         }
     };
@@ -93,7 +93,7 @@ export const Food = () => {
     };
 
     const handleCancel = () => {
-        setShowModal(false); 
+        setShowModal(false);
         store.alert = { text: "", background: "primary", visible: false }
     }
 
@@ -102,7 +102,7 @@ export const Food = () => {
             <div className="d-flex justify-content-between mb-3">
                 <h3>Comida</h3>
                 <div className="mx-3">
-                    <button className="btn btn-outline-secondary mx-3" onClick={() => setShowModal(true)}>Introducir valor manualmente</button>
+                    <button className="btn btn-outline-secondary mx-3" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus"></i></button>
                     <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Eliminar</button>
                 </div>
             </div>
@@ -193,37 +193,37 @@ export const Food = () => {
                 <Tab.Content className="border-0 p-4 bg-transparent mt-3">
                     <Tab.Pane eventKey="profile">
                         <div className="row g-3 d-flex justify-content-between">
-                        {store.foods.map((item, index) => (
-                            <div key={index} className="col-md-6">
-                                <div className="card shadow-sm h-100 m-auto">
-                                    <div className="card-title mt-3 mx-3 d-flex justify-content-between">
-                                        <div className="text-start">
-                                            <h4 style={{ color: "#1E1E50" }}>
-                                                {item.title}
-                                            </h4>
-                                            <h6 className="text-secondary">
-                                                {item.marca}
-                                            </h6>
+                            {store.foods.map((item, index) => (
+                                <div key={index} className="col-md-6">
+                                    <div className="card shadow-sm h-100 m-auto">
+                                        <div className="card-title mt-3 mx-3 d-flex justify-content-between">
+                                            <div className="text-start">
+                                                <h4 style={{ color: "#1E1E50" }}>
+                                                    {item.title}
+                                                </h4>
+                                                <h6 className="text-secondary">
+                                                    {item.marca}
+                                                </h6>
+                                            </div>
+                                            <input type="checkbox" checked={itemCheck.includes(item.id)} onChange={() => toggleChecks(item.id)} />
                                         </div>
-                                        <input type="checkbox" checked={itemCheck.includes(item.id)} onChange={() => toggleChecks(item.id)} />
-                                    </div>
-                                    <div className="card-body d-flex justify-content-between">
-                                        <div className="text-center">
-                                            <h5>Grasa</h5>
-                                            <p>{item.grasa != null ? item.grasa + ' %' : '-'}</p>
-                                        </div>
-                                        <div className="text-center">
-                                            <h5>Proteina</h5>
-                                            <p>{item.proteina != null ? item.proteina + ' %' : '-'}</p>
-                                        </div>
-                                        <div className="text-center">
-                                            <h5>Fibra</h5>
-                                            <p>{item.fibra != null ? item.fibra + ' %' : '-'}</p>
+                                        <div className="card-body d-flex justify-content-between">
+                                            <div className="text-center">
+                                                <h5>Grasa</h5>
+                                                <p>{item.grasa != null ? item.grasa + ' %' : '-'}</p>
+                                            </div>
+                                            <div className="text-center">
+                                                <h5>Proteina</h5>
+                                                <p>{item.proteina != null ? item.proteina + ' %' : '-'}</p>
+                                            </div>
+                                            <div className="text-center">
+                                                <h5>Fibra</h5>
+                                                <p>{item.fibra != null ? item.fibra + ' %' : '-'}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
                         </div>
                     </Tab.Pane>
                     <Tab.Pane eventKey="schedule">
@@ -256,7 +256,7 @@ export const Food = () => {
                         </div>
                     </Tab.Pane>
                 </Tab.Content>
-                <footer  className="w-100 bg-white border-top" style={{ position: "fixed", bottom: "70px", left: 0, zIndex: 10000, height: "65px" }}>
+                <footer className="w-100 bg-white border-top" style={{ position: "fixed", bottom: "70px", left: 0, zIndex: 10000, height: "65px" }}>
                     <Nav className="d-flex justify-content-around align-items-center h-100">
                         {/* Perfil de la Comida */}
                         <Nav.Item>
