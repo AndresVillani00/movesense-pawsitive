@@ -84,12 +84,20 @@ export const Home = () => {
     navigate('/home');
   }
 
+  const getRandom5Digits = () => {
+    return Math.floor(10000 + Math.random() * 90000).toString();
+  };
+
+
   const handleMascotSubmit = async (event) => {
     event.preventDefault();
 
+    const random_id = name_mascot + "@" + getRandom5Digits();
+    const random_password = name_mascot + "@" + getRandom5Digits();
+
     const dataToSend = {
-      mascota_name_id,
-      password,
+      mascota_name_id: random_id,
+      password: random_password,
       name_mascot,
       foto_mascot: store.fotoMascota != null ? store.fotoMascota.foto : defaultProfilePet,
       raza,
@@ -320,7 +328,7 @@ export const Home = () => {
                           <div className="card border-0 shadow-sm h-100 bg-transparent">
                             <img
                               src={item.foto_mascot}
-                              alt={item.mascota_name_id}
+                              alt={item.name_mascot}
                               className="card-img-top rounded"
                               style={{ height: "300px", objectFit: "cover" }}
                             />
@@ -328,7 +336,7 @@ export const Home = () => {
                               <div className="card-title mb-3 d-flex justify-content-between">
                                 <div>
                                   <h4 style={{ color: "#1E1E50" }}>
-                                    {item.mascota_name_id}
+                                    {item.name_mascot}
                                   </h4>
                                   <h6 className="text-secondary">
                                     {item.raza}

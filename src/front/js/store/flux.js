@@ -267,12 +267,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				const response = await fetch(uri, options);
 				if (!response.ok) {
-					if (response.status == 400) {
-						setStore({ alert: { text: 'La contraseña necesita al menos 8 caracteres', background: 'danger', visible: true } })
-					}
-					if (response.status == 401) {
-						setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
-					}
 					if (response.status == 404) {
 						setStore({ alert: { text: 'Usuario que intenta registrar ya existe', background: 'danger', visible: true } })
 					}

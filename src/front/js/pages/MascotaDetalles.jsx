@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import { Tab, Nav } from 'react-bootstrap';
@@ -26,6 +26,27 @@ export const MascotaDetalles = () => {
     const [activeMenu, setActiveMenu] = useState('incident');
     const [activeKeyDetail, setActiveKeyDetail] = useState('overview');
     const [selected, setSelected] = useState(null);
+
+    const [showModalShare, setShowModalShare] = useState(false);
+
+    const modalShareRef = useRef(null);
+    const bsShareModal = useRef(null);
+    
+    useEffect(() => {
+        // Cargar modal de Bootstrap solo una vez
+        if (modalShareRef.current) {
+            bsShareModal.current = new window.bootstrap.Modal(modalShareRef.current, {
+                backdrop: 'static',
+                keyboard: false,
+            });
+        }
+    }, []);
+      
+    useEffect(() => {
+        if (bsShareModal.current) {
+            showModalShare ? bsShareModal.current.show() : bsShareModal.current.hide();
+        }
+    }, [showModalShare]);
 
     useEffect(() => {
         actions.getIncidencia(store.idParam);
@@ -81,6 +102,11 @@ export const MascotaDetalles = () => {
         await actions.deleteShareMascot(store.idParam, userId)
     }
 
+    const handleCancel = () => {
+        setShowModalShare(false); 
+        store.alert = { text: "", background: "primary", visible: false }
+    }
+
     return (
         <section className="container-fluid p-5">
             {store.isLogged ?
@@ -94,9 +120,36 @@ export const MascotaDetalles = () => {
                                         <h5>{store.currentMascota.name_mascot}</h5>
                                         <p className="text-center">{store.currentMascota.raza}</p>
                                     </div>
-                                    <button type="button" className="btn border-0 bg-transparent p-0 mx-3" onClick={(event) => handleEdit(event, store.currentMascota)}>
-                                        <i className="fa-solid fa-pen-to-square text-primary"></i>
-                                    </button>
+                                    <div>
+                                        <button type="button" className="btn border-0 bg-transparent p-0 mx-3" onClick={(event) => handleEdit(event, store.currentMascota)}>
+                                            <i className="fa-solid fa-pen-to-square text-primary"></i>
+                                        </button>
+                                        <button type="button" className="btn border-0 bg-transparent p-0 mx-3" onClick={() => setShowModalShare(true)}>
+                                            <i class="fa-solid fa-share-from-square text-primary"></i>
+                                        </button>
+                                        <div className="modal fade" tabIndex="-1" ref={modalShareRef} aria-hidden="true">
+                                            <div className="modal-dialog modal-dialog-centered">
+                                                <div className="container modal-content">
+                                                    <div className="modal-header row">
+                                                        <div className="d-flex justify-content-between">
+                                                            <h1 className="modal-title fs-4 col-md-8">Datos para Compartir Mascota</h1>
+                                                            <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel()}></button>
+                                                        </div>
+                                                    </div>
+                                                    <div className="modal-body">
+                                                        <div className="col-md-6 mb-3">
+                                                            <label className="form-label fw-semibold">Username de Mascota</label>
+                                                            <span className="input-group-text">{store.currentMascota.mascota_name_id}</span>
+                                                        </div>
+                                                        <div className="col-md-6 mb-3">
+                                                            <label className="form-label fw-semibold">Contraseña de Mascota</label>
+                                                            <span className="input-group-text">{store.currentMascota.password}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="card-body p-5">
                                     <p className="text-center">{store.reportes[0] != null ? store.reportes[0].score + "/10" : "Aún no has generado ningún reporte de " + store.currentMascota.name_mascot + ". Introduce los datos de las métricas y genera un reporte para obtener una valoración del estado de salud de  " + store.currentMascota.name_mascot}</p>
@@ -233,31 +286,31 @@ export const MascotaDetalles = () => {
                                 <Nav.Item>
                                     <Nav.Link eventKey="overview" onClick={() => { setActiveKeyDetail("overview") }} className="text-center" style={{ color: "#1B365D" }}>
                                         <i className="fa-solid fa-house fa-lg"></i>
-                                        <div style={{ fontSize: "12px" }}>Home</div>
+                                        <div style={{ fontSize: "12px" }}>Dashboard</div>
                                     </Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link eventKey="food" onClick={() => { setActiveKeyDetail("food"); toggleMenu("food"); }} className="text-center" style={{ color: "#1B365D" }}>
                                         <i className="fa-solid fa-bowl-food fa-lg"></i>
-                                        <div style={{ fontSize: "12px" }}>Food</div>
+                                        <div style={{ fontSize: "12px" }}>Comida</div>
                                     </Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link disabled className="text-center" style={{ color: "#999" }}>
                                         <i className="fa-solid fa-prescription-bottle-medical fa-lg"></i>
-                                        <div style={{ fontSize: "12px" }}>Medicine</div>
+                                        <div style={{ fontSize: "12px" }}>Medicina</div>
                                     </Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link disabled className="text-center" style={{ color: "#999" }}>
                                         <i className="fa-solid fa-calendar-check fa-lg"></i>
-                                        <div style={{ fontSize: "12px" }}>Appointments</div>
+                                        <div style={{ fontSize: "12px" }}>Citas</div>
                                     </Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link disabled className="text-center" style={{ color: "#999" }}>
                                         <i className="fa-solid fa-chart-line fa-lg"></i>
-                                        <div style={{ fontSize: "12px" }}>Results</div>
+                                        <div style={{ fontSize: "12px" }}>Resultados</div>
                                     </Nav.Link>
                                 </Nav.Item>
                             </Nav>

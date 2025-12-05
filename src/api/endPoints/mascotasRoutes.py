@@ -29,20 +29,10 @@ def postMascotas():
     if request.method == 'POST':
         data = request.json 
         user_id = additional_claims['user_id']
-        password = data.get('password', None)
         is_veterinario = additional_claims['is_veterinario']
         if is_veterinario:
             response_body['message'] = f'El usuario es Veterinario'
             return response_body, 404
-
-        if len(password) < 8:
-            response_body['message'] = f'La contraseña debe tener al menos 8 caracteres'
-            return response_body, 400
-
-        symbols = "!@#$%^&*"
-        if not any(char in symbols for char in password):
-            response_body['message'] = f'La contraseña debe contener al menos un símbolo'
-            return response_body, 401
         
         row = Mascotas(mascota_name_id=data.get('mascota_name_id'),
                     password=data.get('password'),
