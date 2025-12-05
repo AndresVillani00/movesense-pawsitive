@@ -7,12 +7,16 @@ export const MascotaProfile = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
   
-  const [name_mascot, setNameMascot] = useState(store.currentMascota.name_mascot);
-  const [foto_mascot, setFotoMascot] = useState(store.currentMascota.foto_mascot);
-  const [raza, setRaza] = useState(store.currentMascota.raza);
-  const [is_Esterilizado, setIsEsterilizado] = useState(store.currentMascota.is_Esterilizado);
-  const [patologia, setPatology] = useState(store.currentMascota.patologia);
-  const [status, setStatus] = useState(store.currentMascota.status);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState(false);
+
+  const [name_mascot, setNameMascot] = useState(store.currentMascota != null ? store.currentMascota.name_mascot : null);
+  const [password, setPassword ] = useState(store.currentMascota != null ? store.currentMascota.password : null);
+  const [foto_mascot, setFotoMascot] = useState(store.currentMascota != null ? store.currentMascota.foto_mascot : null);
+  const [raza, setRaza] = useState(store.currentMascota != null ? store.currentMascota.raza : null);
+  const [is_Esterilizado, setIsEsterilizado] = useState(store.currentMascota != null ? store.currentMascota.is_Esterilizado : null);
+  const [patologia, setPatology] = useState(store.currentMascota != null ? store.currentMascota.patologia : null);
+  const [status, setStatus] = useState(store.currentMascota != null ? store.currentMascota.status : null);
 
   const razas = ['Beagle', 'Border Collie', 'Bóxer', 'Bulldog Francés', 'Bulldog Inglés', 'Caniche', 'Chihuahua', 'Cocker Spaniel Inglés', 'Dálmata', 'Dobermann', 
     'Epagneul Bretón', 'Galgo Español', 'Golden Retriever', 'Husky Siberiano', 'Jack Russell Terrier / Parson Russell Terrier', 'Labrador Retriever', 'Mastín Español', 
@@ -24,6 +28,7 @@ export const MascotaProfile = () => {
 
     const dataToSend = {
       name_mascot,
+      password,
       foto_mascot,
       raza,
       is_Esterilizado,
@@ -34,6 +39,16 @@ export const MascotaProfile = () => {
     await actions.updateMascota(dataToSend, store.idParam);
     navigate("/home");
   };
+
+  const validatePassword = async (value) => {
+    const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+    if (!isValid.test(value)) {
+      setError(true)
+    } else {
+      setError(false)
+    }
+    setPassword(value)
+  }
 
   const handleCapture = async (event) => {
     const file = event.target.files[0];
@@ -48,7 +63,7 @@ export const MascotaProfile = () => {
   };
 
   return (
-    <div className="container" style={{ maxWidth: "600px", width: "100%", borderRadius: "12px" }}>
+    <section className="container-fluid p-5">
       {store.isLogged ?
         <div className="mt-5 p-4 d-flex justify-content-center card p-4 shadow-lg border-0">
           <div className="p-2">
@@ -76,6 +91,13 @@ export const MascotaProfile = () => {
             <div className="col-md-6 mb-3">
               <label className="form-label fw-semibold">Username de Mascota</label>
               <span className="input-group-text">{store.currentMascota.mascota_name_id}</span>
+            </div>
+            <div className="mb-3 input-group">
+              <label className="form-label col-12">Contraseña</label>
+              <input onChange={(event) => validatePassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className={`form-control ${error ? "is-invalid" : "is-valid"} border-0 shadow-sm`} placeholder="Introduce tu Contraseña" required />
+              <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
+                {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+              </span>
             </div>
             <div className="col-md-6 mb-3">
               <label className="form-label fw-semibold">Nombre</label>
@@ -123,6 +145,6 @@ export const MascotaProfile = () => {
       :
         <div></div>
       }
-    </div>
+    </section>
   );
 };
