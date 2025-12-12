@@ -161,7 +161,7 @@ export const MascotaDetalles = () => {
                             <Tab.Container activeKey={activeKeyDetail} onSelect={(k) => setActiveKeyDetail(k)}>
                                 <Tab.Content className="border-0 p-4 bg-transparent mt-3">
                                     <Tab.Pane eventKey="overview">
-                                        <h3>Vista General</h3>
+                                        <h3>Dashboard</h3>
                                         <div className="row g-3">
                                             <div className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('weight')}>
                                                 <div className="card border-0" style={buttonStyle('weight')}>

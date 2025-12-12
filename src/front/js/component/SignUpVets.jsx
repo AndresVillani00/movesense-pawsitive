@@ -53,9 +53,12 @@ export const SignUpVets = () => {
         <div className="container-fluid">
             <div className="row">
                 {/* Sección Izquierda */}
-                        <div className="col-md-6 d-flex flex-column justify-content-center align-items-center"
-                            style={{ fontFamily: "'Montserrat', sans-serif", background: "#F5EFDE", minHeight: "100vh" }}>
-        
+                        <div className="col-md-12 d-flex flex-column justify-content-center align-items-center"
+                            style={{ fontFamily: "'Montserrat', sans-serif", background: "linear-gradient(135deg, #1B365D, #4A69BB, #F5EFDE)", minHeight: "100vh", }}>
+                            <div className="d-flex flex-column justify-content-center align-items-center text-white p-5 text-center"> 
+                                <h1 className="fw-bold display-4" style={{ color: "#F5EFDE" }}>Unete a nuestra Comunidad</h1> 
+                                <p className="fs-5 mt-3" style={{ color: "#F5EFDE" }}> Pawsitive, la plataforma de bienestar para tu mascota </p> 
+                            </div> 
                             {/* Formulario */}
                             <div className="card p-5 shadow-lg border-0" style={{ maxWidth: "400px", width: "100%", borderRadius: "12px" }}>
                                 <h3 className="text-center fw-bold mb-4" style={{ color: "#1B365D" }}>Registrate como Veterinario</h3>
@@ -120,18 +123,6 @@ export const SignUpVets = () => {
                                 </form>
                             </div>
                         </div>
-
-                {/* Sección Derecha - Formulario */}
-                <div className="col-md-6 d-flex flex-column justify-content-center align-items-center text-white p-5 text-center"
-                    style={{
-                        background: "linear-gradient(135deg, #1B365D, #4A69BB, #F5EFDE)",
-                        minHeight: "100vh",
-                        fontFamily: "'Poppins', sans-serif"
-                    }}>
-
-                    <h1 className="fw-bold display-4" style={{ color: "#F5EFDE" }}>Unete a nuestra Comunidad</h1> 
-                    <p className="fs-5 mt-3" style={{ color: "#F5EFDE" }}> Pawsitive, la plataforma de bienestar para tu mascota </p>
-                </div>
             </div>
         </div>
     );

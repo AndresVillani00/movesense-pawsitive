@@ -14,6 +14,7 @@ export const UserProfile = () => {
   const [country, setCountry] = useState(store.usuario.country);
   const [address, setAddress] = useState(store.usuario.address);
   const [phone, setPhone] = useState(store.usuario.phone);
+  const [postalCode, setPostalCode] = useState(store.usuario.postalcode);
 
   {/* Vets Data */}
   const [name_clinica, setNameClinica] = useState(store.veterinario.name_clinica);
@@ -34,7 +35,8 @@ export const UserProfile = () => {
       email,
       country,
       address,
-      phone
+      phone,
+      postalCode
     };
 
     await actions.updateUsuario(dataToSend);
@@ -125,12 +127,16 @@ export const UserProfile = () => {
             <input type="email" name="email" className="form-control" value={email} onChange={(event) => setEmail(event.target.value)} required />
           </div>
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Telefono</label>
+            <label className="form-label fw-semibold">Whatsapp</label>
             <input type="text" name="phone" className="form-control" value={phone} onChange={(event) => setPhone(event.target.value)} />
           </div>
           <div className="col-md-8">
             <label className="form-label fw-semibold">Dirección</label>
             <input type="text" name="address" className="form-control" value={address} onChange={(event) => setAddress(event.target.value)} />
+          </div>
+          <div className="col-md-4">
+            <label className="form-label fw-semibold">Codigo Postal</label>
+            <input type="text" name="postalcode" className="form-control" value={postalCode} onChange={(event) => setPostalCode(event.target.value)} />
           </div>
           <div className="col-md-4">
             <label className="form-label fw-semibold">País</label>

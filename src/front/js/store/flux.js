@@ -30,6 +30,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			fotoJsonFood: null,
 			reportAI: null,
 			analisisAI: null,
+			comidaAI: null,
 			descriptionReport: null,
 			analysisReport: null,
 			actionReport: null,
@@ -87,6 +88,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 				const data = await response.json();
 				setStore({ analisisAI: data.results })
+			},
+			comidaOpenAI: async (prompt, dataToSend) => {
+				const uri = `${process.env.BACKEND_URL}/openaiApi/generate-comida`;
+				const options = {
+					method: 'POST',
+					headers: { "Content-Type": "application/json" },
+    				body: JSON.stringify({ prompt, dataToSend })
+				};
+				const response = await fetch(uri, options);
+				if (!response.ok) {
+					return
+				}
+				const data = await response.json();
+				setStore({ comidaAI: data.results })
 			},
 			postjson: async (data) => {
 				const uri = `${process.env.BACKEND_URL}/metricasApi/metricas-json`;

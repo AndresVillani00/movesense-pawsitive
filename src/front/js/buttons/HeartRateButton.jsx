@@ -76,9 +76,9 @@ export const HeartRateButton = () => {
         const result_pulso = store.alertas.result_pulso;
         const alertasRojas = result_pulso != null ? result_pulso.filter(rojas => rojas.Alarma === "Rojo" ) : null;
         const rangoPulsoRojo = alertasRojas[0].RangoPulso;
-        if(value <= rangoPulsoRojo.MenorQue || value >= rangoPulsoRojo.MayorQue){
-            setShowAlertModal(true);
-        }
+        //if(value <= rangoPulsoRojo.MenorQue || value >= rangoPulsoRojo.MayorQue){
+        //    setShowAlertModal(true);
+        //}
     };
 
     const handleAlertSubmit = async (event) => {
@@ -98,6 +98,9 @@ export const HeartRateButton = () => {
     };
 
     const handleCancel = () => {
+        setDate('');
+        setValue('');
+        setNote('');
         setShowModal(false); 
         store.alert = { text: "", background: "primary", visible: false }
     }
@@ -106,7 +109,7 @@ export const HeartRateButton = () => {
         <div>
             <div className="d-flex justify-content-end p-2">
                 <div className="mx-3">
-                    <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus"></i></button>
+                    <button className="btn border-0 bg-transparent p-0" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus text-primary"></i></button>
                 </div>
             </div>
             <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">

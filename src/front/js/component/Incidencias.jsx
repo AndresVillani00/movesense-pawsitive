@@ -41,7 +41,7 @@ export const Incidencias = () => {
         <section className="col-md-12 p-5">
             <h3>Historico de Incidencias</h3>
             <br></br>
-            <div className="card p-2 border-0" style={{ borderRadius: "12px" }}>
+            <div className="card p-2 border-0 w-100" style={{ borderRadius: "12px", overflow: "hidden", overflowX: "auto" }}>
                 <div className="d-flex justify-content-end p-2">
                     <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Eliminar</button>
                 </div>

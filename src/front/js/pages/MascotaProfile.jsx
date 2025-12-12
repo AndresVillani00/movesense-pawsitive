@@ -50,6 +50,15 @@ export const MascotaProfile = () => {
     setPassword(value)
   }
 
+  const handleStatusChange = (event) => {
+    const isChecked = event.target.checked;
+    const value = isChecked ? "nonactive" : "active";
+
+    setStatus(value);
+
+  };
+
+
   const handleCapture = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -125,12 +134,9 @@ export const MascotaProfile = () => {
               )}
               </select>
             </div>
-            <div className="col-md-6">
-              <label className="form-label fw-semibold">Marca esta opción si {name_mascot} ha fallecido.</label>
-              <select className="form-select" aria-label="Default select example" value={status} onChange={(event) => setStatus(event.target.value)} required >
-                <option value="active">Activa</option>
-                <option value="nonactive">No Activa</option>
-              </select>
+            <div className="col-md-6 mx-3 mb-3 form-check">
+              <input type="checkbox" className="form-check-input" checked={status === "nonactive"} id="status" onChange={(event) => handleStatusChange(event)} />
+              <label className="form-check-label" htmlFor="status">Marca esta opción si {name_mascot} ha fallecido.</label>
             </div>
             <div className="col-md-6 mx-3 mb-3 form-check">
               <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setIsEsterilizado(event.target.checked)} />

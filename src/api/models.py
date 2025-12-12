@@ -16,6 +16,7 @@ class Users(db.Model):
     country = db.Column(db.String(), unique=False, nullable=True, default=" ")
     address = db.Column(db.String(), unique=False, nullable=True, default=" ")
     phone = db.Column(db.String(), unique=False, nullable=True, default=" ")
+    postalcode = db.Column(db.String(), unique=False, nullable=True, default=" ")
     is_veterinario = db.Column(db.Boolean(), nullable=False, default=False)
     subscription_code = db.Column(db.String(36), nullable=True, unique=True)  # UUID string
     subscription_active = db.Column(db.Boolean(), default=False)
@@ -34,6 +35,7 @@ class Users(db.Model):
                 'country': self.country,
                 'address': self.address,
                 'phone': self.phone,
+                'postalcode': self.postalcode,
                 'is_veterinario': self.is_veterinario,
                 'subscription_code': self.subscription_code,
                 'subscription_active': self.subscription_active,
@@ -137,7 +139,7 @@ class Incidencias(db.Model):
     title = db.Column(db.String(), unique=False, nullable=False, default=" ")
     description = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     initial_date = db.Column(db.DateTime(), unique=False, nullable=False)
-    final_date = db.Column(db.DateTime(), unique=False, nullable=False)
+    final_date = db.Column(db.DateTime(), unique=False, nullable=True)
     ia_description = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     ia_action = db.Column(db.Text(), unique=False, nullable=False, default=" ")
     alert_status = db.Column(db.String(), unique=False, nullable=False, default=" ")

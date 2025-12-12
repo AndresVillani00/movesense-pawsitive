@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
 import { Tab, Nav } from 'react-bootstrap';
 import { Alert } from "./Alert.jsx";
 
@@ -10,6 +9,7 @@ export const Food = () => {
     const [showModal, setShowModal] = useState(false);
     const [activeKey, setActiveKey] = useState('profile');
     const [itemCheck, setItemCheck] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const [title, setTitle] = useState('');
     const [marca, setMarca] = useState('');
@@ -44,12 +44,12 @@ export const Food = () => {
 
         const dataToSend = {
             title,
-            type_food,
-            marca,
-            grasa,
-            proteina,
-            fibra,
-            quantity,
+            type_food: store.comidaAI != null ? store.comidaAI.type_food : type_food,
+            marca: store.comidaAI != null ? store.comidaAI.marca : marca,
+            grasa: store.comidaAI != null ? store.comidaAI.grasa : grasa,
+            proteina: store.comidaAI != null ? store.comidaAI.proteina : proteina,
+            fibra: store.comidaAI != null ? store.comidaAI.fibra : fibra,
+            quantity: store.comidaAI != null ? store.comidaAI.quantity : quantity,
             food_time,
             foto_food: store.fotoJsonFood != null ? store.fotoJsonFood.foto : '',
             mascota_comida_id: store.idParam
@@ -92,7 +92,41 @@ export const Food = () => {
         setItemCheck([]); // Limpiar selección
     };
 
+    const handleAnalisisIA = async (foto) => {
+        setLoading(true);
+
+        const prompt = "Actua como un experto veterinario, Interpreta, analiza y rellena los datos necesarios para un detectar los datos mas importantes de ComidaEnviado la cual es la foto de la comida que utiliza mi mascota";
+
+        if (foto == null) {
+            store.alert = { text: "No se pudo analisar con IA la Comida enviada", background: "danger", visible: true };
+            setLoading(false);
+        }
+
+        const json = {
+            "ComidaEnviado": foto
+        }
+
+        try {
+            await actions.comidaOpenAI(prompt, json);
+        } catch (e) {
+            store.alert = { text: `Error generando el analisis de comida, Error: ${e}`, background: "danger", visible: true };
+            setLoading(false);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     const handleCancel = () => {
+        store.comidaAI = null;
+        actions.setFotoJsonFood('');
+        setTitle('');
+        setMarca('');
+        setGrasa('');
+        setProteina('');
+        setFibra('');
+        setQuantity('');
+        setTypeFood('');
+        setFoodTime('');
         setShowModal(false);
         store.alert = { text: "", background: "primary", visible: false }
     }
@@ -108,17 +142,20 @@ export const Food = () => {
             </div>
             <Tab.Container activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
                 <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
-                    <div className="modal-dialog modal-dialog-centered">
+                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ marginBottom: "180px" }}>
                         <div className="container modal-content">
                             <div className="modal-header row">
                                 <div className="d-flex justify-content-between">
                                     <h1 className="modal-title fs-4 col-md-8">Registrar Comida</h1>
                                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => handleCancel()}></button>
                                 </div>
+                                <br></br>
+                                <br></br>
                                 <p className="col-md-12">Introduce los detalles de la Comida de tu mascota.</p>
+                                <p className="col-md-12">Si vas a introducir una foto para analizarla con IA debe ser del saco de la comida.</p>
                                 <Alert />
                             </div>
-                            <div className="modal-body">
+                            <div className="modal-body" style={{ maxHeight: "60vh", overflowY: "auto" }}>
                                 <form onSubmit={handleSubmit} className="row g-3">
                                     <div className="col-md-12">
                                         {store.fotoJsonFood && (
@@ -127,8 +164,17 @@ export const Food = () => {
                                             </div>
                                         )}
                                         <div className="text-center p-2 mb-3">
-                                            <label htmlFor="selectFotoComida" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce foto de la Comida</label>
+                                            <label htmlFor="selectFotoComida" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce foto del saco de comida</label>
                                             <input id="selectFotoComida" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
+                                            <button className="btn btn-primary mx-2" type="button"
+                                            onClick={() => handleAnalisisIA(store.fotoJsonFood.foto)}
+                                            style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>
+                                            {loading ?
+                                                <div className="spinner-border" role="status">
+                                                    <span className="visually-hidden">Generando ...</span>
+                                                </div>
+                                                : "Analizar con IA"}
+                                            </button>
                                         </div>
                                     </div>
                                     <div className="col-md-6 mb-3">
@@ -137,29 +183,29 @@ export const Food = () => {
                                     </div>
                                     <div className="col-md-6 mb-3">
                                         <label className="form-label fw-semibold">Marca</label>
-                                        <input type="text" name="marca" className="form-control" value={marca} onChange={(event) => setMarca(event.target.value)} required />
+                                        <input type="text" name="marca" className="form-control" value={store.comidaAI != null ? store.comidaAI.marca : marca} onChange={(event) => setMarca(event.target.value)} required />
                                     </div>
                                     <div className="col-md-4 mb-3">
                                         <label className="form-label fw-semibold">Grasa</label>
-                                        <input type="text" name="grasa" className="form-control" value={grasa} onChange={(event) => setGrasa(event.target.value)} required />
+                                        <input type="text" name="grasa" className="form-control" value={store.comidaAI != null ? store.comidaAI.grasa : grasa} onChange={(event) => setGrasa(event.target.value)} required />
                                     </div>
                                     <div className="col-md-4 mb-3">
                                         <label className="form-label fw-semibold">Proteina</label>
-                                        <input type="text" name="proteina" className="form-control" value={proteina} onChange={(event) => setProteina(event.target.value)} required />
+                                        <input type="text" name="proteina" className="form-control" value={store.comidaAI != null ? store.comidaAI.proteina : proteina} onChange={(event) => setProteina(event.target.value)} required />
                                     </div>
                                     <div className="col-md-4 mb-3">
                                         <label className="form-label fw-semibold">Fibra</label>
-                                        <input type="text" name="fibra" className="form-control" value={fibra} onChange={(event) => setFibra(event.target.value)} required />
+                                        <input type="text" name="fibra" className="form-control" value={store.comidaAI != null ? store.comidaAI.fibra : fibra} onChange={(event) => setFibra(event.target.value)} required />
                                     </div>
                                     <div className="row g-3">
                                         <h3>Comida Diaria</h3>
                                         <div className="col-md-4 mb-3">
                                             <label className="form-label fw-semibold">Cantidad (gr)</label>
-                                            <input type="number" name="quantity" className="form-control" value={quantity} onChange={(event) => setQuantity(event.target.value)} required />
+                                            <input type="number" name="quantity" className="form-control" value={store.comidaAI != null ? store.comidaAI.quantity : quantity} onChange={(event) => setQuantity(event.target.value)} required />
                                         </div>
                                         <div className="col-md-4 mb-3">
                                             <label className="form-label fw-semibold">Tipo de Comida</label>
-                                            <select className="form-select" aria-label="Default select example" value={type_food} onChange={(event) => setTypeFood(event.target.value)} required >
+                                            <select className="form-select" aria-label="Default select example" value={store.comidaAI != null ? store.comidaAI.type_food : type_food} onChange={(event) => setTypeFood(event.target.value)} required >
                                                 <option value="">Selecciona un Tipo</option>
                                                 <option value="suave">Suave</option>
                                                 <option value="dura">Dura</option>

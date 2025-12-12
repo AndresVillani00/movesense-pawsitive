@@ -114,7 +114,7 @@ export const IncidenciasUser = () => {
             </div>
           </div>
           <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
-            <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ marginBottom: "180px" }}>
               <div className="container modal-content">
                 <div className="modal-header row">
                   <div className="d-flex justify-content-between">
@@ -123,7 +123,7 @@ export const IncidenciasUser = () => {
                   </div>
                   <p className="col-md-12">Enter the details of the incident you want to record for your pet.</p>
                 </div>
-                <div className="modal-body">
+                <div className="modal-body" style={{ maxHeight: "60vh", overflowY: "auto" }}>
                   <form onSubmit={handleSubmit} className="row g-3">
                     <div className="col-md-12">
                       {store.fotoJsonIncidencia && (
@@ -190,7 +190,7 @@ export const IncidenciasUser = () => {
               </div>
             </div>
           </div>
-          <div className="border p-4 bg-white mt-3 rounded shadow-sm">
+          <div className="border p-4 bg-white mt-3 rounded shadow-smw-100" style={{ overflow: "hidden", overflowX: "auto" }}>
             <table className="table table-striped bg-white">
               <thead>
                 <tr className="text-center">

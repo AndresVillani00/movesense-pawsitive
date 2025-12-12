@@ -178,7 +178,7 @@ export const AnalysisButton = () => {
     const handleAnalisisIA = async (foto) => {
         setLoading(true);
 
-        const prompt = "Actua como un experto veterinario, Interpreta, analiza y rellena los datos necesarios para un analises de orina en un perro comparando el AnalisisBase y el AnalisisEnviado el cual es el analisis que le realice a mi mascota";
+        const prompt = "Actua como un experto veterinario, Interpreta, analiza y rellena los datos necesarios para un analisis de orina en un perro comparando el AnalisisBase y el AnalisisEnviado el cual es el analisis que le realice a mi mascota";
 
         if (base64Analisis == null || foto == null) {
             store.alert = { text: "No se pudo analisar con IA el Analisis de orina", background: "danger", visible: true };
@@ -192,7 +192,6 @@ export const AnalysisButton = () => {
 
         try {
             await actions.analisisOpenAI(prompt, json);
-            console.log(store.analisisAI)
         } catch (e) {
             store.alert = { text: `Error generando el analisis, Error: ${e}`, background: "danger", visible: true };
             setLoading(false);
@@ -202,6 +201,18 @@ export const AnalysisButton = () => {
     }
 
     const handleCancel = () => {
+        store.analisisAI = null;
+        actions.setFotoJsonAnalysis('');
+        setBlood('');
+        setBilirubin('');
+        setUrobiling('');
+        setKetones('');
+        setGlucose('');
+        setProtein('');
+        setNitrite('');
+        setLeukocytes('');
+        setPh('');
+        setDate('');
         setShowModal(false);
         store.alert = { text: "", background: "primary", visible: false }
     }
@@ -210,11 +221,11 @@ export const AnalysisButton = () => {
         <div>
             <div className="d-flex justify-content-end p-2">
                 <div className="mx-3">
-                    <button className="btn btn-outline-secondary" onClick={(event) => { event.stopPropagation(); setShowModal(true); }}><i className="fa-solid fa-plus"></i></button>
+                    <button className="btn border-0 bg-transparent p-0" onClick={(event) => { event.stopPropagation(); setShowModal(true); }}><i className="fa-solid fa-plus text-primary"></i></button>
                 </div>
             </div>
             <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
-                <div className="modal-dialog">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ marginBottom: "180px" }}>
                     <div className="container modal-content">
                         <div className="modal-header row">
                             <div className="d-flex justify-content-between">
@@ -224,7 +235,7 @@ export const AnalysisButton = () => {
                             <p className="col-md-12">Introduce los detalles del analisis de orina de tu mascota</p>
                             <Alert />
                         </div>
-                        <div className="modal-body">
+                        <div className="modal-body" style={{ maxHeight: "60vh", overflowY: "auto" }}>
                             <form onSubmit={handleSubmit} className="row g-3">
                                 <div className="col-md-12">
                                     {store.fotoJsonAnalysis && (
@@ -242,7 +253,8 @@ export const AnalysisButton = () => {
                                                 <div className="spinner-border" role="status">
                                                     <span className="visually-hidden">Generando ...</span>
                                                 </div>
-                                                : "Analizar con IA"}</button>
+                                                : "Analizar con IA"}
+                                            </button>
                                     </div>
                                 </div>
                                 <div className="row">

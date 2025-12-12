@@ -77,9 +77,9 @@ export const TemperatureButton = () => {
         const result_temperatura = store.alertas.result_temperatura;
         const alertasRojas = result_temperatura != null ? result_temperatura.filter(rojas => rojas.Alarma === "Rojo" ) : null;
         const rangoTemperaturaRojo = alertasRojas[0].RangoTemperatura;
-        if(value <= rangoTemperaturaRojo.MenorQue || value >= rangoTemperaturaRojo.MayorQue){
-            setShowAlertModal(true);
-        }
+        //if(value <= rangoTemperaturaRojo.MenorQue || value >= rangoTemperaturaRojo.MayorQue){
+        //    setShowAlertModal(true);
+        //}
     };
 
     const handleAlertSubmit = async (event) => {
@@ -99,6 +99,9 @@ export const TemperatureButton = () => {
     };
 
     const handleCancel = () => {
+        setDate('');
+        setValue('');
+        setNote('');
         setShowModal(false); 
         store.alert = { text: "", background: "primary", visible: false }
     }
@@ -107,7 +110,7 @@ export const TemperatureButton = () => {
         <div>
             <div className="d-flex justify-content-end p-2">
                 <div className="mx-3">
-                    <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus"></i></button>
+                    <button className="btn border-0 bg-transparent p-0" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus text-primary"></i></button>
                 </div>
             </div>
             <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
