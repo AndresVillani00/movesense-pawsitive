@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext.js";
 import logo from '../../img/LogoPawsitive.png';
 import { Dropdown } from "react-bootstrap";
 
 export const Navbar = () => {
     const { store, actions } = useContext(Context);
+    const navigate = useNavigate();
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-white sticky-top">
@@ -17,13 +18,13 @@ export const Navbar = () => {
 
                 {/* Menú colapsable */}
                 <div className="d-flex justify-content-between" id="navbarNav" >
-                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Inicio" style={{ color:"#1B365D" }}>
+                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Inicio" style={{ color:"#1B365D" }} onClick={() => navigate('/home')}>
                         <i className="fa-solid fa-house"></i>
                     </button>
-                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Incidencias de Mascotas" style={{ color:"#1B365D" }}>
+                    <button className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Incidencias de Mascotas" style={{ color:"#1B365D" }} onClick={() => navigate('/incidencias')}>
                         <i className="fa-solid fa-paw"></i>
                     </button>
-                    <button type="button" className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Sobre Nosotros" style={{ color:"#1B365D" }}>
+                    <button type="button" className="btn bg-transparent border-0" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="Sobre Nosotros" style={{ color:"#1B365D" }} onClick={() => navigate('/about-us')}>
                         <i className="fa-solid fa-users-rectangle"></i>
                     </button>
                 </div>  

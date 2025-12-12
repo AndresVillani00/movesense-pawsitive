@@ -422,6 +422,54 @@ def generate_analisis():
         return response_body, 500
     
 
+@openai_api.route("/generate-comida", methods=["POST"])
+def generate_comida():
+    response_body = {} 
+    body = request.get_json(force=True, silent=True) or {}
+    prompt = body.get("prompt")
+    data = body.get("dataToSend")
+    if not prompt:
+        response_body['message'] = f"Falta el campo 'prompt'"
+        return response_body, 400
+    # Construimos el contexto: system + user message que incluye el JSON
+    system_msg = {
+        "role": "system",
+        "content": (
+            "Eres un veterinario experto. Analiza los datos sobre la comida enviada "
+            "Devuelve únicamente un JSON válido con keys: [type_food, marca, grasa, proteina, fibra] "
+            "Rellena las keys del json con la informacion que precises importante mas lo que consigas como experto veterinario, solo aceptando valores con estas caracteristicas, "
+            "para type_food solo puedo aceptar ('suave' si es pure, pate o liquida; 'dura' si es pienzo); para marca: el nombre de la empresa de la comida en la imagen, sino la conoces o no la encuentras devuelve 'No Encontrada'; para grasa, proteina, fibra la que contenga el saco o la cantidad de comida aproximada en la imagen "
+            "No incluyas texto adicional fuera del JSON. solo devuelve un JSON del estilo {type_food: 'valor', marca: 'valor', grasa: 'valor', proteina: 'valor', fibra: 'valor'}. "
+        )
+    }
+    user_msg = {
+        "role": "user",
+        "content": f"Instrucción: {prompt}\n\nDatos:\n{json.dumps(data, ensure_ascii=False)}"
+    }
+    try:
+        # Llamada al endpoint chat completions (síncrona)
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[system_msg, user_msg],
+            temperature=1,
+            max_completion_tokens=1000,
+            response_format={ "type": "json_object" }
+        )
+        # El texto generado
+        text = resp.choices[0].message.content
+        # Intentamos parsear a JSON (si pedimos JSON al modelo es ideal)
+        try:
+            parsed = json.loads(resp.choices[0].message.content)
+            return jsonify({"status": "ok", "results": parsed}), 200
+        except Exception:
+            # Si no es JSON válido devolvemos el texto crudo para debugging
+            return jsonify({"ok": True, "report_text": text}), 200
+    except Exception as e:
+        current_app.logger.exception("OpenAI request failed")
+        response_body['message'] = str(e)
+        return response_body, 500
+    
+
 @openai_api.route("/vetcheck", methods=["POST"])
 def vetcheck_route():
     try:

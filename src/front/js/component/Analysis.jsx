@@ -33,7 +33,7 @@ export const Analysis = () => {
             <div className="d-flex justify-content-end p-2">
                 <button className="btn btn-outline-danger" onClick={(event) => handleDelete(event)} hidden={itemCheck.length === 0}>Eliminar</button>
             </div>
-            <div className="card p-2 border-0" style={{ borderRadius: "12px" }}>
+            <div className="card p-2 border-0 w-100" style={{ borderRadius: "12px", overflow: "hidden", overflowX: "auto" }}>
                 <table className="table table-striped" >
                     <thead style={{ color: "secondary" }}>
                         <tr className="text-center">

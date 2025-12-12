@@ -17,7 +17,6 @@ export const Login = () => {
         event.preventDefault();
         const dataToSend = { username, password, remember }
         await actions.login(dataToSend);
-        console.log(store.userMascotas.length)
         if(store.isVeterinario){
             actions.setActiveKey('alerts')
         } else if(store.userMascotas.length < 1) {

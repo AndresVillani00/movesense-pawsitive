@@ -96,6 +96,10 @@ export const IncidenciasButton = () => {
     };
 
     const handleCancel = () => {
+        actions.setFotoJsonIncidencia('')
+        setInitialDate('');
+        setFinalDate('');   
+        setDescription('');
         setShowModal(false);
         store.alert = { text: "", background: "primary", visible: false }
     }
@@ -104,11 +108,11 @@ export const IncidenciasButton = () => {
         <div>
             <div className="d-flex justify-content-end p-2">
                 <div className="mx-3">
-                    <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus"></i></button>
+                    <button className="btn border-0 bg-transparent p-0" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus text-primary"></i></button>
                 </div>
             </div>
             <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
-                <div className="modal-dialog modal-dialog-centered">
+                <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable" style={{ marginBottom: "180px" }}>
                     <div className="container modal-content">
                         <div className="modal-header row">
                             <div className="d-flex justify-content-between">
@@ -118,7 +122,7 @@ export const IncidenciasButton = () => {
                             <p className="col-md-12">Introduce los detalles de la Incidencia de tu mascota.</p>
                             <Alert />
                         </div>
-                        <div className="modal-body">
+                        <div className="modal-body" style={{ maxHeight: "60vh", overflowY: "auto" }}>
                             <form onSubmit={handleSubmit} className="row g-3">
                                 <div className="col-md-12">
                                     {store.fotoJsonIncidencia && (

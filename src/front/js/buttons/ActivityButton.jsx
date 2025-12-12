@@ -76,10 +76,9 @@ export const ActivityButton = () => {
         const result_actividad = store.alertas.result_actividad;
         const alertasRojas = result_actividad != null ? result_actividad.filter(rojas => rojas.Alarma === "Rojo" ) : null;
         const rangoActividadRojo = alertasRojas[0].RangoActividad;
-        console.log(store.alertas)
-        if(value <= rangoActividadRojo.MenorQue || value >= rangoActividadRojo.MayorQue){
-            setShowAlertModal(true);
-        }
+        //if(value <= rangoActividadRojo.MenorQue || value >= rangoActividadRojo.MayorQue){
+        //    setShowAlertModal(true);
+        //}
     };
 
     const handleAlertSubmit = async (event) => {
@@ -99,6 +98,9 @@ export const ActivityButton = () => {
     };
 
     const handleCancel = () => {
+        setDate('');
+        setValue('');
+        setNote('');
         setShowModal(false); 
         store.alert = { text: "", background: "primary", visible: false }
     }
@@ -107,7 +109,7 @@ export const ActivityButton = () => {
         <div>
             <div className="d-flex justify-content-end p-2">
                 <div className="mx-3">
-                    <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus"></i></button>
+                    <button className="btn border-0 bg-transparent p-0" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus text-primary"></i></button>
                 </div>
             </div>
             <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">

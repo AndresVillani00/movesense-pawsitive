@@ -124,6 +124,7 @@ def user():
         row.country=data.get('country'),
         row.address=data.get('address'),
         row.phone=data.get('phone'),
+        row.phone=data.get('postalcode'),
         db.session.add(row)
         db.session.commit()  
         response_body['message'] = f'Usuario con id: {user_id}. Actualizado'
