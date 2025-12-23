@@ -11,12 +11,14 @@ export const SignUp = () => {
     const [username, setUsername] = useState(''); 
     const [email, setEmail] = useState(''); 
     const [password, setPassword] = useState(''); 
+    const [phone, setPhone] = useState('');
+    const [postalCode, setPostalCode] = useState('');
     const [showPassword, setShowPassword] = useState(false); 
     const [error, setError] = useState(false); 
     
     const handleSubmit = async (event) => { 
         event.preventDefault(); 
-        const dataToSend = { username, email, password, } 
+        const dataToSend = { username, email, password, phone, postalCode } 
         
         await actions.signup(dataToSend); 
         
@@ -80,6 +82,14 @@ export const SignUp = () => {
                                     <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}> {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>} </span> 
                                 </div> 
                             </div> 
+                            <div className="col-md-12">
+                                <label className="form-label fw-semibold">Whatsapp</label>
+                                <input type="text" name="phone" className="form-control" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="Introduce tu Número de telefono" />
+                            </div>
+                            <div className="col-md-12">
+                                <label className="form-label fw-semibold">Codigo Postal</label>
+                                <input type="text" name="postalcode" className="form-control" value={postalCode} onChange={(event) => setPostalCode(event.target.value)} placeholder="Introduce tu Codigo Postal" />
+                            </div>
                             <div className="col-12 text-center"> 
                                 <div className="d-flex justify-content-center gap-3"> 
                                     <button className="btn fw-bold" type="submit" style={{ color: "white", background:"#ff6100", border: "#ff6100", borderRadius: "30px", padding: "10px 20px" }}> Registrarse </button> 
