@@ -220,7 +220,7 @@ export const AnalysisButton = () => {
     return (
         <div>
             <div className="d-flex justify-content-end p-2">
-                <div className="mx-3">
+                <div>
                     <button className="btn border-0 bg-transparent p-0" onClick={(event) => { event.stopPropagation(); setShowModal(true); }}><i className="fa-solid fa-plus text-primary"></i></button>
                 </div>
             </div>
