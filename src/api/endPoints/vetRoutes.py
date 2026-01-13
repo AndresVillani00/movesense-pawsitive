@@ -8,16 +8,23 @@ from api.models import db, Veterinarios
 veterinarios_api = Blueprint('veterinariosApi', __name__)
 CORS(veterinarios_api)
 
+
 @veterinarios_api.route('/veterinarios', methods=['GET'])
+@jwt_required()
 def veterinarios():
     response_body = {}
-    additional_claims = get_jwt() 
     if request.method == 'GET':
         rows = db.session.execute(db.select(Veterinarios)).scalars()
         list_buyers = [ row.serialize() for row in rows ]
         response_body['message'] = f'Usuarios Veterinarios'
         response_body['results'] = list_buyers
         return response_body, 200
+    
+
+@veterinarios_api.route('/veterinarios', methods=['POST'])
+def veterinario():
+    response_body = {}
+    additional_claims = get_jwt() 
     if request.method == 'POST':
         data = request.json 
         user_id = additional_claims['id']
@@ -39,8 +46,7 @@ def veterinarios():
    
 
 @veterinarios_api.route('/veterinarios', methods=['PUT'])
-@jwt_required()
-def veterinario():
+def veterinario_put():
     response_body = {}
     additional_claims = get_jwt()
     user_id = additional_claims['user_id']

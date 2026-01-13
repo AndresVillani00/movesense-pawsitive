@@ -12,7 +12,8 @@ users_api = Blueprint('usersApi', __name__)
 CORS(users_api)  # Allow CORS requests to this API
 
 
-@users_api.route('/users', methods=['GET', 'POST'])
+@users_api.route('/users', methods=['GET'])
+@jwt_required()
 def users():
     response_body = {}
     if request.method == 'GET':
@@ -21,8 +22,15 @@ def users():
         response_body['message'] = f'Listado de usuarios'
         response_body['results'] = list_users
         return response_body, 200
+    
+
+@users_api.route('/users', methods=['POST'])
+def user():
+    response_body = {}
     if request.method == 'POST':
         data = request.json
+        username = data.get('username', None)
+        email = data.get('email', None)
         password = data.get('password', None)
 
         if len(password) < 8:
@@ -44,8 +52,12 @@ def users():
                     phone=data.get('phone'),
                     postalcode=data.get('postalcode'),
                     is_veterinario=data.get('is_veterinario', False))
-        rowdb = db.session.execute(db.select(Users).where(Users.username == data.get('username'), Users.password == data.get('password'))).scalar()
+        rowdb = db.session.execute(db.select(Users).where(Users.username == username)).scalar()
+        rowdb2 = db.session.execute(db.select(Users).where(Users.email == email)).scalar()
         if rowdb:
+            response_body['message'] = f'El usuario ya existe'
+            return response_body, 404
+        if rowdb2:
             response_body['message'] = f'El usuario ya existe'
             return response_body, 404
         db.session.add(row)
@@ -109,8 +121,7 @@ def get_current_user():
 
 
 @users_api.route('/users', methods=['PUT'])
-@jwt_required()
-def user():
+def user_put():
     response_body = {}
     additional_claims = get_jwt()
     user_id = additional_claims['user_id']
@@ -134,6 +145,7 @@ def user():
     
 
 @users_api.route('/veterinarios/<int:veterinario_id>/users', methods=['GET'])
+@jwt_required()
 def user_veterinario(veterinario_id):
     response_body = {}
     row = db.session.execute(db.select(Users).where(Users.id == veterinario_id, Users.is_veterinario == True)).scalars()

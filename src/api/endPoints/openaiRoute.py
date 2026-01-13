@@ -2,6 +2,7 @@ import os
 import json
 import tempfile
 from flask import Blueprint, request, jsonify, current_app
+from flask_jwt_extended import jwt_required
 from openai import OpenAI    
 from collections import defaultdict
 from datetime import datetime, timedelta
@@ -111,6 +112,7 @@ def find_timestamp_attr(Model):
     return None
 
 @openai_api.route("/mascota/<int:mascota_id>/json-entrada", methods=["GET"])
+@jwt_required()
 def mascota_report_range(mascota_id):
     """
     Params:

@@ -11,8 +11,9 @@ food_api = Blueprint('foodApi', __name__)
 CORS(food_api)  # Allow CORS requests to this API
 
 
-@food_api.route('/food', methods=['GET', 'POST'])
-def food():
+@food_api.route('/food', methods=['GET'])
+@jwt_required()
+def foods():
     response_body = {}       
     if request.method == 'GET':
         rows = db.session.execute(db.select(Comida)).scalars()
@@ -20,6 +21,11 @@ def food():
         response_body['message'] = f'Listado de comida'
         response_body['results'] = list_food
         return response_body, 200
+    
+
+@food_api.route('/food', methods=['POST'])
+def food():
+    response_body = {}       
     if request.method == 'POST':
         data = request.json 
         row = Comida(title=data.get('title'),
@@ -41,6 +47,7 @@ def food():
     
 
 @food_api.route('/mascotas/<int:id>/food', methods=['GET'])
+@jwt_required()
 def mascotas_food(id):
     response_body = {}
     mascota = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()

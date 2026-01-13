@@ -41,6 +41,7 @@ def create_subscription_session():
 
     
 @stripe_api.route("/validate-subscription", methods=["GET"])
+@jwt_required()
 def validate_subscription():
     session_id = request.args.get("session_id")
     if not session_id:

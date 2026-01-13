@@ -11,7 +11,8 @@ reportes_api = Blueprint('reportesApi', __name__)
 CORS(reportes_api)  # Allow CORS requests to this API
 
 
-@reportes_api.route('/reportes', methods=['GET', 'POST'])
+@reportes_api.route('/reportes', methods=['GET'])
+@jwt_required()
 def reportes():
     response_body = {}
     if request.method == 'GET':
@@ -20,6 +21,11 @@ def reportes():
         response_body['message'] = f'Listado de reportes'
         response_body['results'] = list_reportes
         return response_body, 200
+    
+
+@reportes_api.route('/reportes', methods=['POST'])
+def reporte():
+    response_body = {}
     if request.method == 'POST': 
         data = request.json
         row = Reportes(score=data.get('score'),
@@ -68,6 +74,7 @@ def delete_reportes(id):
 
 
 @reportes_api.route('/mascotas/<int:id>/reportes', methods=['GET'])
+@jwt_required()
 def mascotas_reportes(id):
     response_body = {}
     mascota = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()

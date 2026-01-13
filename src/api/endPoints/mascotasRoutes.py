@@ -12,6 +12,7 @@ CORS(mascotas_api)  # Allow CORS requests to this API
 
 
 @mascotas_api.route('/mascotas', methods=['GET'])
+@jwt_required()
 def mascotas():
     response_body = {}       
     if request.method == 'GET':
@@ -22,7 +23,6 @@ def mascotas():
         return response_body, 200
     
 @mascotas_api.route('/mascotas', methods=['POST'])
-@jwt_required()
 def postMascotas():
     response_body = {}
     additional_claims = get_jwt() 
@@ -53,6 +53,7 @@ def postMascotas():
     
 
 @mascotas_api.route('/mascotas/<string:mascota_name_id>/usuarios', methods=['GET'])
+@jwt_required()
 def get_usuarios_de_mascota(mascota_name_id):
     response_body = {}
     mascota = db.session.execute(db.select(Mascotas).where(Mascotas.mascota_name_id == mascota_name_id)).scalar()
@@ -67,6 +68,7 @@ def get_usuarios_de_mascota(mascota_name_id):
     
 
 @mascotas_api.route('/usuarios/<int:id>/share-mascot', methods=['GET'])
+@jwt_required()
 def get_mascotas_ajenas(id):
     response_body = {}
     usuario = db.session.execute(db.select(Users).where(Users.id == id)).scalar()
@@ -105,7 +107,6 @@ def share_mascot(mascota_name_id):
     
 
 @mascotas_api.route('/mascotas/<int:id>/delete-share/<int:usuario_id>', methods=['DELETE'])
-@jwt_required()
 def delete_share_mascot(id, usuario_id):
     response_body = {}
     additional_claims = get_jwt()

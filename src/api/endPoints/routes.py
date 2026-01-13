@@ -70,6 +70,7 @@ def user_profile():
     return jsonify({"message": "Perfil del usuario", "results": user.serialize()}), 200
 
 @api.route('/users/mascotas', methods=['GET'])
+@jwt_required()
 def get_mascotas():
     response_body = {}
     rows = db.session.execute(db.select(Mascotas)).scalars()

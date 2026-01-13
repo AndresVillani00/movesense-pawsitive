@@ -11,8 +11,8 @@ metricas_api = Blueprint('metricasApi', __name__)
 CORS(metricas_api)  # Allow CORS requests to this API
 
 
-
-@metricas_api.route('/metricas', methods=['GET', 'POST'])
+@metricas_api.route('/metricas', methods=['GET'])
+@jwt_required()
 def metricas():
     response_body = {}
     if request.method == 'GET':
@@ -21,6 +21,11 @@ def metricas():
         response_body['message'] = f'Listado de tipos de metricas'
         response_body['results'] = list_metricas
         return response_body, 200 
+    
+
+@metricas_api.route('/metricas', methods=['POST'])
+def metrica():
+    response_body = {}
     if request.method == 'POST':
         data = request.json
         row = Metrica(valor_diario=data.get('valor_diario'),
@@ -51,6 +56,7 @@ def delete_metricas(id):
          
 
 @metricas_api.route('/mascotas/<int:id>/metricas', methods=['GET'])
+@jwt_required()
 def mascotas_metricas(id):
     response_body = {}
     mascota = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
@@ -86,6 +92,7 @@ def metricas_json():
     
 
 @metricas_api.route('/mascotas/<int:id>/metricas-json', methods=['GET'])
+@jwt_required()
 def mascotas_metricas_json(id):
     response_body = {}
     mascota = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
@@ -162,6 +169,7 @@ def find_valor_by_pair(records, val1, val2):
     return None
 
 @metricas_api.route("/codigo-final/<int:id>", methods=["GET"])
+@jwt_required()
 def codigo_mascota(id):    
     # 1) Buscar mascota por mascota_name_id
     mascota = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
@@ -240,6 +248,7 @@ def codigo_mascota(id):
 
 
 @metricas_api.route('/metricas-alertas/<string:codigo>', methods=['GET'])
+@jwt_required()
 def metricas_codigo(codigo):
     # Buscar todos los registros de MetricaJSON que tengan json_peso
     metricas = db.session.execute(db.select(MetricaJSON)).scalar()
