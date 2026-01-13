@@ -414,9 +414,9 @@ export const Home = () => {
                         <input type="date" name="birthdate" className="form-control" value={birth_date} onChange={(event) => setBirthdate(event.target.value)} required />
                       </div>
                       <div className="col-md-4 mb-3">
-                        <label className="form-label fw-semibold">Genero</label>
+                        <label className="form-label fw-semibold">Sexo</label>
                         <select className="form-select" aria-label="Default select example" value={gender} onChange={(event) => setGender(event.target.value)}>
-                          <option value={''}>Selecciona el genero</option>
+                          <option value={''}>Selecciona el Sexo</option>
                           <option value={'Male'}>Macho</option>
                           <option value={'Female'}>Hembra</option>
                         </select>

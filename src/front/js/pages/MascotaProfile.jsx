@@ -62,7 +62,7 @@ export const MascotaProfile = () => {
   const handleCapture = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
+    
     const reader = new FileReader();
     reader.onloadend = () => {
       const base64 = reader.result;

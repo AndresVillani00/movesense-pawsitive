@@ -11,7 +11,8 @@ incidencias_api = Blueprint('incidenciasApi', __name__)
 CORS(incidencias_api)  # Allow CORS requests to this API
 
 
-@incidencias_api.route('/incidencias', methods=['GET', 'POST'])
+@incidencias_api.route('/incidencias', methods=['GET'])
+@jwt_required()
 def incidencias():
     response_body = {}
     if request.method == 'GET':
@@ -20,6 +21,11 @@ def incidencias():
         response_body['message'] = f'Listado de incidencias'
         response_body['results'] = list_incidencias
         return response_body, 200
+    
+
+@incidencias_api.route('/incidencias', methods=['POST'])
+def incidencia():
+    response_body = {}
     if request.method == 'POST': 
         data = request.json
         row = Incidencias(title=data.get('title'),
@@ -74,6 +80,7 @@ def usuario_incidencias():
 
 
 @incidencias_api.route('/mascotas/<int:id>/incidencias', methods=['GET'])
+@jwt_required()
 def mascotas_incidencias(id):
     response_body = {}
     mascota = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()

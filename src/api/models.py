@@ -12,7 +12,7 @@ class Users(db.Model):
     password = db.Column(db.String(), unique=False, nullable=False)
     name = db.Column(db.String(), unique=False, nullable=True, default=" ")
     last_name = db.Column(db.String(), unique=False, nullable=True, default=" ")
-    email = db.Column(db.String(), unique=True, nullable=True, default=" ")
+    email = db.Column(db.String(), unique=True, nullable=True)
     country = db.Column(db.String(), unique=False, nullable=True, default=" ")
     address = db.Column(db.String(), unique=False, nullable=True, default=" ")
     phone = db.Column(db.String(), unique=False, nullable=True, default=" ")

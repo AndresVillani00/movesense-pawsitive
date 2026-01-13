@@ -11,7 +11,8 @@ alerts_api = Blueprint('alertsApi', __name__)
 CORS(alerts_api)  # Allow CORS requests to this API
 
 
-@alerts_api.route('/alerts', methods=['GET', 'POST'])
+@alerts_api.route('/alerts', methods=['GET'])
+@jwt_required()
 def alerts():
     response_body = {}       
     if request.method == 'GET':
@@ -20,6 +21,11 @@ def alerts():
         response_body['message'] = f'Listado de alertas'
         response_body['results'] = list_alerts
         return response_body, 200
+    
+
+@alerts_api.route('/alerts', methods=['POST'])
+def alert():
+    response_body = {}       
     if request.method == 'POST':
         data = request.json 
         row = Alerts(type=data.get('type'),

@@ -11,7 +11,8 @@ analysis_api = Blueprint('analysisApi', __name__)
 CORS(analysis_api)  # Allow CORS requests to this API
 
 
-@analysis_api.route('/analysis', methods=['GET', 'POST'])
+@analysis_api.route('/analysis', methods=['GET'])
+@jwt_required()
 def analysis():
     response_body = {}       
     if request.method == 'GET':
@@ -20,6 +21,11 @@ def analysis():
         response_body['message'] = f'Listado de analysis'
         response_body['results'] = list_analysis
         return response_body, 200
+    
+
+@analysis_api.route('/analysis', methods=['POST'])
+def analysis_post():
+    response_body = {}       
     if request.method == 'POST':
         data = request.json 
         row = Analysis(blood=data.get('blood'),
@@ -57,6 +63,7 @@ def delete_analysis(id):
 
 
 @analysis_api.route('/mascotas/<int:id>/analysis', methods=['GET'])
+@jwt_required()
 def mascotas_analysis(id):
     response_body = {}
     mascota = db.session.execute(db.select(Mascotas).where(Mascotas.id == id)).scalar()
