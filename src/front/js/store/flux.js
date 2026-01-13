@@ -48,9 +48,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			setActiveKey: (item) => { setStore({ activeKey: item }) },
 			generarJsonEntrada: async (mascota_id, start, end) => {
 				const uri = `${process.env.BACKEND_URL}/openaiApi/mascota/${mascota_id}/json-entrada?start_ts=${start}&end_ts=${end}`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
+
 				const options = {
 					method: 'GET',
-					headers: { "Content-Type": "application/json" }
+					headers: { 
+						"Content-Type": "application/json", 
+						Authorization: `Bearer ${token}`
+					 },
 				};
 				const response = await fetch(uri, options);
 				if (!response.ok) {
@@ -124,11 +130,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getMetricasJSon: async (codigo) => {
 				try {
 					const uri = `${process.env.BACKEND_URL}/metricasApi/metricas-alertas/${codigo}`;
+					const token = localStorage.getItem("token");
+					if (!token) return;
+					
 					const options = {
 						method: 'GET',
 						headers: {
-							'Content-Type': 'application/json'
-						}
+							'Content-Type': 'application/json',
+							Authorization: `Bearer ${token}`
+						},
 					};
 					const response = await fetch(uri, options);
 					if (!response.ok) {
@@ -144,11 +154,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			getCodeJson: async (id) => {
 				try {
 					const uri = `${process.env.BACKEND_URL}/metricasApi/codigo-final/${id}`;
+					const token = localStorage.getItem("token");
+					if (!token) return;
+
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
-						}
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
+						},
 					});
 					
 					const data = await response.json();
@@ -200,13 +214,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getMascotas: async () => {
 				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas`;
-
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
-						}
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
+						},
 					});
 					if (!response.ok) {
 						console.log("Error obteniendo la lista de mascotas");
@@ -245,11 +262,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getMascotaById: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
 							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						},
 					});
 					if (!response.ok) {
@@ -293,14 +314,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			updateMascota: async (dataToSend, id) => {
 				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}`;
-				const token = localStorage.getItem("token");
-				if (!token) return;
 
 				const options = {
 					method: 'PUT',
 					headers: {
-						'Content-Type': 'application/json',
-						Authorization: `Bearer ${token}`,
+						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify(dataToSend)
 				};
@@ -355,12 +373,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getAnalysis: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/analysisApi/mascotas/${id}/analysis`;
-
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`,
 						}
 					});
 					if (!response.ok) {
@@ -430,12 +451,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getMetrica: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/metricasApi/mascotas/${id}/metricas`;
-
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`,
 						}
 					});
 					if (!response.ok) {
@@ -500,12 +524,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getIncidencias: async () => {
 				const uri = `${process.env.BACKEND_URL}/incidenciasApi/incidencias`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
 
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
@@ -544,12 +571,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getIncidencia: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/incidenciasApi/mascotas/${id}/incidencias`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
 
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
@@ -619,12 +649,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getAlerts: async () => {
 				const uri = `${process.env.BACKEND_URL}/alertsApi/alerts`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
 
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
@@ -660,12 +693,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getFood: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/foodApi/mascotas/${id}/food`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
 
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
@@ -735,12 +771,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getReportes: async () => {
 				const uri = `${process.env.BACKEND_URL}/reportesApi/reportes`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
 
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
@@ -755,12 +794,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getReport: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/reportesApi/mascotas/${id}/reportes`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
 
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
@@ -1061,12 +1103,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getShareUsers: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${id}/usuarios`;
-
+				const token = localStorage.getItem("token");
+				if (!token) return;
+				
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
@@ -1081,12 +1126,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getMascotShareUsers: async (id) => {
 				const uri = `${process.env.BACKEND_URL}/mascotasApi/usuarios/${id}/share-mascot`;
+				const token = localStorage.getItem("token");
+				if (!token) return;
 
 				try {
 					const response = await fetch(uri, {
 						method: "GET",
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							Authorization: `Bearer ${token}`
 						}
 					});
 					if (!response.ok) {
