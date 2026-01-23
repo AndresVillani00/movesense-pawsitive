@@ -23,6 +23,7 @@ def mascotas():
         return response_body, 200
     
 @mascotas_api.route('/mascotas', methods=['POST'])
+@jwt_required()
 def postMascotas():
     response_body = {}
     additional_claims = get_jwt() 
@@ -33,7 +34,6 @@ def postMascotas():
         if is_veterinario:
             response_body['message'] = f'El usuario es Veterinario'
             return response_body, 404
-        
         row = Mascotas(mascota_name_id=data.get('mascota_name_id'),
                     password=data.get('password'),
                     name_mascot=data.get('name_mascot'),
@@ -130,7 +130,6 @@ def delete_share_mascot(id, usuario_id):
 
 
 @mascotas_api.route('/mascotas/<int:id>', methods=['PUT', 'DELETE'])
-@jwt_required()
 def mascota(id):
     response_body = {}
     user_log_id = get_jwt()['user_id']
