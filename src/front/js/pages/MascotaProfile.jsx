@@ -140,7 +140,7 @@ export const MascotaProfile = () => {
             </div>
             <div className="col-md-6 mx-3 mb-3 form-check">
               <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setIsEsterilizado(event.target.checked)} />
-              <label className="form-check-label" htmlFor="is_esterilizado">Tu mascota esta Esterilizada ?</label>
+              <label className="form-check-label" htmlFor="is_esterilizado">¿ Tu mascota esta Esterilizada ?</label>
             </div>
             {/* Botones de acción */}
             <div className="d-flex justify-content-between">

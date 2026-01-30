@@ -119,7 +119,7 @@ export const UserProfile = () => {
             <input type="text" name="name" className="form-control" value={name} onChange={(event) => setName(event.target.value)} />
           </div>
           <div className="col-md-6">
-            <label className="form-label fw-semibold">Apelliso</label>
+            <label className="form-label fw-semibold">Apellido</label>
             <input type="text" name="lastName" className="form-control" value={last_name} onChange={(event) => setLastName(event.target.value)} />
           </div>
           <div className="col-md-6">

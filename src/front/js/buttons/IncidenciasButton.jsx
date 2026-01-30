@@ -78,9 +78,9 @@ export const IncidenciasButton = () => {
 
         await actions.postIncidencia(dataToSend);
 
-        if (store.fotoJsonIncidencia != null) {
+        //if (store.fotoJsonIncidencia != null) {
             setShowModal(false);
-        }
+        //}
     };
 
     const handleCapture = async (event) => {

@@ -57,9 +57,9 @@ export const Food = () => {
 
         store.alert = { text: "", background: "primary", visible: false };
         await actions.postFood(dataToSend);
-        if (store.fotoJsonFood != null || dataToSend.foto_food == '') {
+        //if (store.fotoJsonFood != null || dataToSend.foto_food == '') {
             setShowModal(false);
-        }
+        //}
     };
 
     const handleCapture = async (event) => {
