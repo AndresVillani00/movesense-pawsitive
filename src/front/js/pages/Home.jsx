@@ -480,11 +480,11 @@ export const Home = () => {
                       </div>
                       <div className="col-md-6 mx-3 mb-3 form-check">
                         <input type="checkbox" className="form-check-input" id="is_mix" onChange={(event) => setMix(event.target.checked)} />
-                        <label className="form-check-label" htmlFor="is_mix">La Mascota es mezcla de varias razas ?</label>
+                        <label className="form-check-label" htmlFor="is_mix">¿ La Mascota es mezcla de varias razas ?</label>
                       </div>
                       <div className="col-md-6 mx-3 mb-3 form-check">
                         <input type="checkbox" className="form-check-input" id="is_esterilizado" onChange={(event) => setEsterilizado(event.target.checked)} />
-                        <label className="form-check-label" htmlFor="is_esterilizado">La Mascota esta esterilizada  ?</label>
+                        <label className="form-check-label" htmlFor="is_esterilizado">¿ La Mascota esta esterilizada  ?</label>
                       </div>
                       {/* Botones de acción */}
                       <div className="d-flex justify-content-between">

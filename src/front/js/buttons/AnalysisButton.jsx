@@ -75,9 +75,9 @@ export const AnalysisButton = () => {
             mascota_analysis_id: store.idParam
         }
         await actions.postAnalysis(dataToSend);
-        if (store.fotoJsonAnalysis != null) {
+        //if (store.fotoJsonAnalysis != null) {
             setShowModal(false);
-        }
+        //}
     };
 
     const handleCapture = async (event) => {

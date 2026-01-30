@@ -408,10 +408,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(dataToSend)
 				};
 
-				if (dataToSend.foto_analysis == null) {
+				/*if (dataToSend.foto_analysis == null) {
 					setStore({ alert: { text: `Necesitas ingresar una foto del analisis`, background: 'danger', visible: true } })
             		return;
-        		}
+        		}**/
 
 				const response = await fetch(uri, options);
 				if (!response.ok) {
@@ -606,10 +606,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(dataToSend)
 				};
 				
-				if (dataToSend.foto_incidencia == null) {
+				/*(if (dataToSend.foto_incidencia == null) {
 					setStore({ alert: { text: 'Necesitas Ingresar una foto de la Incidencia', background: 'danger', visible: true } })
             		return;
-        		}
+        		}**/
 				
 				const response = await fetch(uri, options);
 				if (!response.ok) {
@@ -728,10 +728,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 					body: JSON.stringify(dataToSend)
 				};
 
-				if (dataToSend.foto_food == null) {
+				/*if (dataToSend.foto_food == null) {
 					setStore({ alert: { text: 'Necesitas Ingresar una foto de la comida', background: 'danger', visible: true } })
             		return;
-        		}
+        		}**/
 
 				const response = await fetch(uri, options);
 				if (!response.ok) {

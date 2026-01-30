@@ -105,12 +105,10 @@ export const IncidenciasUser = () => {
       <section>
         {store.isLogged ? 
         <Container className="row justify-content-center mt-4 m-auto">
-          <div className="row mb-3 d-flex justify-content-between">
-            <div className="col-md-2">
+          <div className="row mb-3">
+            <div className="col-md-2 d-flex justify-content-between">
               <button className="btn btn-outline-secondary" onClick={() => navigate(-1)}>Volver</button>
-            </div>
-            <div className="col-md-2">
-              <button className="btn btn-outline-secondary" onClick={() => setShowModal(true)}>Add Manual Entry</button>
+              <button className="btn border-0 bg-transparent p-0" onClick={() => setShowModal(true)}><i className="fa-solid fa-plus text-primary"></i></button>
             </div>
           </div>
           <div className="modal fade" tabIndex="-1" ref={modalRef} aria-hidden="true">
@@ -118,10 +116,10 @@ export const IncidenciasUser = () => {
               <div className="container modal-content">
                 <div className="modal-header row">
                   <div className="d-flex justify-content-between">
-                    <h1 className="modal-title fs-4 col-md-8">Record New Incident</h1>
+                    <h1 className="modal-title fs-4 col-md-8">Registrar Incidencia</h1>
                     <button type="button" className="btn-close col-md-4" data-bs-dismiss="modal" aria-label="Close" onClick={() => setShowModal(false)}></button>
                   </div>
-                  <p className="col-md-12">Enter the details of the incident you want to record for your pet.</p>
+                  <p className="col-md-12">Introduce los detalles de la Incidencia de tu mascota.</p>
                 </div>
                 <div className="modal-body" style={{ maxHeight: "60vh", overflowY: "auto" }}>
                   <form onSubmit={handleSubmit} className="row g-3">
@@ -132,13 +130,21 @@ export const IncidenciasUser = () => {
                         </div>
                       )}
                       <div className="text-center p-2 mb-3">
-                        <label htmlFor="selectFotoIncidencia" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Upload a photo of the incident</label>
+                        <label htmlFor="selectFotoIncidencia" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce foto del Incidente</label>
                         <input id="selectFotoIncidencia" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
                       </div>
                     </div>
                     <div className="row">
                       <div className="col-md-6 mb-3">
-                        <label className="form-label fw-semibold">Pet Username</label>
+                        <label className="form-label fw-semibold">Username de tu Mascota</label>
+                        <button class="btn border-0 bg-transparent p-0 mx-2" style={{ boxShadow: "none" }} type="button" data-bs-toggle="collapse" data-bs-target="#collapsePatologia" aria-expanded="false" aria-controls="collapsePatologia">
+                          <i className="fa-solid fa-circle-info text-primary ms-1" style={{ color: "#1B365D" }}></i>
+                        </button>
+                        <div class="collapse my-2" id="collapsePatologia">
+                          <div class="card card-body" style={{ backgroundColor: "#c6e4f8ff" }}>
+                            Nombre de usuario de tu mascota que aparece en el botón compartir del menu 'Detalles' de tu mascota.
+                          </div>
+                        </div>
                         <input type="text" name="mascotNameID" className="form-control" value={mascotNameID} onChange={(event) => setMascotNameID(event.target.value)} required />
                       </div>
                     </div>
@@ -153,36 +159,30 @@ export const IncidenciasUser = () => {
                       ))}
                     </div>
                     <div className="col-md-6 mb-3">
-                      <label className="form-label fw-semibold">Start Time</label>
+                      <label className="form-label fw-semibold">Fecha de Inicio</label>
                       <input type="datetime-local" name="initialDate" className="form-control" value={initialDate} onChange={(event) => setInitialDate(event.target.value)} required />
                     </div>
                     <div className="col-md-6 mb-3">
-                      <label className="form-label fw-semibold">End Time (Optional)</label>
+                      <label className="form-label fw-semibold">Fecha de Fin (Opcional)</label>
                       <input type="datetime-local" name="finalDate" className="form-control" value={finalDate} onChange={(event) => setFinalDate(event.target.value)} required />
                     </div>
                     <div className="col-md-12 mb-3">
-                      <label className="form-label fw-semibold">Description (Optional)</label>
+                      <label className="form-label fw-semibold">Descripción (Opcional)</label>
                       <textarea className="form-control" id="descriptionID" rows="3" value={description} onChange={(event) => setDescription(event.target.value)}></textarea>
-                    </div>
-                    <div className="form-check form-switch mb-3">
-                      <input className="form-check-input" type="checkbox" id="checkNativeSwitch" onChange={(event) => setStatus(event.target.checked ? 'Good' : 'Bad')} />
-                      <label className="form-check-label" htmlFor="checkNativeSwitch">
-                          This is a positive incident
-                      </label>
                     </div>
                     <div className="row">
                       <div className="d-flex justify-content-between">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"
                           onClick={() => setShowModal(false)} style={{
                                 borderRadius: "30px", padding: "10px 20px"
-                          }}>Cancel</button>
+                          }}>Cancelar</button>
                         <button type="submit" className="btn btn-primary" style={{
                                 color: "white",
                                 background: "#ff6100",
                                 border: "#ff6100",
                                 borderRadius: "30px",
                                 padding: "10px 20px"
-                        }}>Save Incident</button>
+                        }}>Enviar</button>
                       </div>
                     </div>
                   </form>
@@ -194,12 +194,12 @@ export const IncidenciasUser = () => {
             <table className="table table-striped bg-white">
               <thead>
                 <tr className="text-center">
-                  <th>Mascot</th>
-                  <th>Type</th>
-                  <th>Start Time</th>
-                  <th>End Time</th>
-                  <th>Description</th>
-                  <th>Good/Bad</th>
+                  <th scope="col-md-2">Mascota</th>
+                  <th scope="col-md-2">Tipo</th>
+                  <th scope="col-md-2">Fecha de Inicio</th>
+                  <th scope="col-md-2">Fecha de Fin</th>
+                  <th scope="col-md-2">Descripción</th>
+                  <th scope="col-md-2">Bueno/Malo</th>
                 </tr>
               </thead>
               <tbody>
