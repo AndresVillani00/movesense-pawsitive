@@ -69,7 +69,7 @@ export const Analysis = () => {
                                             data-bs-target="#modalVerFoto" // Apunta al ID del modal de abajo
                                             onClick={() => setImagenSeleccionada(item.foto_analysis)}
                                         >
-                                            <i className="fa-solid fa-eye"></i> Ver Foto
+                                            <i className="fa-solid fa-eye"></i>
                                         </button>
                                     ) : (
                                         <span className="text-muted small">Sin foto</span>
