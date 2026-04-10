@@ -174,7 +174,6 @@ def mascota_report_range(mascota_id):
         ts = getattr(a, "ts_init", None)
         fecha = ts.strftime("%d/%m/%Y")
         analisis_by_date[fecha].append({
-            "Foto del analisis de orina en base64": getattr(a, "foto_analysis", None),
             "Blood en el analisis": getattr(a, "blood", None),
             "Bilirubin en el analisis": getattr(a, "bilirubin", None),
             "Urobiling en el analisis": getattr(a, "urobiling", None),
@@ -200,7 +199,6 @@ def mascota_report_range(mascota_id):
         ts = getattr(c, "ts_init", None)
         fecha = ts.strftime("%d/%m/%Y")
         comidas_by_date[fecha].append({
-            "Foto de la comida en base 64": getattr(c, "foto_food", None),
             "Titulo de contexto de la comida": getattr(c, "title", None),
             "Tipo de comida": getattr(c, "type_food", None),
             "Marca de la comida": getattr(c, "marca", None),
@@ -226,7 +224,6 @@ def mascota_report_range(mascota_id):
             continue
         fecha = ts.strftime("%d/%m/%Y")
         incidencias_by_date[fecha].append({
-            "Foto de la incidencia en base 64": getattr(i, "foto_incidencia", None),
             "Titulo de contexto de la incidencia": getattr(i, "title", None),
             "Descripcion de contexto de la incidencia": getattr(i, "description", None),
             "Fecha de inicio de la incidencia": getattr(i, "initial_date", None).isoformat() if getattr(i, "initial_date", None) else None,
@@ -290,6 +287,7 @@ def generate_report():
             "Por ultimo para la primera etiqueta Score dame una puntuacion del 1 al 10 sin usar decimales basandote en el posible estado de la mascota segun los datos de cada reporte, donde 1 es muy malo y 10 es muy bueno. "
             "No incluyas texto adicional fuera del JSON. solo devuelve un JSON del estilo {Score:'puntuacion', Descripcion: 'reporte', Analisis: 'reporte', Comida: 'reporte', Accion: 'reporte', Futuro: 'reporte'}. "
             "Es importante que respetes los nombres de las etiquetas ya que las voy a buscar por ese exacto nombre al mostrarlas en mi front-end {Score, Descripcion, Analisis, Comida, Accion, Futuro}"
+            "Es importante que respetes los tokens por minuto menos de 200000 (TPM). Evita llegar al limite de tokens para evitar errores."
         )
     }
     user_msg = {
