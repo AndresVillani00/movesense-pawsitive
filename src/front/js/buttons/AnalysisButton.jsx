@@ -244,8 +244,10 @@ export const AnalysisButton = () => {
                                         </div>
                                     )}
                                     <div className="text-center p-2 mb-3">
-                                        <label htmlFor="selectFotoAnalysis" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce foto de Analisis</label>
+                                        <label htmlFor="selectFotoAnalysis" className="btn btn-primary align-item-center" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}><i className="fa-solid fa-camera me-2"></i></label>
                                         <input id="selectFotoAnalysis" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
+                                        <label htmlFor="selectFotoGaleriaAnalisis" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}><i className="fa-solid fa-image me-2"></i></label>
+                                        <input id="selectFotoGaleriaAnalisis" type="file" accept="image/*" className="d-none" onChange={handleCapture} />
                                         <button className="btn btn-primary mx-2" type="button"
                                             onClick={() => handleAnalisisIA(store.fotoJsonAnalysis.foto)}
                                             style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>

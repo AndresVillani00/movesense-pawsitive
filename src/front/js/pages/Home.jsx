@@ -81,6 +81,7 @@ export const Home = () => {
 
     await actions.shareMascot(dataToSend, share_mascota_name_id, store.usuario.id);
     actions.setActiveKey('existing')
+
     navigate('/home');
   }
 
@@ -151,6 +152,7 @@ export const Home = () => {
 
   const handleDetails = async (event, mascota) => {
     event.preventDefault();
+    store.isLoading = true;
 
     actions.setCurrentMascota(mascota);
     actions.setIdParam(mascota.id)
@@ -162,6 +164,7 @@ export const Home = () => {
     await actions.getReport(mascota.id);
 
     store.alert = { text: '', background: 'primary', visible: false }
+    store.isLoading = false;
     navigate('/pet-details');
   };
 
@@ -285,7 +288,6 @@ export const Home = () => {
     event.preventDefault();
     const dataToSend = { username, password, remember }
     await actions.login(dataToSend);
-    console.log(store.userMascotas.length)
     if (store.isVeterinario) {
       actions.setActiveKey('alerts')
     } else if (store.userMascotas.length < 1) {
@@ -401,8 +403,10 @@ export const Home = () => {
                           </div>
                         )}
                         <div className="text-center my-5 mb-3">
-                          <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce una foto de tu mascota</label>
+                          <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}><i className="fa-solid fa-camera me-2"></i></label>
                           <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
+                          <label htmlFor="selectFotoGaleriaHome" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}><i className="fa-solid fa-image me-2"></i></label>
+                          <input id="selectFotoGaleriaHome" type="file" accept="image/*" className="d-none" onChange={handleCapture} />
                         </div>
                       </div>
                       <div className="col-md-12 mb-3">

@@ -4,33 +4,35 @@ import { useNavigate, Link } from "react-router-dom";
 import { Alert } from "./Alert.jsx";
 
 
-export const Login = () => {
+export const Forgot = () => {
     const { store, actions } = useContext(Context);
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [remember, setRemember] = useState(false);
+    const [newPassword, setNewPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState(false);
     
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const dataToSend = { username, password, remember }
-        const result = await actions.login(dataToSend);
+        const dataToSend = { username, password }
 
-        // Solo si el login fue exitoso procedemos con la lógica
-        if (result && result.success) {
-        
-            if (result.isVeterinario) {
-                actions.setActiveKey('alerts');
-            } else if (result.mascotasCount < 1) {
-                actions.setActiveKey('register');
-            } else {
-                actions.setActiveKey('existing');
+        if (password === newPassword){
+            const result = await actions.loginNewPassword(dataToSend);
+            // Solo si el login fue exitoso procedemos con la lógica
+            if (result && result.success) {
+                if (result.isVeterinario) {
+                    actions.setActiveKey('alerts');
+                } else if (result.mascotasCount < 1) {
+                    actions.setActiveKey('register');
+                } else {
+                    actions.setActiveKey('existing');
+                }
+                // Como tuvimos éxito, redirigimos
+                navigate('/home');
             }
-
-            // Como tuvimos éxito, redirigimos
-            navigate('/home');
+        } else {
+            store.alert = { text: "Las Contraseñas no coinciden", background: "danger", visible: true };
         }
     }
 
@@ -42,6 +44,16 @@ export const Login = () => {
             setError(false)
         }
         setPassword(value)
+    }
+
+    const validateNewPassword = (value) => {
+        const isValid = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
+        if(!isValid.test(value)){
+            setError(true)
+        } else{
+            setError(false)
+        }
+        setNewPassword(value)
     }
 
     return (
@@ -57,8 +69,7 @@ export const Login = () => {
                 border: "1px solid #DDD" // Borde sutil
             }}>
                 <Link to="/home" className="text-decoration-none mb-3" style={{ color: "#1B365D" }}>  <i className="fas fa-arrow-left"></i> Volver</Link>
-                <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1B365D" }}>Bienvenido de nuevo</h2>
-                <p className="text-center" style={{ color: "#1B365D" }}>Inicia Sesión para continuar</p>
+                <h2 className="text-center mb-4" style={{ fontWeight: "bold", color: "#1B365D" }}>Recuperar nueva Contraseña</h2>
                 <Alert />
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
@@ -66,17 +77,19 @@ export const Login = () => {
                         <input onChange={(event) => setUsername(event.target.value)} value={username} type="text" className="form-control border-0 shadow-sm" placeholder="Introduce tu Usuario o Email" required />
                     </div>
                     <div className="mb-3 input-group">
-                        <label className="form-label col-12">Contraseña</label>
+                        <label className="form-label col-12">Nueva Contraseña</label>
                         <input onChange={(event) => validatePassword(event.target.value)} value={password} type={showPassword ? "text" : "password"} className={`form-control ${error ? "is-invalid" : "is-valid"} border-0 shadow-sm`} placeholder="Introduce tu Contraseña" required />
                         <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
                             {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
                         </span>
                     </div>
-                    <div className="form-check">
-                        <input className="form-check-input" type="checkbox" id="rememberMe" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
-                        <label className="form-check-label" htmlFor="rememberMe">Recuerdamé</label>
+                    <div className="mb-3 input-group">
+                        <label className="form-label col-12">Repite la nueva Contraseña</label>
+                        <input onChange={(event) => validateNewPassword(event.target.value)} value={newPassword} type={showPassword ? "text" : "password"} className={`form-control ${error ? "is-invalid" : "is-valid"} border-0 shadow-sm`} placeholder="Introduce tu Contraseña" required />
+                        <span className="input-group-text" onClick={() => setShowPassword(!showPassword)} style={{ cursor: "pointer" }}>
+                            {showPassword ? <i className="fas fa-eye-slash"></i> : <i className="fas fa-eye"></i>}
+                        </span>
                     </div>
-                    <Link to="/forgot" className="text-decoration-none mb-3" >Olvide mi Contraseña</Link>
                     <div className="text-center">
                         <button type="submit" className="btn w-50 mt-4 fw-bold" style={{ color: "white", 
                             background:"#ff6100", 
@@ -84,9 +97,6 @@ export const Login = () => {
                             borderRadius: "8px",
                             padding: "10px"
                         }}>Iniciar Sesión</button>
-                    </div>
-                    <div className="text-center mt-3">
-                        <p className="text-muted">No tienes cuenta ? <Link to={"/sign-up"} className="text-decoration-none" onClick={() => store.alert = { text: "", background: "primary", visible: false }} style={{ color: "#1E1E50" }}>Registrate</Link></p>
                     </div>
                 </form>
             </div>

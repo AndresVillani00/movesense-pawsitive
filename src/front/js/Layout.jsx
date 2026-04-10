@@ -9,6 +9,7 @@ import { BackendURL } from "./component/BackendURL.jsx";
 import { SignUp } from "./component/SignUp.jsx";
 import { SignUpVets } from "./component/SignUpVets.jsx";
 import { Login } from "./component/Login.jsx";
+import { Forgot } from "./component/Forgot.jsx";
 // Custom pages or views
 import { Home } from "./pages/Home.jsx";
 import { Explore } from "./pages/Explore.jsx";
@@ -40,28 +41,42 @@ const Layout = () => {
         <div className="d-flex flex-column min-vh-100" style={{ background: "#F5EFDE" }}>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
-                    <Navbar />
-                    <Elements stripe={key}>
-                        <Routes>
-                            <Route element={<Home />} path="/" />
-                            <Route element={<Home />} path="/home" />
-                            <Route element={<SignUp />} path="/sign-up" />
-                            <Route element={<SignUpVets />} path="/sign-up-vets" />
-                            <Route element={<Login />} path="/login" />
-                            <Route element={<Explore />} path="/explore" />
-                            <Route element={<UserProfile />} path="/user-profile" />
-                            <Route element={<MascotaDetalles />} path="/pet-details" />
-                            <Route element={<MascotaProfile />} path="/edit-pet" />
-                            <Route element={<Report />} path="/report" />
-                            <Route element={<IncidenciasUser />} path="/incidencias" />
-                            <Route element={<AboutUs />} path="/about-us" />
-                            <Route element={<Cart />} path="/cart" />
-                            <Route element={<Payment />} path="/payment" />
-                            <Route element={<PaymentSuccess />} path="/success" />
-                            <Route element={<PaymentFail />} path="/fail" />
-                            <Route element={<h1>Not    found!</h1>} path='*' />
-                        </Routes>
-                    </Elements>
+                    <div>
+                        {/* AQUÍ VA LA PANTALLA OSCURA. Solo se dibuja si store.isLoading es true */}
+                        {store.isLoading && (
+                            <div 
+                                className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
+                                style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)', zIndex: 9999, backdropFilter: 'blur(3px)' }}
+                            >
+                                <div className="spinner-border text-light" style={{ width: '4rem', height: '4rem', borderWidth: '0.3em' }} role="status">
+                                    <span className="visually-hidden">Cargando...</span>
+                                </div>
+                            </div>
+                        )}
+                        <Navbar />
+                        <Elements stripe={key}>
+                            <Routes>
+                                <Route element={<Home />} path="/" />
+                                <Route element={<Home />} path="/home" />
+                                <Route element={<SignUp />} path="/sign-up" />
+                                <Route element={<SignUpVets />} path="/sign-up-vets" />
+                                <Route element={<Login />} path="/login" />
+                                <Route element={<Forgot />} path="/forgot" />
+                                <Route element={<Explore />} path="/explore" />
+                                <Route element={<UserProfile />} path="/user-profile" />
+                                <Route element={<MascotaDetalles />} path="/pet-details" />
+                                <Route element={<MascotaProfile />} path="/edit-pet" />
+                                <Route element={<Report />} path="/report" />
+                                <Route element={<IncidenciasUser />} path="/incidencias" />
+                                <Route element={<AboutUs />} path="/about-us" />
+                                <Route element={<Cart />} path="/cart" />
+                                <Route element={<Payment />} path="/payment" />
+                                <Route element={<PaymentSuccess />} path="/success" />
+                                <Route element={<PaymentFail />} path="/fail" />
+                                <Route element={<h1>Not    found!</h1>} path='*' />
+                            </Routes>
+                        </Elements>
+                    </div>
                 </ScrollToTop>
             </BrowserRouter>
         </div>

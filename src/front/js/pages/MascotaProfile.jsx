@@ -93,8 +93,10 @@ export const MascotaProfile = () => {
                 </div>
               )}
               <div className="text-center my-5 mb-3">
-                <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background:"#ff6100", border: "#ff6100"}}>Upload a photo of your mascot</label>
+                <label htmlFor="selectFoto" className="btn btn-primary" style={{ color: "white", background:"#ff6100", border: "#ff6100"}}><i className="fa-solid fa-camera me-2"></i></label>
                 <input id="selectFoto" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
+                <label htmlFor="selectFotoGaleriaMascota" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}><i className="fa-solid fa-image me-2"></i></label>
+                <input id="selectFotoGaleriaMascota" type="file" accept="image/*" className="d-none" onChange={handleCapture} />
               </div>
             </div>
             <div className="col-md-6 mb-3">

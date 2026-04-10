@@ -35,7 +35,7 @@ def incidencia():
                      alert_status=data.get('alert_status'),
                      ia_description=data.get('ia_description'),
                      ia_action=data.get('ia_action'),
-                     foto_incidencia=data.get('foto_incidencia'),
+                     foto_incidencia=data.get('foto_incidencia', None),
                      mascota_incidencia_id=data.get('mascota_incidencia_id'))
         db.session.add(row)
         db.session.commit()

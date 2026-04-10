@@ -37,7 +37,7 @@ def food():
                     ia_food=data.get('ia_food'),
                     food_time=data.get('food_time'),
                     quantity=data.get('quantity'),
-                    foto_food=data.get('foto_food'),
+                    foto_food=data.get('foto_food', None),
                     mascota_comida_id=data.get('mascota_comida_id'))
         db.session.add(row)
         db.session.commit()

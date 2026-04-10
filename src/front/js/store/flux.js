@@ -1,6 +1,7 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+			isLoading: false,
 			idParam: null,
 			idMascotaReporte: null,
 			isLogged: false,
@@ -22,6 +23,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			foods: [],
 			mascotas: [],
 			userMascotas: [],
+			userShareMascotas: [],
 			mascotUsers: [],
 			currentMascota: null,
 			fotoMascota: null,
@@ -39,6 +41,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			message: null,
 		},
 		actions: {
+			setLoading: (status) => { setStore({ isLoading: status }) },
 			setIdParam: (item) => { setStore({ idParam: item }) },
 			setCurrentMascota: (item) => { setStore({ currentMascota: item }) },
 			setFotoMascota: (item) => { setStore({ fotoMascota: item }) },
@@ -78,7 +81,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return
 				}
 				const data = await response.json();
-				console.log(data)
 				setStore({ reportAI: data })
 			},
 			analisisOpenAI: async (prompt, dataToSend) => {
@@ -474,6 +476,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			postMetrica: async (dataToSend) => {
+				setStore({ isLoading: true });
+
 				const token = localStorage.getItem("token");
 				if (!token) return;
 				
@@ -491,10 +495,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (response.status == 401) {
 						setStore({ alert: { text: 'La Metrica que intenta registrar ya existe', background: 'danger', visible: true } })
 					}
+					setStore({ isLoading: false });
 					return
 				}
 
 				getActions().getMetrica(dataToSend.mascota_metrica_id);
+				setStore({ isLoading: false });
+
 			},
 			deleteMetrica: async (id) => {
 				const token = localStorage.getItem("token");
@@ -930,44 +937,117 @@ const getState = ({ getStore, getActions, setStore }) => {
 				getActions().getUsersMascotas()
 			},
 			login: async (dataToSend) => {
-				const uri = `${process.env.BACKEND_URL}/api/login`;
-				const options = {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify(dataToSend)
-				};
-				const response = await fetch(uri, options);
-				if (!response.ok) {
-					if (response.status == 400) {
-						setStore({ alert: { text: 'La contraseña necesita al menos 8 caracteres', background: 'danger', visible: true } })
+				setStore({ isLoading: true });
+				try {
+					const uri = `${process.env.BACKEND_URL}/api/login`;
+					const options = {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(dataToSend)
+					};
+					const response = await fetch(uri, options);
+					if (!response.ok) {
+						if (response.status == 400) {
+							setStore({ alert: { text: 'La contraseña necesita al menos 8 caracteres', background: 'danger', visible: true } })
+						}
+						if (response.status == 401) {
+							setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
+						}
+						if (response.status == 404) {
+							setStore({ alert: { text: 'Usuario que intenta registrar es erroneo o no existe', background: 'danger', visible: true } })
+						}
+						setStore({ isLoading: false });
+						return { success: false };
 					}
-					if (response.status == 401) {
-						setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
-					}
-					if (response.status == 404) {
-						setStore({ alert: { text: 'Usuario que intenta registrar es erroneo o no existe', background: 'danger', visible: true } })
-					}
-					return
-				}
+					
+					const datos = await response.json();
+					const isVet = datos.results.is_veterinario;
 
-				const datos = await response.json();
-				if (dataToSend.remember) {
-					localStorage.setItem('token', datos.access_token);
-				} else {
-					localStorage.removeItem('token');
+					if (dataToSend.remember) {
+						localStorage.setItem('token', datos.access_token);
+					} else {
+						localStorage.removeItem('token');
+					}
+					setStore({
+						isLogged: true,
+						usuario: datos.results,
+						isVeterinario: isVet,
+						alert: { text: '', background: 'primary', visible: false }
+					});
+
+					localStorage.setItem('token', datos.access_token)
+					await getActions().getUsersMascotas();
+					
+					const storeActualizado = getStore();
+        			const cantidadMascotas = storeActualizado.userMascotas ? storeActualizado.userMascotas.length : 0;
+					
+					await getActions().getMascotShareUsers(storeActualizado.usuario.id);
+					
+					setStore({ isLoading: false });
+					return { 
+        				    success: true, 
+				            isVeterinario: isVet, 
+            				mascotasCount: cantidadMascotas 
+						};
+				} catch (e) {
+					setStore({ isLoading: false, alert: { text: 'Error de conexión', background: 'danger', visible: true } });
+					return { success: false };
 				}
-				setStore({
-					isLogged: true,
-					usuario: datos.results,
-					alert: { text: '', background: 'primary', visible: false }
-				})
-				if (getStore().usuario.is_veterinario) {
-					setStore({ isVeterinario: true })
+			},
+			loginNewPassword: async (dataToSend) => {
+				setStore({ isLoading: true });
+				try {
+					const uri = `${process.env.BACKEND_URL}/api/login/new-password`;
+					const options = {
+						method: 'PUT',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(dataToSend)
+					};
+					const response = await fetch(uri, options);
+					if (!response.ok) {
+						if (response.status == 400) {
+							setStore({ alert: { text: 'La contraseña necesita al menos 8 caracteres', background: 'danger', visible: true } })
+						}
+						if (response.status == 401) {
+							setStore({ alert: { text: 'La contraseña necesita tener un caracter especial', background: 'danger', visible: true } })
+						}
+						if (response.status == 404) {
+							setStore({ alert: { text: 'Usuario que intenta registrar es erroneo o no existe', background: 'danger', visible: true } })
+						}
+						setStore({ isLoading: false });
+						return { success: false };
+					}
+					
+					const datos = await response.json();
+					const isVet = datos.results.is_veterinario;
+					
+					setStore({
+						isLogged: true,
+						usuario: datos.results,
+						isVeterinario: isVet,
+						alert: { text: '', background: 'primary', visible: false }
+					});
+
+					localStorage.setItem('token', datos.access_token)
+					await getActions().getUsersMascotas();
+					
+					const storeActualizado = getStore();
+        			const cantidadMascotas = storeActualizado.userMascotas ? storeActualizado.userMascotas.length : 0;
+
+					setStore({ isLoading: false });
+					return { 
+        				    success: true, 
+				            isVeterinario: isVet, 
+            				mascotasCount: cantidadMascotas 
+						};
+				} catch (e) {
+					setStore({ isLoading: false, alert: { text: 'Error de conexión', background: 'danger', visible: true } });
+					return { success: false };
 				}
-				localStorage.setItem('token', datos.access_token)
-				getActions().getUsersMascotas()
 			},
 			logout: () => {
 				setStore({
@@ -1142,12 +1222,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return;
 					}
 					const data = await response.json();
-					setStore({ userMascotas: data.results });
+
+					// 1. Obtenemos el store actual para ver qué mascotas ya tenemos
+					const store = getStore();
+
+					// 2. Por seguridad, nos aseguramos de que si no hay nada, sea un array vacío []
+					const mascotasPropias = store.userMascotas || [];
+					const mascotasCompartidas = data.results || [];
+
+					// 3. LA MAGIA: Sumamos los dos arrays usando el Spread Operator (...)
+					const todasLasMascotas = [...mascotasPropias, ...mascotasCompartidas];
+
+					// 4. Actualizamos el store
+					setStore({ 
+						userShareMascotas: mascotasCompartidas, // Lo guardamos por si lo necesitas por separado
+						userMascotas: todasLasMascotas          // Sobrescribimos con la lista combinada
+					});
 				} catch (error) {
 					console.log("Error en getMascotShareUsers:", error);
 				}
 			},
 			shareMascot: async (dataToSend, mascotId, userId) => {
+				setStore({ isLoading: true });
 				const uri = `${process.env.BACKEND_URL}/mascotasApi/mascotas/${mascotId}/share`;
 				const options = {
 					method: 'POST',
@@ -1161,11 +1257,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					if (response.status == 401) {
 						setStore({ alert: { text: 'La Mascota que intenta compartir ya se compartio con este usuario', background: 'danger', visible: true } })
 					}
+					setStore({ isLoading: false });
 					return
 				}
 
 				getActions().getShareUsers(mascotId);
 				getActions().getMascotShareUsers(userId);
+				setStore({ isLoading: false });
 			},
 			deleteShareMascot: async (mascotaId, userId) => {
 				const token = localStorage.getItem("token");
