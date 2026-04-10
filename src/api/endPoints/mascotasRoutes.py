@@ -37,7 +37,7 @@ def postMascotas():
         row = Mascotas(mascota_name_id=data.get('mascota_name_id'),
                     password=data.get('password'),
                     name_mascot=data.get('name_mascot'),
-                    foto_mascot=data.get('foto_mascot'),
+                    foto_mascot=data.get('foto_mascot', None),
                     raza=data.get('raza'),
                     gender=data.get('gender'),
                     birth_date=data.get('birth_date'),
@@ -107,6 +107,7 @@ def share_mascot(mascota_name_id):
     
 
 @mascotas_api.route('/mascotas/<int:id>/delete-share/<int:usuario_id>', methods=['DELETE'])
+@jwt_required()
 def delete_share_mascot(id, usuario_id):
     response_body = {}
     additional_claims = get_jwt()
@@ -130,6 +131,7 @@ def delete_share_mascot(id, usuario_id):
 
 
 @mascotas_api.route('/mascotas/<int:id>', methods=['PUT', 'DELETE'])
+@jwt_required()
 def mascota(id):
     response_body = {}
     user_log_id = get_jwt()['user_id']

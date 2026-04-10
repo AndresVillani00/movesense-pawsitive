@@ -31,6 +31,7 @@ const injectContext = PassedComponent => {
 			state.actions.checkAuth();
 			state.actions.getUserProfile();
 			state.actions.getUsersMascotas();
+			//state.actions.getMascotShareUsers(state.store.usuario.id);
 
 			const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
 			[...popoverTriggerList].map(el => new window.bootstrap.Popover(el));
@@ -44,6 +45,7 @@ const injectContext = PassedComponent => {
 
 				// Solo redirigir si hay token, ya fue recargada previamente y no estamos ya en /home
 				if (token && wasReloaded && window.location.pathname !== "/home") {
+					state.actions.setLoading(true);
 					// dejamos un pequeño delay para que checkAuth() pueda terminar
 					setTimeout(() => {
 						// Usa replace para no agregar una entrada extra al historial
@@ -54,7 +56,9 @@ const injectContext = PassedComponent => {
 				// Marcar que ya hubo al menos un montaje / posible recarga
 				// (esto hace que la siguiente recarga sea detectada como "wasReloaded")
 				sessionStorage.setItem("wasReloaded", "true");
+				state.actions.setLoading(false);
 			} catch (err) {
+				state.actions.setLoading(false);
 				// no hacer nada si falla el acceso a storage
 				console.warn("Error comprobando remember/reload:", err);
 			}

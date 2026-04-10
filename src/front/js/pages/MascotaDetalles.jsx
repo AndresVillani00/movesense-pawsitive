@@ -31,6 +31,7 @@ export const MascotaDetalles = () => {
 
     const modalShareRef = useRef(null);
     const bsShareModal = useRef(null);
+    const menuRef = useRef(null);
     
     useEffect(() => {
         // Cargar modal de Bootstrap solo una vez
@@ -94,6 +95,21 @@ export const MascotaDetalles = () => {
 
         store.alert = { text: '', background: 'primary', visible: false }
         navigate('/edit-pet');
+    };
+
+    const handleCardClick = (tipoMenu) => {
+        // Primero, abrimos tu menú usando la función que ya tenías
+        toggleMenu(tipoMenu);
+
+        // Segundo, hacemos el scroll suave hacia el menú
+        setTimeout(() => {
+            if (menuRef.current) {
+                menuRef.current.scrollIntoView({ 
+                    behavior: 'smooth', // Hace que se deslice suavemente
+                    block: 'start'      // Alinea el menú en la parte superior de la pantalla
+                });
+            }
+        }, 100); // 100ms de gracia para que React pinte el HTML si estaba oculto
     };
 
     const handleShareDelete = async (event, userId) => {
@@ -163,7 +179,7 @@ export const MascotaDetalles = () => {
                                     <Tab.Pane eventKey="overview">
                                         <h3>Dashboard</h3>
                                         <div className="row g-3">
-                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('weight')}>
+                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => handleCardClick('weight')}>
                                                 <div className="card border-0" style={buttonStyle('weight')}>
                                                     <div className="card-header d-flex justify-content-between">
                                                         <div className="p-2">
@@ -176,7 +192,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('activity')}>
+                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => handleCardClick('activity')}>
                                                 <div className="card border-0" style={buttonStyle('activity')}>
                                                     <div className="card-header d-flex justify-content-between">
                                                         <div className="p-2">
@@ -189,7 +205,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('analysis')}>
+                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => handleCardClick('analysis')}>
                                                 <div className="card border-0" style={buttonStyle('analysis')}>
                                                     <div className="card-header d-flex justify-content-between" >
                                                         <div className="p-2">
@@ -204,7 +220,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('temperature')}>
+                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => handleCardClick('temperature')}>
                                                 <div className="card border-0" style={buttonStyle('temperature')}>
                                                     <div className="card-header d-flex justify-content-between">
                                                         <div className="p-2">
@@ -217,7 +233,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('heartrate')}>
+                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => handleCardClick('heartrate')}>
                                                 <div className="card border-0" style={buttonStyle('heartrate')}>
                                                     <div className="card-header d-flex justify-content-between">
                                                         <div className="p-2">
@@ -230,7 +246,7 @@ export const MascotaDetalles = () => {
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => toggleMenu('incident')}>
+                                            <div className="col-md-4 btn bg-transparent border-0" onClick={() => handleCardClick('incident')}>
                                                 <div className="card border-0" style={buttonStyle('incident')}>
                                                     <div className="card-header d-flex justify-content-between">
                                                         <div className="p-2">
@@ -290,7 +306,7 @@ export const MascotaDetalles = () => {
                                     </Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
-                                    <Nav.Link eventKey="food" onClick={() => { setActiveKeyDetail("food"); toggleMenu("food"); }} className="text-center" style={{ color: "#1B365D" }}>
+                                    <Nav.Link eventKey="food" onClick={() => { setActiveKeyDetail("food"); handleCardClick("food"); }} className="text-center" style={{ color: "#1B365D" }}>
                                         <i className="fa-solid fa-bowl-food fa-lg"></i>
                                         <div style={{ fontSize: "12px" }}>Comida</div>
                                     </Nav.Link>
@@ -318,22 +334,34 @@ export const MascotaDetalles = () => {
 
                     </div>
                     {activeMenu === 'analysis' && (
-                        <Analysis />
+                        <div ref={menuRef}>
+                            <Analysis />
+                        </div>
                     )}
                     {activeMenu === 'activity' && (
-                        <Activity />
+                        <div ref={menuRef}>
+                            <Activity />
+                        </div>
                     )}
                     {activeMenu === 'weight' && (
-                        <Peso />
+                        <div ref={menuRef}>
+                            <Peso />
+                        </div>
                     )}
                     {activeMenu === 'temperature' && (
-                        <Temperature />
+                        <div ref={menuRef}>
+                            <Temperature />
+                        </div>
                     )}
                     {activeMenu === 'heartrate' && (
-                        <HeartRate />
+                        <div ref={menuRef}>
+                            <HeartRate />
+                        </div>
                     )}
                     {activeMenu === 'incident' && (
-                        <Incidencias />
+                        <div ref={menuRef}>
+                            <Incidencias />
+                        </div>
                     )}
                     {activeMenu === 'food' && (
                         <div></div>

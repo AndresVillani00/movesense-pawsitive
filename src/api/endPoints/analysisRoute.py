@@ -37,7 +37,7 @@ def analysis_post():
                     nitrite=data.get('nitrite'),
                     leukocytes=data.get('leukocytes'),
                     ph=data.get('ph'),
-                    foto_analysis=data.get('foto_analysis'),
+                    foto_analysis=data.get('foto_analysis', None),
                     ts_init=data.get('ts_init'),
                     mascota_analysis_id=data.get('mascota_analysis_id'))
         db.session.add(row)

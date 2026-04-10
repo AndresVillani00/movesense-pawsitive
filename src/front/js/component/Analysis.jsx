@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
-import { Alert } from "./Alert.jsx";
-import AnalisisFoto from '../../img/Analisis.jpeg';
 
 export const Analysis = () => {
     const { store } = useContext(Context);
 
     const [itemCheck, setItemCheck] = useState([]);
+    const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
 
     const toggleChecks = (id) => {
         if (itemCheck.includes(id)) {
@@ -38,6 +37,7 @@ export const Analysis = () => {
                     <thead style={{ color: "secondary" }}>
                         <tr className="text-center">
                             <th scope="col-md-2"></th>
+                            <th scope="col-md-2">Imagen</th>
                             <th scope="col-md-2">Sangre (cacells/µl)</th>
                             <th scope="col-md-2">Bilirubina (µmol/l)</th>
                             <th scope="col-md-2">Urobilinógeno (µmol/l)</th>
@@ -59,6 +59,22 @@ export const Analysis = () => {
                                         onChange={() => toggleChecks(item.id)}
                                     />
                                 </td>
+                                <td className="text-center">
+                                    {/* Solo mostramos el botón si el item tiene foto */}
+                                    {item.foto_analysis ? (
+                                        <button 
+                                            className="btn btn-outline-primary btn-sm" 
+                                            style={{ borderRadius: "10px" }}
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#modalVerFoto" // Apunta al ID del modal de abajo
+                                            onClick={() => setImagenSeleccionada(item.foto_analysis)}
+                                        >
+                                            <i className="fa-solid fa-eye"></i> Ver Foto
+                                        </button>
+                                    ) : (
+                                        <span className="text-muted small">Sin foto</span>
+                                    )}
+                                </td>
                                 <td>{item.blood != null ? item.blood : '-'}</td>
                                 <td>{item.bilirubin != null ? item.bilirubin : '-'}</td>
                                 <td>{item.urobiling != null ? item.urobiling : '-'}</td>
@@ -72,6 +88,47 @@ export const Analysis = () => {
                         ))}
                     </tbody>
                 </table>
+                <div className="modal fade" id="modalVerFoto" tabIndex="-1" aria-hidden="true">
+                    <div className="modal-dialog modal-dialog-centered modal-lg"> {/* modal-lg para que sea grandecito */}
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title fw-bold">Foto del Incidente</h5>
+                                <button 
+                                    type="button" 
+                                    className="btn-close" 
+                                    data-bs-dismiss="modal" 
+                                    aria-label="Close"
+                                    onClick={() => setImagenSeleccionada(null)} // Limpiamos al cerrar
+                                ></button>
+                            </div>
+                            <div className="modal-body text-center p-4">
+                                {/* Mostramos la imagen solo si hay algo en el estado */}
+                                {imagenSeleccionada ? (
+                                    <img 
+                                        src={imagenSeleccionada} 
+                                        alt="Evidencia" 
+                                        className="img-fluid rounded shadow-sm" 
+                                        style={{ maxHeight: '70vh', objectFit: 'contain' }} 
+                                    />
+                                ) : (
+                                    <div className="spinner-border text-primary" role="status">
+                                        <span className="visually-hidden">Cargando...</span>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="modal-footer d-flex justify-content-center border-0">
+                                <button 
+                                    type="button" 
+                                    className="btn btn-secondary" 
+                                    data-bs-dismiss="modal" 
+                                    style={{ borderRadius: "30px", padding: "8px 20px" }}
+                                >
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     );

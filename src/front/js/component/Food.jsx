@@ -164,8 +164,10 @@ export const Food = () => {
                                             </div>
                                         )}
                                         <div className="text-center p-2 mb-3">
-                                            <label htmlFor="selectFotoComida" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>Introduce foto del saco de comida</label>
+                                            <label htmlFor="selectFotoComida" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}><i className="fa-solid fa-camera me-2"></i> (Saco)</label>
                                             <input id="selectFotoComida" type="file" accept="image/*" className="d-none" capture="environment" onChange={handleCapture} style={{ display: 'none' }} />
+                                            <label htmlFor="selectFotoGaleriaFood" className="btn btn-primary" style={{ color: "white", background: "#ff6100", border: "#ff6100" }}><i className="fa-solid fa-image me-2"></i></label>
+                                            <input id="selectFotoGaleriaFood" type="file" accept="image/*" className="d-none" onChange={handleCapture} />
                                             <button className="btn btn-primary mx-2" type="button"
                                             onClick={() => handleAnalisisIA(store.fotoJsonFood.foto)}
                                             style={{ color: "white", background: "#ff6100", border: "#ff6100" }}>

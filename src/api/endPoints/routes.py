@@ -49,6 +49,40 @@ def login():
     response_body['results'] = user
     return response_body, 200
 
+@api.route('/login/new-password', methods=['PUT'])
+def loginNewPassword():
+    response_body = {}
+    data = request.json
+    username = data.get('username', None)
+    password = data.get('password', None)
+    if any(domain in username for domain in ["@gmail.com", "@hotmail.com", "@outlook.com", "@yahoo.com"]):
+        row = db.session.execute(db.select(Users).where(Users.email == username)).scalar()    
+    else:
+        row = db.session.execute(db.select(Users).where(Users.username == username)).scalar()
+    if not row:
+        response_body['message'] = f'El usuario no existe'
+        return response_body, 404
+    
+    if len(password) < 8:
+        return response_body, 400
+
+    symbols = "!@#$%^&*"
+    if not any(char in symbols for char in password):
+        return response_body, 401
+
+    row.password = data.get('password', row.password)
+    db.session.commit()
+    user = row.serialize()
+    claims = {'user_id': user['id'],
+              'user_username': user['username'],
+              'is_veterinario': user['is_veterinario'],
+              'subscription_code': user['subscription_code']}
+    access_token = create_access_token(identity=username, additional_claims=claims)
+    response_body['access_token'] = access_token
+    response_body['message'] = f'Usuario Logeado'
+    response_body['results'] = user
+    return response_body, 200
+
 
 @api.route('/protected', methods=['GET'])
 @jwt_required()
